@@ -1,0 +1,39 @@
+{
+	"ID": "b977939b436cc20f2cc674aaf1c1cd78",
+	"TypeName": "FlaxEditor.Content.Settings.GameSettings",
+	"EngineBuild": 6606,
+	"Data": {
+	"ProductName": "KCC",
+	"CompanyName": "",
+	"CopyrightNotice": null,
+	"Icon": null,
+	"FirstScene": "00000000000000000000000000000000",
+	"NoSplashScreen": false,
+	"SplashScreen": null,
+	"Time": null,
+	"Audio": null,
+	"LayersAndTags": null,
+	"Physics": null,
+	"Input": null,
+	"Graphics": null,
+	"Network": null,
+	"Navigation": null,
+	"Localization": null,
+	"GameCooking": null,
+	"Streaming": null,
+	"CustomSettings": {
+		"KCC Settings": "08dd30d707950fda3af5e21cca69942d"
+	},
+	"WindowsPlatform": null,
+	"UWPPlatform": null,
+	"LinuxPlatform": null,
+	"PS4Platform": null,
+	"XboxOnePlatform": null,
+	"XboxScarlettPlatform": null,
+	"AndroidPlatform": null,
+	"SwitchPlatform": null,
+	"PS5Platform": null,
+	"MacPlatform": null,
+	"iOSPlatform": null
+}
+}
