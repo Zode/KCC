@@ -136,17 +136,17 @@ public class KinematicCharacterController : KinematicBase
     public float MaxSlopeAngle {get => _maxSlopeAngle; set => _maxSlopeAngle = Mathf.Clamp(value, 0.0f, 180.0f);}
     private float _maxSlopeAngle = 66.0f;
     /// <summary>
-    /// Maximum allowed stair step height distance
+    /// Determines if stair stepping is allowed at all
     /// </summary>
     [Header("Stairstepping")]
+    [EditorOrder(114)]
+    public bool AllowStairStepping {get; set;} = true;
+    /// <summary>
+    /// Maximum allowed stair step height distance
+    /// </summary>
     [EditorOrder(115)]
     public float StairStepDistance {get => _stairStepDistance; set => _stairStepDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepDistance = 50.0f;
-    /// <summary>
-    /// Determines if stair stepping is allowed at all
-    /// </summary>
-    [EditorOrder(114)]
-    public bool AllowStairStepping {get; set;} = true;
     /// <summary>
     /// Behavior mode for stair stepping
     /// </summary>
