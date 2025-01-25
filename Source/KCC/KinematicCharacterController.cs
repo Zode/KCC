@@ -23,6 +23,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Collision shape of the character
     /// </summary>
+    [Header("Character")]
+    [EditorOrder(100)]
     public ColliderType ColliderType {get; set;} = ColliderType.Capsule;
     #pragma warning disable 8618
     private Collider _collider;
@@ -30,15 +32,18 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// The contact offset value for the automatically generated collider (must be positive)
     /// </summary>
+    [EditorOrder(101)]
     public float ColliderContactOffset {get => _colliderContactOffset; set {_colliderContactOffset = value; SetColliderSize();}}
     private float _colliderContactOffset = 2.0f;
     /// <summary>
     /// The contact offset value that determines the distance that the character hovers above any surface (must be positive)
     /// </summary>
+    [EditorOrder(102)]
     public float KinematicContactOffset {get; set;} = 2.0f;
     /// <summary>
     /// Height of the character
     /// </summary>
+    [EditorOrder(103)]
     public float ColliderHeight {get => _colliderHeight; set {_colliderHeight = value; SetColliderSize();}}
     private float _colliderHeight = 150.0f;
     /// <summary>
@@ -48,6 +53,7 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Radius of the character (only applicable when ColliderType is Capsule or Sphere)
     /// </summary>
+    [EditorOrder(104)]
     public float ColliderRadius {get => _colliderRadius; set {_colliderRadius = value; SetColliderSize();}}
     private float _colliderRadius = 50.0f;
     /// <summary>
@@ -62,6 +68,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Maximum allowed amount of unstuck iterations
     /// </summary>
+    [Header("Physics")]
+    [EditorOrder(105)]
     public int MaxUnstuckIterations {get => _maxUnstuckIterations; set => _maxUnstuckIterations = Math.Clamp(value, 0, int.MaxValue);}
     private int _maxUnstuckIterations = 10;
     /// <summary>
@@ -69,24 +77,30 @@ public class KinematicCharacterController : KinematicBase
     /// If enabled, the controller will be queried for collision filtering, this is expensive
     /// If disabled, the character will assume everything to be solid, this is less expensive
     /// </summary>
+    [EditorOrder(106)]
     public bool FilterCollisions {get; set;} = false;
     /// <summary>
     /// Determines how much the character should slide upon coming to contact with a surface
     /// </summary>
+    [EditorOrder(108)]
     public float SlideMultiplier {get => _slideMultiplier; set => _slideMultiplier = Mathf.Clamp(value, 0.0f, 1.0f);}
     private float _slideMultiplier = 0.75f;
     /// <summary>
     /// If set to true, the character slide will also be affected by the surface's physics material settings
     /// </summary>
+    [EditorOrder(109)]
     public bool SlideAccountForPhysicsMaterial {get; set;} = true;
     /// <summary>
     /// The layer mask upon which the character collides with
     /// </summary>
+    [EditorOrder(107)]
     public LayersMask CollisionMask {get; set;} = new();
     /// <summary>
     /// Tag used to determine if a collision should be considered valid ground or not,
     /// If left empty, all surfaces determined by MaxSlopeAngle are considered valid ground.
     /// </summary>
+    [Header("Grounding")]
+    [EditorOrder(110)]
     public Tag GroundTag {get; set;} = new();
     /// <summary>
     /// Is the character currently grounded
@@ -106,59 +120,73 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Distance to surface until the character is considered grounded, KinematicContactOffset is automatically added on this.
     /// </summary>
+    [EditorOrder(111)]
     public float GroundingDistance {get => _groundingDistance; set => _groundingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _groundingDistance = 1.0f;
     /// <summary>
     /// Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true
     /// </summary>
+    [EditorOrder(112)]
     public float GroundSnappingDistance {get => _groundSnappingDistance; set => _groundSnappingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _groundSnappingDistance = 1024.0f;
     /// <summary>
     /// Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground
     /// </summary>
+    [EditorOrder(113)]
     public float MaxSlopeAngle {get => _maxSlopeAngle; set => _maxSlopeAngle = Mathf.Clamp(value, 0.0f, 180.0f);}
     private float _maxSlopeAngle = 66.0f;
     /// <summary>
     /// Maximum allowed stair step height distance
     /// </summary>
+    [Header("Stairstepping")]
+    [EditorOrder(115)]
     public float StairStepDistance {get => _stairStepDistance; set => _stairStepDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepDistance = 50.0f;
     /// <summary>
     /// Determines if stair stepping is allowed at all
     /// </summary>
+    [EditorOrder(114)]
     public bool AllowStairStepping {get; set;} = true;
     /// <summary>
     /// Behavior mode for stair stepping
     /// </summary>
+    [EditorOrder(116)]
     public StairStepGroundMode StairStepGroundMode {get; set;} = StairStepGroundMode.RequireStableSolid;
     /// <summary>
     /// Minimum distance the character must be able to move forward on a detected step for it to be considered valid
     /// </summary>
+    [EditorOrder(117)]
     public float StairStepMinimumForwardDistance {get => _stairStepMinimumForwardDistance; set => _stairStepMinimumForwardDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepMinimumForwardDistance = 0.01f;
     /// <summary>
     /// Maximum amount of stair step iterations per frame
     /// </summary>
+    [EditorOrder(118)]
     public int MaxStairStepIterations {get => _maxStairStepIterations; set => _maxStairStepIterations = Math.Clamp(value, 0, int.MaxValue);} 
     private int _maxStairStepIterations = 10;
     /// <summary>
     /// Determines if the character should move with rigidbodies it is standing on
     /// </summary>
+    [Header("RigidBody interactions")]
+    [EditorOrder(119)]
     public RigidBodyMoveMode RigidBodyMoveMode {get; set;} = RigidBodyMoveMode.KinematicMoversOnly;
     /// <summary>
     /// Determines if the character should solve the movements caused by rigidbodies stood upon
     /// If enabled the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues
     /// If disabled the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues
     /// </summary>
+    [EditorOrder(120)]
     public bool SolveRigidBodyMovements {get; set;} = false;
     /// <summary>
     /// Determine how to handle dynamic rigidbodies that we have collided with
     /// </summary>
+    [EditorOrder(121)]
     public RigidBodyInteractionMode RigidBodyInteractionMode {get; set;} = RigidBodyInteractionMode.PureKinematic;
     private readonly List<RigidBodyInteraction> _rigidBodiesCollided = [];
     /// <summary>
     /// The simulated mass amount for dynamic rigidbody handling
     /// </summary>
+    [EditorOrder(122)]
     public float SimulatedMass {get => _simulatedMass; set => _simulatedMass = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _simulatedMass = 1000.0f;
 
