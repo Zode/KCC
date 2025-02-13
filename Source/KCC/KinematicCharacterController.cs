@@ -2,7 +2,6 @@ using System;
 using FlaxEngine;
 using System.Collections.Generic;
 using System.Linq;
-using FlaxEditor.SceneGraph;
 
 //important: please read these following short articles:
 // https://www.peroxide.dk/papers/collision/collision.pdf
@@ -10,6 +9,7 @@ using FlaxEditor.SceneGraph;
 
 #if FLAX_EDITOR
 using FlaxEditor;
+using FlaxEditor.SceneGraph;
 #endif
 
 namespace KCC;

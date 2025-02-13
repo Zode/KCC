@@ -58,7 +58,9 @@ public class KCC : GamePlugin
         JsonAsset kccSettingsJson = Engine.GetCustomSettings("KCC Settings");
         if(kccSettingsJson == null)
         {
+            #if FLAX_EDITOR
             Debug.LogError("Missing KCC settings");
+            #endif
             return;
         }
 
