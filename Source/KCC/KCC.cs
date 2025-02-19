@@ -44,7 +44,7 @@ public class KCC : GamePlugin
             HomepageUrl = null,
             RepositoryUrl = "https://github.com/Zode/KCC",
             Description = "Kinematic Character Controller",
-            Version = new Version(1, 0, 1),
+            Version = new Version(1, 0, 2),
             IsAlpha = false,
             IsBeta = false,
         };
@@ -95,6 +95,13 @@ public class KCC : GamePlugin
     public void OnFixedUpdate()
     {
         if(_kccSettings is null || !_kccSettings.AutoSimulation)
+        {
+            return;
+        }
+
+        //don't bother processing when game is paused
+        //also fixes an issue where CastCollider would be fed a non-normalized direction as result of game being paused
+        if(Time.TimeScale == 0.0f)
         {
             return;
         }

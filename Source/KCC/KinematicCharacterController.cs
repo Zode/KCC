@@ -32,9 +32,7 @@ public class KinematicCharacterController : KinematicBase
     [EditorDisplay("Character")]
     [EditorOrder(100)]
     public ColliderType ColliderType {get; set;} = ColliderType.Capsule;
-    #pragma warning disable 8618
-    private Collider _collider;
-    #pragma warning restore 8618
+    private Collider? _collider = null;
     /// <summary>
     /// The contact offset value for the automatically generated collider (must be positive)
     /// </summary>
@@ -373,13 +371,23 @@ public class KinematicCharacterController : KinematicBase
         _boxExtents.X = ColliderHalfRadius;
         _boxExtents.Z = ColliderHalfRadius;
         _boxExtents.Y = ColliderHalfHeight;
-        
+
+        if(_collider is null)
+        {
+            return;
+        }
+
         _collider.ContactOffset = ColliderContactOffset;
         SetColliderSizeWithInflation(0.0f);
     }
 
     private void SetColliderSizeWithInflation(float inflate)
     {
+        if(_collider is null)
+        {
+            return;
+        }
+
         switch(ColliderType)
         {
             case ColliderType.Box:
@@ -585,6 +593,15 @@ public class KinematicCharacterController : KinematicBase
     
     private bool IsColliderValid(Collider collider)
     {
+        if(_collider is null)
+        {
+            #if FLAX_EDITOR
+            Debug.LogError("KinematicCharacterController collider is missing", this);
+            #endif
+
+            return false;
+        }
+
         if(collider == _collider)
         {
             return false;
@@ -1070,6 +1087,15 @@ public class KinematicCharacterController : KinematicBase
         {
             #if FLAX_EDITOR
             Debug.LogError("IKinematicCharacter controller is missing", this);
+            #endif
+
+            return Vector3.Zero;
+        }
+
+        if(_collider is null)
+        {
+            #if FLAX_EDITOR
+            Debug.LogError("KinematicCharacterController collider is missing", this);
             #endif
 
             return Vector3.Zero;
