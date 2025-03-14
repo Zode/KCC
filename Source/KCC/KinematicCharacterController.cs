@@ -371,7 +371,7 @@ public class KinematicCharacterController : KinematicBase
         _boxExtents.X = ColliderHalfRadius;
         _boxExtents.Z = ColliderHalfRadius;
         _boxExtents.Y = ColliderHalfHeight;
-
+        
         if(_collider is null)
         {
             return;
@@ -1271,7 +1271,16 @@ public class KinematicCharacterController : KinematicBase
         DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalVelocity.Normalized), (float)_internalVelocity.Length*0.01f, 1.0f, Color.YellowGreen, 0.0f, false);
     }
 
-    private void DebugDrawCollider(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
+    /// <summary>
+    /// Draw this KinematicCharacterController's collider
+    /// </summary>
+    /// <param name="position">World position</param>
+    /// <param name="orientation">World orientation</param>
+    /// <param name="color">Color</param>
+    /// <param name="time">Draw time</param>
+    /// <param name="depthTest">Depth test</param>
+    /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
+    public void DebugDrawCollider(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         switch(ColliderType)
         {
@@ -1304,7 +1313,7 @@ public class KinematicCharacterController : KinematicBase
     {
         //for some reason this is rotated by 90 degrees unlike other debug draws..
         Quaternion fixedOrientation = orientation * Quaternion.RotationX(1.57079633f);
-        DebugDraw.DrawWireTube(position, fixedOrientation, ColliderRadius, ColliderHeight, color, time, depthTest);
+        DebugDraw.DrawWireCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight, color, time, depthTest);
     }
 
     private void DebugDrawSphere(Vector3 position, Color color, float time, bool depthTest)
