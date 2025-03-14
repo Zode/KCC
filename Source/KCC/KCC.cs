@@ -244,6 +244,25 @@ public class KCC : GamePlugin
         _interpolationDeltaTime = Time.DeltaTime;
         _interpolationStartTime = Time.TimeSinceStartup;
 
+        if(_kccSettings is null ||
+            !_kccSettings.Interpolate)
+        {
+            foreach(KinematicMover mover in _kinematicMovers)
+            {
+                mover.Position = mover.TransientPosition;
+                mover.Orientation = mover.TransientOrientation;
+            }
+
+            foreach(KinematicCharacterController character in _kinematicCharacters)
+            {
+                character.Position = character.TransientPosition;
+                character.Orientation = character.TransientOrientation;
+            }
+
+            PostSimulationUpdateEvent?.Invoke();
+            return;
+        }
+
         foreach(KinematicMover mover in _kinematicMovers)
         {
             mover.Position = mover.InitialPosition;
