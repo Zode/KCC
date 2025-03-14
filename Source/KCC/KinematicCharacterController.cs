@@ -1110,6 +1110,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
+        
         SetColliderSizeWithInflation(inflate);
         for(int i = 0; i < colliders.Length; i++)
         {

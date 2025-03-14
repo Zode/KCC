@@ -20,4 +20,8 @@ public class KCCSettings
 	/// Initial list capacity of kinematic movers, this is not the limit but rather will avoid unnecessary memory allocations
 	/// </summary>
 	public int MoverInitialCapacity = 100;
+	/// <summary>
+	/// The update mode where interpolation should happen (if enabled)
+	/// </summary>
+	public InterpolationMode InterpolationMode = InterpolationMode.LateUpdate;
 }
