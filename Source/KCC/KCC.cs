@@ -44,7 +44,7 @@ public class KCC : GamePlugin
             HomepageUrl = null,
             RepositoryUrl = "https://github.com/Zode/KCC",
             Description = "Kinematic Character Controller",
-            Version = new Version(1, 0, 2),
+            Version = new Version(1, 1, 0),
             IsAlpha = false,
             IsBeta = false,
         };
