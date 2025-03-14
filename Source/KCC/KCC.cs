@@ -118,7 +118,7 @@ public class KCC : GamePlugin
 
         //don't bother processing when game is paused
         //also fixes an issue where CastCollider would be fed a non-normalized direction as result of game being paused
-        if(Time.TimeScale == 0.0f)
+        if(!Level.TickEnabled || Time.TimeScale == 0.0f || Time.GamePaused)
         {
             return;
         }
