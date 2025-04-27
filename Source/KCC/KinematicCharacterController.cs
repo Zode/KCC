@@ -370,6 +370,10 @@ public class KinematicCharacterController : KinematicBase
             KinematicAttachedVelocity = Vector3.Zero;
         }
 
+        //Move to the calculated position so that next iterating character will be aware of this character's result
+        // this hopefully improves stability between character character interactions
+        Position = TransientPosition;
+
         #if FLAX_EDITOR
         Profiler.EndEvent();
         Profiler.BeginEvent("Controller.KinematicPostUpdate");
