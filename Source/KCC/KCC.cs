@@ -44,7 +44,7 @@ public class KCC : GamePlugin
             HomepageUrl = null,
             RepositoryUrl = "https://github.com/Zode/KCC",
             Description = "Kinematic Character Controller",
-            Version = new Version(1, 1, 0),
+            Version = new Version(1, 2, 0),
             IsAlpha = false,
             IsBeta = false,
         };
@@ -197,6 +197,10 @@ public class KCC : GamePlugin
     /// </summary>
     public void PreSimulationUpdate()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.PreSimulationUpdate");
+        #endif
+
         PreSimulationUpdateEvent?.Invoke();
 
         foreach(KinematicMover mover in _kinematicMovers)
@@ -216,6 +220,10 @@ public class KCC : GamePlugin
             character.Position = character.TransientPosition;
             character.Orientation = character.TransientOrientation;
         }
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     /// <summary>
@@ -223,6 +231,10 @@ public class KCC : GamePlugin
     /// </summary>
     public void SimulationUpdate()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SimulationUpdate");
+        #endif
+
         SimulationUpdateEvent?.Invoke();
 
         foreach(KinematicMover mover in _kinematicMovers)
@@ -234,6 +246,10 @@ public class KCC : GamePlugin
         {
             character.KinematicUpdate();
         }
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     /// <summary>
@@ -241,6 +257,10 @@ public class KCC : GamePlugin
     /// </summary>
     public void PostSimulationUpdate()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.PostSimulationUpdate");
+        #endif
+
         _interpolationDeltaTime = Time.DeltaTime;
         _interpolationStartTime = Time.TimeSinceStartup;
 
@@ -260,6 +280,11 @@ public class KCC : GamePlugin
             }
 
             PostSimulationUpdateEvent?.Invoke();
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+            
             return;
         }
 
@@ -276,6 +301,10 @@ public class KCC : GamePlugin
         }
 
         PostSimulationUpdateEvent?.Invoke();
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     /// <summary>

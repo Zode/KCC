@@ -297,7 +297,17 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("Controller.KinematicMoveUpdate");
+        #endif
+
         Controller.KinematicMoveUpdate(out _internalVelocity, out Quaternion _internalOrientation);
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        Profiler.BeginEvent("KCC.KinematicUpdate");
+        #endif
+
         TransientOrientation = _internalOrientation;
         GravityEulerNormalized = (Vector3.Down * TransientOrientation).Normalized;
 
@@ -360,7 +370,16 @@ public class KinematicCharacterController : KinematicBase
             KinematicAttachedVelocity = Vector3.Zero;
         }
 
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        Profiler.BeginEvent("Controller.KinematicPostUpdate");
+        #endif
+
         Controller.KinematicPostUpdate();
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     private void SetColliderSize()
@@ -425,21 +444,32 @@ public class KinematicCharacterController : KinematicBase
     /// <exception cref="NotImplementedException"></exception>
     public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 1.0f)
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.OverlapCollider");
+        #endif
+
+        bool result = false;
         if(!FilterCollisions)
         {
-            return ColliderType switch
+            result = ColliderType switch
             {
                 ColliderType.Box => Physics.OverlapBox(origin, BoxExtents * inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
                 ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius * inflate), (float)((ColliderHeight - ColliderHalfRadius) * inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
                 ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius * inflate), out colliders, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
             };
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
+            return result;
         }
 
         #pragma warning disable IDE0018
         Collider[] temporaryColliders;
         #pragma warning restore IDE0018 
-        bool result = ColliderType switch
+        result = ColliderType switch
         {
             ColliderType.Box => Physics.OverlapBox(origin, BoxExtents * inflate, out temporaryColliders, TransientOrientation, layerMask, hitTriggers),
             ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius * inflate), (float)((ColliderHeight - ColliderHalfRadius) * inflate), out temporaryColliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
@@ -448,6 +478,10 @@ public class KinematicCharacterController : KinematicBase
         };
 
         colliders = Array.FindAll(temporaryColliders, IsColliderValid);
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
 
         return result;
     }
@@ -465,6 +499,10 @@ public class KinematicCharacterController : KinematicBase
     /// <exception cref="NotImplementedException"></exception>
     public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = true)
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.CastCollider");
+        #endif
+
         if(Controller is null)
         {
             #if FLAX_EDITOR
@@ -475,6 +513,10 @@ public class KinematicCharacterController : KinematicBase
             {
                 Distance = (float)distance,
             };
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
 
             return false;
         }
@@ -523,6 +565,10 @@ public class KinematicCharacterController : KinematicBase
                 }
                 #endif
             }
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
 
             return result;
         }
@@ -588,6 +634,10 @@ public class KinematicCharacterController : KinematicBase
             #endif
         }
 
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+
         return result;
     }
     
@@ -651,6 +701,10 @@ public class KinematicCharacterController : KinematicBase
 
     private void SolveSweep()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SolveSweep");
+        #endif
+
         Vector3 originalVelocityNormalized = _internalVelocity.Normalized;
         int unstuckSolves = 0;
 
@@ -660,12 +714,20 @@ public class KinematicCharacterController : KinematicBase
         {
             if(_internalVelocity.IsZero)
             {
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+
                 return;
             }
 
             //are we about to go backwards? (unwanted direction, fixes issues  with jiggling in corners with obtuse angles)
             if(Vector3.Dot(originalVelocityNormalized, _internalVelocity.Normalized) < 0.0f)
             {
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+
                 return;
             }
             
@@ -681,6 +743,11 @@ public class KinematicCharacterController : KinematicBase
 
                 //no collision, full speed ahead!
                 TransientPosition += _internalVelocity;
+
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+
                 return;
             }
 
@@ -810,6 +877,10 @@ public class KinematicCharacterController : KinematicBase
                 _internalVelocity *= 1.0f - trace.Material.Friction;
             }
         }
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     private void SolveStairSteps(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
@@ -818,6 +889,10 @@ public class KinematicCharacterController : KinematicBase
         {
             return;
         }
+
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SolveStairSteps");
+        #endif
 
         Vector3 oldPosition = position;
         int iterations = 0;
@@ -831,6 +906,10 @@ public class KinematicCharacterController : KinematicBase
                 break;
             }
         }
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     private bool SolveStairStep(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
@@ -984,11 +1063,20 @@ public class KinematicCharacterController : KinematicBase
 
     private RayCastHit? SolveGround()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SolveGround");
+        #endif
+
         if(_forceUnground)
         {
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return null;
         }
 
@@ -997,12 +1085,21 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return null;
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
         if(!IsGrounded && _internalGravityVelocity > 0)
         {
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return null;
         }
 
@@ -1017,16 +1114,30 @@ public class KinematicCharacterController : KinematicBase
         }
 
         SnapToGround();
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+
         return groundTrace;
     }
 
     private RayCastHit? GroundCheck(float distance)
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.GroundCheck");
+        #endif
+
         IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, distance + KinematicContactOffset, CollisionMask, false);
         if(!IsGrounded)
         {
             AttachToRigidBody(null);
             GroundNormal = -GravityEulerNormalized;
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return null;
         }
 
@@ -1035,6 +1146,11 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return null;
         }
 
@@ -1043,27 +1159,53 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return null;
         }
 
         GroundNormal = trace.Normal;
         AttachToRigidBody(trace.Collider.AttachedRigidBody);
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+
         return trace;
     }
 
     private void SnapToGround()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SnapToGround");
+        #endif
+
         if(!IsGrounded)
         {
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return;
         }
 
         if(!CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, GroundSnappingDistance + KinematicContactOffset, CollisionMask, false))
         {
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return;
         }
 
         TransientPosition += GravityEulerNormalized * Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
     }
 
     /// <summary>
@@ -1083,10 +1225,15 @@ public class KinematicCharacterController : KinematicBase
     /// <returns></returns>
     public Vector3 UnstuckSolve(float inflate)
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.UnstuckSolve");
+        #endif
+
         if(Controller is null)
         {
             #if FLAX_EDITOR
             Debug.LogError("IKinematicCharacter controller is missing", this);
+            Profiler.EndEvent();
             #endif
 
             return Vector3.Zero;
@@ -1096,6 +1243,7 @@ public class KinematicCharacterController : KinematicBase
         {
             #if FLAX_EDITOR
             Debug.LogError("KinematicCharacterController collider is missing", this);
+            Profiler.EndEvent();
             #endif
 
             return Vector3.Zero;
@@ -1103,6 +1251,10 @@ public class KinematicCharacterController : KinematicBase
 
         if(!OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, 1.0f + inflate))
         {
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return Vector3.Zero;
         }
 
@@ -1132,6 +1284,10 @@ public class KinematicCharacterController : KinematicBase
 
         SetColliderSizeWithInflation(0.0f);
         
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+
         return requiredPush;
     }
 
@@ -1148,8 +1304,16 @@ public class KinematicCharacterController : KinematicBase
 
     private void SolveRigidBodyInteractions()
     {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SolveRigidBodyInteractions");
+        #endif
+
         if(RigidBodyInteractionMode == RigidBodyInteractionMode.None)
         {
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
             return;
         }
 
@@ -1166,6 +1330,7 @@ public class KinematicCharacterController : KinematicBase
                 {
                     #if FLAX_EDITOR
                     Debug.LogError("IKinematicCharacter controller is missing", this);
+                    Profiler.EndEvent();
                     #endif
                     
                     return;
@@ -1186,6 +1351,10 @@ public class KinematicCharacterController : KinematicBase
             rbInteraction.RigidBody.AddForceAtPosition(force * massRatio, rbInteraction.Point, ForceMode.Impulse);
         }
 
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+        
         return;
     }
 
