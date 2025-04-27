@@ -386,6 +386,9 @@ public class KinematicCharacterController : KinematicBase
         #endif
     }
 
+    /// <summary>
+    /// Set the collider actor sizes according to the controller's size properties
+    /// </summary>
     private void SetColliderSize()
     {
         ColliderHalfHeight = ColliderHeight / 2.0f;
@@ -404,6 +407,11 @@ public class KinematicCharacterController : KinematicBase
         SetColliderSizeWithInflation(0.0f);
     }
 
+    /// <summary>
+    /// Set the size of the collider actor with possible extra inflation value
+    /// </summary>
+    /// <param name="inflate"></param>
+    /// <exception cref="NotImplementedException"></exception>
     private void SetColliderSizeWithInflation(float inflate)
     {
         if(_collider is null)
@@ -645,6 +653,11 @@ public class KinematicCharacterController : KinematicBase
         return result;
     }
     
+    /// <summary>
+    /// Check if the other collider should be ignored
+    /// </summary>
+    /// <param name="collider"></param>
+    /// <returns>false if should be ignored, true is should be considered</returns>
     private bool IsColliderValid(Collider collider)
     {
         if(_collider is null)
@@ -673,6 +686,12 @@ public class KinematicCharacterController : KinematicBase
         return Controller.KinematicCollisionValid(collider);
     }
 
+    /// <summary>
+    /// Try to register a new unique rigidbody interaction
+    /// will be rejected if the interaction is already registered to prevent duplicate interactions from happening
+    /// </summary>
+    /// <param name="trace"></param>
+    /// <param name="rigidBody"></param>
     private void TryAddRigidBodyInteraction(RayCastHit trace, RigidBody rigidBody)
     {
         //only allow non-KCC rigidbodies for now
@@ -703,6 +722,9 @@ public class KinematicCharacterController : KinematicBase
         _rigidBodiesCollided.Add(rbInteraction);
     }
 
+    /// <summary>
+    /// The main solver, this will move the character as long as there is velocity left and we haven't gone over 3 collisions in this sweep.
+    /// </summary>
     private void SolveSweep()
     {
         #if FLAX_EDITOR
@@ -887,6 +909,13 @@ public class KinematicCharacterController : KinematicBase
         #endif
     }
 
+    /// <summary>
+    /// solve all stair steps for the remaining velocity as long as valid stairs are found
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="velocity"></param>
+    /// <param name="distance"></param>
+    /// <param name="sweepNormal"></param>
     private void SolveStairSteps(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
     {
         if(!AllowStairStepping || AttachedRigidBody is not null)
@@ -916,6 +945,14 @@ public class KinematicCharacterController : KinematicBase
         #endif
     }
 
+    /// <summary>
+    /// Attempt to do a single stair step for the given velocity
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="velocity"></param>
+    /// <param name="distance"></param>
+    /// <param name="sweepNormal"></param>
+    /// <returns>false if failed, true if succeeded</returns>
     private bool SolveStairStep(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
     {
         if(velocity.IsZero)
@@ -1029,6 +1066,12 @@ public class KinematicCharacterController : KinematicBase
         return true;
     }
 
+    /// <summary>
+    /// Calculate the movement from a rigidbody relative to this character, as if it was this character's parent
+    /// </summary>
+    /// <param name="rigidBody"></param>
+    /// <param name="position"></param>
+    /// <returns>the relative movement</returns>
     private Vector3 MovementFromRigidBody(RigidBody rigidBody, Vector3 position)
     {
         if(Controller is null)
@@ -1065,6 +1108,10 @@ public class KinematicCharacterController : KinematicBase
         _forceUnground = true;
     }
 
+    /// <summary>
+    /// Trace to ground and snap to it if necessary
+    /// </summary>
+    /// <returns>result for the ground standing upon, null if not touching any valid ground or ground at all</returns>
     private RayCastHit? SolveGround()
     {
         #if FLAX_EDITOR
@@ -1126,6 +1173,12 @@ public class KinematicCharacterController : KinematicBase
         return groundTrace;
     }
 
+    /// <summary>
+    /// Do a ground trace check, considering if the ground is stable.
+    /// Will also attempt to attach the character to a rigidbody if standing on one.
+    /// </summary>
+    /// <param name="distance"></param>
+    /// <returns>result if stable ground, null otherwise</returns>
     private RayCastHit? GroundCheck(float distance)
     {
         #if FLAX_EDITOR
@@ -1181,6 +1234,9 @@ public class KinematicCharacterController : KinematicBase
         return trace;
     }
 
+    /// <summary>
+    /// forcibly move the character to ground level, ignoring if its standable or not.
+    /// </summary>
     private void SnapToGround()
     {
         #if FLAX_EDITOR
@@ -1306,6 +1362,10 @@ public class KinematicCharacterController : KinematicBase
         return Vector3.Cross(GroundNormal, right).Normalized;
     }
 
+    /// <summary>
+    /// Process all registered rigidbody collisions from the sweep step
+    /// Depending on interaction mode this will cause impacts on dynamic rigidbodies.
+    /// </summary>
     private void SolveRigidBodyInteractions()
     {
         #if FLAX_EDITOR
@@ -1362,6 +1422,10 @@ public class KinematicCharacterController : KinematicBase
         return;
     }
 
+    /// <summary>
+    /// Attempt to attach this controller to a rigidbody (so that it follows its velocity and rotation)
+    /// </summary>
+    /// <param name="rigidBody"></param>
     private void AttachToRigidBody(RigidBody? rigidBody)
     {
         if(Controller is null)
