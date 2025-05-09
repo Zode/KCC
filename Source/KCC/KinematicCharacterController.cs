@@ -373,6 +373,7 @@ public class KinematicCharacterController : KinematicBase
         //Move to the calculated position so that next iterating character will be aware of this character's result
         // this hopefully improves stability between character character interactions
         Position = TransientPosition;
+        Orienation = TransientOrientation;
 
         #if FLAX_EDITOR
         Profiler.EndEvent();
