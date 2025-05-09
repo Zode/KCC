@@ -830,7 +830,7 @@ public class KinematicCharacterController : KinematicBase
                 #endif
 
                 //consider anything 90 deg and less to be acute, and anything above to be obtuse.
-                bool isAcute = Vector3.Dot(firstPlane, trace.Normal) <= 0.0f;
+                bool isAcute = Math.Round(Vector3.Dot(firstPlane, trace.Normal), 4, MidpointRounding.ToZero) < 0.0f;
 
                 //obtuse corners need to be handled differently, least we want the controller to get snagged in them.
                 if(!isAcute)
