@@ -748,7 +748,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //are we about to go backwards? (unwanted direction, fixes issues  with jiggling in corners with obtuse angles)
-            if(Vector3.Dot(originalVelocityNormalized, _internalVelocity.Normalized) < 0.0f)
+            if(Math.Round(Vector3.Dot(originalVelocityNormalized, _internalVelocity.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
                 Profiler.EndEvent();
@@ -829,71 +829,28 @@ public class KinematicCharacterController : KinematicBase
                 }
                 #endif
 
-                //consider anything 90 deg and less to be acute, and anything above to be obtuse.
+                //consider anything less than 90 deg to be acute, and anything above to be obtuse.
                 bool isAcute = Math.Round(Vector3.Dot(firstPlane, trace.Normal), 4, MidpointRounding.ToZero) < 0.0f;
 
-                //obtuse corners need to be handled differently, least we want the controller to get snagged in them.
+                //obtuse corners need extra handling, least we want the controller to get snagged in them.
                 if(!isAcute)
                 {
                     Vector3 averagePlane = (trace.Normal + firstPlane).Normalized;
                     Vector3 averageLeft = Vector3.Left * Quaternion.FromDirection(averagePlane);
- 
-                    //are we moving more towards the left plane?
-                    bool firstIsBetter = Vector3.Dot(originalVelocityNormalized, averageLeft) >= 0.0f;
-
-                    #if FLAX_EDITOR
-                    if(DebugIsSelected())
-                    {
-                        DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(averagePlane), 1.0f, 1.0f, Color.Purple, Time.DeltaTime, false);
-                    }
-                    #endif
-
-                    if(Vector3.Dot(averageLeft, firstPlane) > 0.0f)
-                    {
-                        //swap if going the other way because the plane order changes
-                        firstIsBetter = !firstIsBetter;
-                    }
 
                     //also nudge by both planes in hopes of pushing out of the corner, similar to how quake3 handles this.
                     //normally the surrounding code would fix the issue, however it is not enough to solve vertical movement in obtuse corners
                     //so this is needed, sadly this does introduce slight jiggling in some obtuse corners :( but its better than getting stuck.
-                    _internalVelocity += firstPlane; 
-                    _internalVelocity += trace.Normal;
-                    if(Vector3.Dot(_internalVelocity.Normalized, GravityEulerNormalized) > 0.0f)
-                    {
-                        TransientPosition += firstPlane * 0.1f;
-                        TransientPosition += trace.Normal * 0.1f;
-                    }
+                    _internalVelocity += averagePlane; 
                     
-                    //first plane is always the left plane due to how the sweep works.
-                    if(firstIsBetter)
+                    if(Math.Round(Vector3.Dot(_internalVelocity.Normalized, GravityEulerNormalized), 4, MidpointRounding.ToZero) > 0.0f)
                     {
-                        _internalVelocity = Vector3.ProjectOnPlane(_internalVelocity.Normalized, firstPlane) * Math.Max(_internalVelocity.Length - distance, 0.0f);
+                        TransientPosition += averagePlane * 0.1f;
+                    }
+                }
 
-                        #if FLAX_EDITOR
-                        if(DebugIsSelected())
-                        {
-                            DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(firstPlane), 1.0f, 1.0f, Color.Purple, Time.DeltaTime, false);
-                        }
-                        #endif
-                    }
-                    else
-                    {
-                        _internalVelocity = Vector3.ProjectOnPlane(_internalVelocity.Normalized, trace.Normal) * Math.Max(_internalVelocity.Length - distance, 0.0f);
-                        
-                        #if FLAX_EDITOR
-                        if(DebugIsSelected())
-                        {
-                            DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, Color.Purple, Time.DeltaTime, false);
-                        }
-                        #endif
-                    }
-                }
-                else
-                {
-                    //constrain to crease
-                    _internalVelocity = Vector3.ProjectOnPlane(crease, trace.Normal) * creaseDistance;
-                }
+                //constrain to crease
+                _internalVelocity = Vector3.ProjectOnPlane(crease, trace.Normal) * creaseDistance;
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
