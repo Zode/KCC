@@ -1281,26 +1281,19 @@ public class KinematicCharacterController : KinematicBase
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
         
-        SetColliderSizeWithInflation(inflate);
+        SetColliderSizeWithInflation(KinematicContactOffset + inflate);
         for(int i = 0; i < colliders.Length; i++)
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
                 Debug.LogWarning($"Compute penetration with collider, but no penetration? (index {i}, length {colliders.Length})");
-                Debug.Log(_collider.ID);
-                Debug.Log(colliders[i].ID);
+                Debug.Log(_collider.Name, _collider);
+                Debug.Log(colliders[i].Name, colliders[i]);
                 continue; 
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
-            if(inflate == 0.0f)
-            {
-                requiredPush += penetrationDirection * (penetrationDistance + KinematicContactOffset);
-            }
-            else
-            {
-                requiredPush += penetrationDirection * penetrationDistance;
-            }
+            requiredPush += penetrationDirection * penetrationDistance;
         }
 
         SetColliderSizeWithInflation(0.0f);
