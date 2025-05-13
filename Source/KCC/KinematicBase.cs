@@ -32,6 +32,20 @@ public class KinematicBase : RigidBody
 	/// </summary>
 	protected Quaternion _transientOrientation = Quaternion.Identity;
 	/// <summary>
+	/// Reference to KCC plugin
+	/// </summary>
+	protected KCC _kccPlugin;
+
+	/// <summary>
+	/// Initializes a new instance of KinematicBase
+	/// </summary>
+	public KinematicBase()
+		: base()
+	{
+		_kccPlugin = PluginManager.GetPlugin<KCC>();
+	}
+
+	/// <summary>
 	/// Set the mover's position directly
 	/// </summary>
 	/// <param name="position"></param>
@@ -41,6 +55,7 @@ public class KinematicBase : RigidBody
 		InitialPosition = position;
 		TransientPosition = position;		
 	}
+
 	/// <summary>
 	/// Set the mover's orientation directly
 	/// </summary>

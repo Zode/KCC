@@ -15,6 +15,10 @@ namespace KCC;
 public class KCC : GamePlugin
 {
     private KCCSettings? _kccSettings = null;
+    /// <summary>
+    /// KCCSettings instance 
+    /// </summary>
+    public KCCSettings? KCCSettingsInstance => _kccSettings;
     private List<KinematicMover> _kinematicMovers = [];
     private List<KinematicCharacterController> _kinematicCharacters = [];
     private float _interpolationDeltaTime = 0.0f;

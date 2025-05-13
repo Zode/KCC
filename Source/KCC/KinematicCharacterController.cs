@@ -248,7 +248,7 @@ public class KinematicCharacterController : KinematicBase
         }
         #endif
 
-		PluginManager.GetPlugin<KCC>().Register(this);
+		_kccPlugin.Register(this);
 
         MaxAngularVelocity = float.MaxValue;
 		MaxDepenetrationVelocity = float.MaxValue;
@@ -274,7 +274,7 @@ public class KinematicCharacterController : KinematicBase
 	/// <inheritdoc />
     public override void OnDisable()
     {
-		PluginManager.GetPlugin<KCC>().Unregister(this);
+		_kccPlugin.Unregister(this);
 
         base.OnDisable();
     }
@@ -1426,6 +1426,11 @@ public class KinematicCharacterController : KinematicBase
     #if FLAX_EDITOR
     private bool DebugIsSelected()
     {
+        if(!IsDebugDrawEnabled())
+        {
+            return false;
+        } 
+
         foreach(SceneGraphNode node in Editor.Instance.SceneEditing.Selection)
         {
             if(node is not ActorNode actorNode)
@@ -1506,6 +1511,16 @@ public class KinematicCharacterController : KinematicBase
     private void DebugDrawSphere(Vector3 position, Color color, float time, bool depthTest)
     {
         DebugDraw.DrawWireSphere(new(position, ColliderRadius), color, time, depthTest);
+    }
+
+    private bool IsDebugDrawEnabled()
+    {
+        if(_kccPlugin is null || _kccPlugin.KCCSettingsInstance == null || !_kccPlugin.KCCSettingsInstance.DebugDisplay)
+        {
+            return false;
+        }
+
+        return true;
     }
     #endif
 }
