@@ -328,7 +328,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve(0.0f);
+        TransientPosition += UnstuckSolve(KinematicContactOffset);
 
         SolveSweep();
         SolveRigidBodyInteractions();
