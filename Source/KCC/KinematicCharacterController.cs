@@ -1267,7 +1267,7 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        if(!OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, KinematicContactOffset + inflate))
+        if(!OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, inflate))
         {
             #if FLAX_EDITOR
             Profiler.EndEvent();
@@ -1280,15 +1280,11 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        
-        SetColliderSizeWithInflation(KinematicContactOffset + inflate);
+        SetColliderSizeWithInflation(inflate);
         for(int i = 0; i < colliders.Length; i++)
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
-                Debug.LogWarning($"Compute penetration with collider, but no penetration? (index {i}, length {colliders.Length})");
-                Debug.Log(_collider.Name, _collider);
-                Debug.Log(colliders[i].Name, colliders[i]);
                 continue; 
             }
 
