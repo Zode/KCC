@@ -783,7 +783,7 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve issue with inflated collider and re-try sweep.
-                TransientPosition += UnstuckSolve((float)KinematicContactOffset);
+                TransientPosition += UnstuckSolve(0.0f);
                 i--;
                 unstuckSolves++;
                 continue;
