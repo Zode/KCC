@@ -455,7 +455,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="inflate"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 1.0f)
+    public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 0.0f)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
@@ -1286,6 +1286,9 @@ public class KinematicCharacterController : KinematicBase
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
+                Debug.LogWarning($"Compute penetration with collider, but no penetration? (index {i}, length {colliders.Length})");
+                Debug.Log(_collider.ID);
+                Debug.Log(colliders[i].ID);
                 continue; 
             }
 
