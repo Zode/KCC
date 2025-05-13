@@ -373,7 +373,7 @@ public class KinematicCharacterController : KinematicBase
         //Move to the calculated position so that next iterating character will be aware of this character's result
         // this hopefully improves stability between character character interactions
         Position = TransientPosition;
-        Orienation = TransientOrientation;
+        Orientation = TransientOrientation;
 
         #if FLAX_EDITOR
         Profiler.EndEvent();
@@ -1267,7 +1267,7 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        if(!OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, 1.0f + inflate))
+        if(!OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, KinematicContactOffset + inflate))
         {
             #if FLAX_EDITOR
             Profiler.EndEvent();
