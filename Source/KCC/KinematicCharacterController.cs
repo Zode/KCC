@@ -401,7 +401,7 @@ public class KinematicCharacterController : KinematicBase
         _boxExtents.Z = ColliderHalfRadius;
         _boxExtents.Y = ColliderHalfHeight;
         
-        if(_collider is null)
+        if(_collider == null)
         {
             return;
         }
@@ -417,7 +417,7 @@ public class KinematicCharacterController : KinematicBase
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     private void SetColliderSizeWithInflation(float inflate)
     {
-        if(_collider is null)
+        if(_collider == null)
         {
             return;
         }
@@ -665,7 +665,7 @@ public class KinematicCharacterController : KinematicBase
     /// <returns>False if should be ignored, True is should be considered</returns>
     private bool IsColliderValid(Collider collider)
     {
-        if(_collider is null)
+        if(_collider == null)
         {
             #if FLAX_EDITOR
             Debug.LogError("KinematicCharacterController collider is missing", this);
@@ -1261,7 +1261,7 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        if(_collider is null)
+        if(_collider == null)
         {
             #if FLAX_EDITOR
             Debug.LogError("KinematicCharacterController collider is missing", this);
