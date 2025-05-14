@@ -2,7 +2,7 @@
 
 To begin, you must first create a `KCC Settings` file, or use the default file included in the plugin, and add it to the custom settings list with the key `KCC Settings`
 
-![ Example image of the custom settings ](/images/settings.png)
+![ Example image of the custom settings ](/KCC/images/settings.png)
 
 This is required for the plugin to function, and contains some overall settings you may want to adjust.
 
