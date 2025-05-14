@@ -1,0 +1,9 @@
+### YamlMime:ManagedReference
+
+apiRules:
+- include:
+    uidRegex: ^KCC.*
+    type: Namespace
+- exclude:
+    uidRegex: .*
+    type: Namespace
