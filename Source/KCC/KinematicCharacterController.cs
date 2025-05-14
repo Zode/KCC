@@ -22,59 +22,60 @@ namespace KCC;
 #nullable enable
 
 /// <summary>
+/// KCC Simulation driven character controller object.
 /// </summary>
 [ActorContextMenu("New/Physics/Kinematic Character Controller"), ActorToolbox("Physics")]
 public class KinematicCharacterController : KinematicBase
 {
     /// <summary>
-    /// Collision shape of the character
+    /// Collision shape of the character.
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(100)]
     public ColliderType ColliderType {get; set;} = ColliderType.Capsule;
     private Collider? _collider = null;
     /// <summary>
-    /// The contact offset value for the automatically generated collider (must be positive)
+    /// The contact offset value for the automatically generated collider (must be positive).
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(101)]
     public float ColliderContactOffset {get => _colliderContactOffset; set {_colliderContactOffset = value; SetColliderSize();}}
     private float _colliderContactOffset = 2.0f;
     /// <summary>
-    /// The contact offset value that determines the distance that the character hovers above any surface (must be positive)
+    /// The contact offset value that determines the distance that the character hovers above any surface (must be positive).
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(102)]
     public Real KinematicContactOffset {get; set;} = 2.0f;
     /// <summary>
-    /// Height of the character
+    /// Height of the character.
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(103)]
     public float ColliderHeight {get => _colliderHeight; set {_colliderHeight = value; SetColliderSize();}}
     private float _colliderHeight = 150.0f;
     /// <summary>
-    /// Half the height of the character
+    /// Half the height of the character.
     /// </summary>
     [NoSerialize, HideInEditor] public float ColliderHalfHeight {get; private set;} = 150.0f / 2.0f;
     /// <summary>
-    /// Radius of the character (only applicable when ColliderType is Capsule or Sphere)
+    /// Radius of the character (only applicable when ColliderType is Capsule or Sphere).
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(104)]
     public float ColliderRadius {get => _colliderRadius; set {_colliderRadius = value; SetColliderSize();}}
     private float _colliderRadius = 50.0f;
     /// <summary>
-    /// Half the radius of the character
+    /// Half the radius of the character.
     /// </summary>
     [NoSerialize, HideInEditor] public float ColliderHalfRadius {get; private set;} = 50.0f / 2.0f;
     /// <summary>
-    /// Box extents of the character (only applicable when ColliderType is Box)
+    /// Box extents of the character (only applicable when ColliderType is Box).
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 BoxExtents => _boxExtents;
     private Vector3 _boxExtents = Vector3.Zero;
     /// <summary>
-    /// Maximum allowed amount of unstuck iterations
+    /// Maximum allowed amount of unstuck iterations.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(105)]
@@ -82,50 +83,50 @@ public class KinematicCharacterController : KinematicBase
     private int _maxUnstuckIterations = 10;
     /// <summary>
     /// Should we filter collisions?
-    /// If enabled, the controller will be queried for collision filtering, this is expensive
-    /// If disabled, the character will assume everything to be solid, this is less expensive
+    /// If enabled, the controller will be queried for collision filtering, this is expensive.
+    /// If disabled, the character will assume everything to be solid, this is less expensive.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(106)]
     public bool FilterCollisions {get; set;} = false;
     /// <summary>
-    /// Determines how much the character should slide upon coming to contact with a surface
+    /// Determines how much the character should slide upon coming to contact with a surface.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(108)]
     public float SlideMultiplier {get => _slideMultiplier; set => _slideMultiplier = Mathf.Clamp(value, 0.0f, 1.0f);}
     private float _slideMultiplier = 0.75f;
     /// <summary>
-    /// If set to true, the character slide will also be affected by the surface's physics material settings
+    /// If set to true, the character slide will also be affected by the surface's physics material settings.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(109)]
     public bool SlideAccountForPhysicsMaterial {get; set;} = true;
     /// <summary>
-    /// The layer mask upon which the character collides with
+    /// The layer mask upon which the character collides with.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(107)]
     public LayersMask CollisionMask {get; set;} = new();
     /// <summary>
-    /// Tag used to determine if a collision should be considered valid ground or not,
+    /// Tag used to determine if a collision should be considered valid ground or not.
     /// If left empty, all surfaces determined by MaxSlopeAngle are considered valid ground.
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(110)]
     public Tag GroundTag {get; set;} = new();
     /// <summary>
-    /// Is the character currently grounded
+    /// Is the character currently grounded.
     /// </summary>
     [NoSerialize, HideInEditor] public bool IsGrounded {get; private set;} = false;
     private bool _wasPreviouslyGrounded = false;
     /// <summary>
-    /// Determines if grounding is allowed at all
+    /// Determines if grounding is allowed at all.
     /// </summary>
     [NoSerialize, HideInEditor] public bool CanGround {get; set;} = true;
     private bool _forceUnground = false;
     /// <summary>
-    /// Ground normal upon which the character is currently standing on,
+    /// Ground normal upon which the character is currently standing on.
     /// If not touching ground this will be the opposite of the gravity orientation.
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 GroundNormal {get; private set;} = Vector3.Up;
@@ -137,75 +138,75 @@ public class KinematicCharacterController : KinematicBase
     public float GroundingDistance {get => _groundingDistance; set => _groundingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _groundingDistance = 1.0f;
     /// <summary>
-    /// Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true
+    /// Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true.
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(112)]
     public float GroundSnappingDistance {get => _groundSnappingDistance; set => _groundSnappingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _groundSnappingDistance = 1024.0f;
     /// <summary>
-    /// Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground
+    /// Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground.
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(113)]
     public float MaxSlopeAngle {get => _maxSlopeAngle; set => _maxSlopeAngle = Mathf.Clamp(value, 0.0f, 180.0f);}
     private float _maxSlopeAngle = 66.0f;
     /// <summary>
-    /// Determines if stair stepping is allowed at all
+    /// Determines if stair stepping is allowed at all.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(114)]
     public bool AllowStairStepping {get; set;} = true;
     /// <summary>
-    /// Maximum allowed stair step height distance
+    /// Maximum allowed stair step height distance.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(115)]
     public float StairStepDistance {get => _stairStepDistance; set => _stairStepDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepDistance = 50.0f;
     /// <summary>
-    /// Behavior mode for stair stepping
+    /// Behavior mode for stair stepping.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(116)]
     public StairStepGroundMode StairStepGroundMode {get; set;} = StairStepGroundMode.RequireStableSolid;
     /// <summary>
-    /// Minimum distance the character must be able to move forward on a detected step for it to be considered valid
+    /// Minimum distance the character must be able to move forward on a detected step for it to be considered valid.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(117)]
     public float StairStepMinimumForwardDistance {get => _stairStepMinimumForwardDistance; set => _stairStepMinimumForwardDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepMinimumForwardDistance = 0.01f;
     /// <summary>
-    /// Maximum amount of stair step iterations per frame
+    /// Maximum amount of stair step iterations per frame.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(118)]
     public int MaxStairStepIterations {get => _maxStairStepIterations; set => _maxStairStepIterations = Math.Clamp(value, 0, int.MaxValue);} 
     private int _maxStairStepIterations = 10;
     /// <summary>
-    /// Determines if the character should move with rigidbodies it is standing on
+    /// Determines if the character should move with rigidbodies it is standing on.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(119)]
     public RigidBodyMoveMode RigidBodyMoveMode {get; set;} = RigidBodyMoveMode.KinematicMoversOnly;
     /// <summary>
-    /// Determines if the character should solve the movements caused by rigidbodies stood upon
-    /// If enabled the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues
-    /// If disabled the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues
+    /// Determines if the character should solve the movements caused by rigidbodies stood upon.
+    /// If enabled the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
+    /// If disabled the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(120)]
     public bool SolveRigidBodyMovements {get; set;} = false;
     /// <summary>
-    /// Determine how to handle dynamic rigidbodies that we have collided with
+    /// Determine how to handle dynamic rigidbodies that we have collided with.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(121)]
     public RigidBodyInteractionMode RigidBodyInteractionMode {get; set;} = RigidBodyInteractionMode.PureKinematic;
     private readonly List<RigidBodyInteraction> _rigidBodiesCollided = [];
     /// <summary>
-    /// The simulated mass amount for dynamic rigidbody handling
+    /// The simulated mass amount for dynamic rigidbody handling.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(122)]
@@ -215,23 +216,23 @@ public class KinematicCharacterController : KinematicBase
     private Vector3 _internalVelocity = Vector3.Zero;
     private Real _internalGravityVelocity = 0.0f;
     /// <summary>
-    /// The current gravity as normalized euler angles
+    /// The current gravity as normalized euler angles.
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 GravityEulerNormalized {get; private set;} = Vector3.Down;
     /// <summary>
-    /// Velocity, ignoring movements from rigidbody we stood upon
+    /// Velocity, ignoring movements from rigidbody we stood upon.
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 KinematicVelocity {get; set;} = Vector3.Zero;
     /// <summary>
-    /// Velocity only from rigidbody we stood upon
+    /// Velocity only from rigidbody we stood upon.
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 KinematicAttachedVelocity {get; set;} = Vector3.Zero;
     /// <summary>
-    /// The character's controller
+    /// The character's controller.
     /// </summary>
     [NoSerialize, HideInEditor] public IKinematicCharacter? Controller {get; set;} = null;
     /// <summary>
-    /// The RigidBody we are attached to
+    /// The RigidBody we are attached to.
     /// </summary>
     [NoSerialize, HideInEditor] public RigidBody? AttachedRigidBody => _attachedRigidBody;
     private RigidBody? _attachedRigidBody = null;
@@ -280,6 +281,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
+    /// Calculate movement. This should not ever be called directly.
     /// </summary>
     public void KinematicUpdate()
     {
@@ -411,8 +413,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Set the size of the collider actor with possible extra inflation value
     /// </summary>
-    /// <param name="inflate"></param>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <param name="inflate">Extra size added to the collider size</param>
+    /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     private void SetColliderSizeWithInflation(float inflate)
     {
         if(_collider is null)
@@ -446,15 +448,16 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Return all colliders we are overlapping with
+    /// Return all colliders we are overlapping with.
+    /// Will filter if collision filtering is enabled for this character.
     /// </summary>
-    /// <param name="origin"></param>
+    /// <param name="origin">Point in world space to trace at</param>
     /// <param name="colliders"></param>
     /// <param name="layerMask"></param>
     /// <param name="hitTriggers"></param>
-    /// <param name="inflate"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <param name="inflate">Extra size added to the collider size</param>
+    /// <returns>True if overlapped with anything</returns>
+    /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 0.0f)
     {
         #if FLAX_EDITOR
@@ -500,16 +503,17 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Return all colliders collided with by the cast
+    /// Return all colliders collided with by the cast.
+    /// Will filter if collision filtering is enabled for this character.
     /// </summary>
-    /// <param name="origin"></param>
+    /// <param name="origin">Point in world space to trace from</param>
     /// <param name="direction"></param>
     /// <param name="trace"></param>
     /// <param name="distance"></param>
     /// <param name="layerMask"></param>
     /// <param name="hitTriggers"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <returns>True if collided with anything</returns>
+    /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = true)
     {
         #if FLAX_EDITOR
@@ -655,10 +659,10 @@ public class KinematicCharacterController : KinematicBase
     }
     
     /// <summary>
-    /// Check if the other collider should be ignored
+    /// Check if the other collider should be ignored.
     /// </summary>
     /// <param name="collider"></param>
-    /// <returns>false if should be ignored, true is should be considered</returns>
+    /// <returns>False if should be ignored, True is should be considered</returns>
     private bool IsColliderValid(Collider collider)
     {
         if(_collider is null)
@@ -688,8 +692,8 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Try to register a new unique rigidbody interaction
-    /// will be rejected if the interaction is already registered to prevent duplicate interactions from happening
+    /// Try to register a new unique rigidbody interaction.
+    /// Will be rejected if the interaction is already registered to prevent duplicate interactions from happening.
     /// </summary>
     /// <param name="trace"></param>
     /// <param name="rigidBody"></param>
@@ -868,7 +872,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// solve all stair steps for the remaining velocity as long as valid stairs are found
+    /// Solve all stair steps for the remaining velocity as long as valid stairs are found.
     /// </summary>
     /// <param name="position"></param>
     /// <param name="velocity"></param>
@@ -904,13 +908,13 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Attempt to do a single stair step for the given velocity
+    /// Attempt to do a single stair step for the given velocity.
     /// </summary>
     /// <param name="position"></param>
     /// <param name="velocity"></param>
     /// <param name="distance"></param>
     /// <param name="sweepNormal"></param>
-    /// <returns>false if failed, true if succeeded</returns>
+    /// <returns>True if succeeded in stepping a stair</returns>
     private bool SolveStairStep(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
     {
         if(velocity.IsZero)
@@ -1025,11 +1029,11 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Calculate the movement from a rigidbody relative to this character, as if it was this character's parent
+    /// Calculate the movement from a RigidBody relative to this character, as if it was this character's parent.
     /// </summary>
     /// <param name="rigidBody"></param>
     /// <param name="position"></param>
-    /// <returns>the relative movement</returns>
+    /// <returns>The relative movement</returns>
     private Vector3 MovementFromRigidBody(RigidBody rigidBody, Vector3 position)
     {
         if(Controller is null)
@@ -1059,7 +1063,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Force the character to unground
+    /// Force the character to unground.
     /// </summary>
     public void ForceUnground()
     {
@@ -1067,9 +1071,9 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Trace to ground and snap to it if necessary
+    /// Trace to ground and snap to it if necessary.
     /// </summary>
-    /// <returns>result for the ground standing upon, null if not touching any valid ground or ground at all</returns>
+    /// <returns>Result for the ground standing upon, null if not touching any valid ground or ground at all</returns>
     private RayCastHit? SolveGround()
     {
         #if FLAX_EDITOR
@@ -1136,7 +1140,7 @@ public class KinematicCharacterController : KinematicBase
     /// Will also attempt to attach the character to a rigidbody if standing on one.
     /// </summary>
     /// <param name="distance"></param>
-    /// <returns>result if stable ground, null otherwise</returns>
+    /// <returns>Result if stable ground, null otherwise</returns>
     private RayCastHit? GroundCheck(float distance)
     {
         #if FLAX_EDITOR
@@ -1193,7 +1197,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// forcibly move the character to ground level, ignoring if its standable or not.
+    /// Forcibly move the character to ground level, ignoring if its standable or not.
     /// </summary>
     private void SnapToGround()
     {
@@ -1230,7 +1234,7 @@ public class KinematicCharacterController : KinematicBase
     /// Is the normal vector considered stable ground?
     /// </summary>
     /// <param name="normal"></param>
-    /// <returns>true if stable</returns>
+    /// <returns>True if stable</returns>
     public bool IsNormalStableGround(Vector3 normal)
     {
         return Vector3.Angle(-GravityEulerNormalized, normal) <= MaxSlopeAngle;
@@ -1239,8 +1243,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Calculates the necessary vector3 to move out of collisions
     /// </summary>
-    /// <param name="inflate">extra size added to the collider size</param>
-    /// <returns></returns>
+    /// <param name="inflate">Extra size added to the collider size</param>
+    /// <returns>Amount to push out by so that the character is no longer colliding with anything</returns>
     public Vector3 UnstuckSolve(float inflate)
     {
         #if FLAX_EDITOR
@@ -1304,8 +1308,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Utility function to project a direction along the ground normal without any lateral movement (accounts for gravity direction)
     /// </summary>
-    /// <param name="direction">normalized direction</param>
-    /// <returns>projected normalized direction</returns>
+    /// <param name="direction">Normalized direction</param>
+    /// <returns>Projected normalized direction</returns>
     public Vector3 GroundTangent(Vector3 direction)
     {
         Vector3 right = Vector3.Cross(direction, -GravityEulerNormalized) ;
@@ -1313,7 +1317,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Process all registered rigidbody collisions from the sweep step
+    /// Process all registered rigidbody collisions from the sweep step.
     /// Depending on interaction mode this will cause impacts on dynamic rigidbodies.
     /// </summary>
     private void SolveRigidBodyInteractions()
@@ -1373,7 +1377,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Attempt to attach this controller to a rigidbody (so that it follows its velocity and rotation)
+    /// Attempt to attach this controller to a RigidBody (so that it follows its velocity and rotation).
     /// </summary>
     /// <param name="rigidBody"></param>
     private void AttachToRigidBody(RigidBody? rigidBody)
@@ -1464,7 +1468,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Draw this KinematicCharacterController's collider
+    /// Draw this KinematicCharacterController's collider, EDITOR ONLY
     /// </summary>
     /// <param name="position">World position</param>
     /// <param name="orientation">World orientation</param>

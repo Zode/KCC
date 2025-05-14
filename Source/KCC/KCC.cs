@@ -16,7 +16,7 @@ public class KCC : GamePlugin
 {
     private KCCSettings? _kccSettings = null;
     /// <summary>
-    /// KCCSettings instance 
+    /// KCCSettings instance.
     /// </summary>
     public KCCSettings? KCCSettingsInstance => _kccSettings;
     private List<KinematicMover> _kinematicMovers = [];
@@ -24,15 +24,15 @@ public class KCC : GamePlugin
     private float _interpolationDeltaTime = 0.0f;
     private float _interpolationStartTime = 0.0f;
     /// <summary>
-    /// This event is fired before any simulation or pre-simulation interpolation setup happens, before all KCC actors
+    /// This event is fired before any simulation or pre-simulation interpolation setup happens, before all KCC actors.
     /// </summary>
     public event Action? PreSimulationUpdateEvent;
     /// <summary>
-    /// This event is fired when the simulation happens, before all KCC actors
+    /// This event is fired when the simulation happens, before all KCC actors.
     /// </summary>
     public event Action? SimulationUpdateEvent;
     /// <summary>
-    /// This event is fired after the simulation and post-simulation interpolation setup has happened, after all KCC actors
+    /// This event is fired after the simulation and post-simulation interpolation setup has happened, after all KCC actors.
     /// </summary>
     public event Action? PostSimulationUpdateEvent;
 
@@ -133,7 +133,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Register a kinematic mover to the simulaton
+    /// Register a kinematic mover to the simulation.
     /// </summary>
     /// <param name="mover"></param>
     public void Register(KinematicMover mover)
@@ -149,7 +149,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Register a kinematic character to the simulaton
+    /// Register a kinematic character to the simulation.
     /// </summary>
     /// <param name="character"></param>
     public void Register(KinematicCharacterController character)
@@ -165,7 +165,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Unregister a kinematic mover from the simulation
+    /// Unregister a kinematic mover from the simulation.
     /// </summary>
     /// <param name="mover"></param>
     public void Unregister(KinematicMover mover)
@@ -181,7 +181,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Unregister a kinematic character from the simulation
+    /// Unregister a kinematic character from the simulation.
     /// </summary>
     /// <param name="character"></param>
     public void Unregister(KinematicCharacterController character)
@@ -197,7 +197,8 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Saves necessary info for interpolation before the simulation
+    /// Saves necessary info for interpolation before the simulation.
+    /// All KCC Actors are moved to their finalized positions from previous frame, forcing a finish to the interpolation.
     /// </summary>
     public void PreSimulationUpdate()
     {
@@ -231,7 +232,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Tick simulation
+    /// Tick simulation, calculating movements for all KCC Actors.
     /// </summary>
     public void SimulationUpdate()
     {
@@ -257,7 +258,9 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Sets up for interpolation after the simulation
+    /// Sets up for interpolation after the simulation.
+    /// All KCC Actors are moved back to their initial position, so that the interpolation appears correct.
+    /// If interpolation is disabled all KCC Actors are moved to their final position.
     /// </summary>
     public void PostSimulationUpdate()
     {
@@ -312,7 +315,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Processes per frame interpolation
+    /// Processes per frame interpolation for all KCC Actors, moving them between ther initial and final positions as determined by last KCC simulation executed.
     /// </summary>
     public void InterpolationUpdate()
     {
