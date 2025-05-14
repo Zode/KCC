@@ -1,0 +1,318 @@
+{
+  "source_base_path": "/mnt/hdd1/Projects/git-zode/KCC-fxtest/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.ColliderType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.ColliderType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.ColliderType",
+      "Summary": "<p sourcefile=\"api/KCC.ColliderType.yml\" sourcestartlinenumber=\"1\">Collider shape for KCC characters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.GroundState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.GroundState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.GroundState",
+      "Summary": "<p sourcefile=\"api/KCC.GroundState.yml\" sourcestartlinenumber=\"1\">Ground state for KCC characters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.IKinematicCharacter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.IKinematicCharacter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.IKinematicCharacter",
+      "Summary": "<p sourcefile=\"api/KCC.IKinematicCharacter.yml\" sourcestartlinenumber=\"1\">The required interface for controlling KinematicCharacterController.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.IKinematicMover.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.IKinematicMover.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.IKinematicMover",
+      "Summary": "<p sourcefile=\"api/KCC.IKinematicMover.yml\" sourcestartlinenumber=\"1\">The required interface for controlling KinematicMover.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.InterpolationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.InterpolationMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.InterpolationMode",
+      "Summary": "<p sourcefile=\"api/KCC.InterpolationMode.yml\" sourcestartlinenumber=\"1\">KCC Interpolation mode.\nNOTE: This will be removed in the future once Flax is capable of synching event loop with rendering. (waiting for PR to be accepted).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.KCC.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.KCC.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.KCC",
+      "Summary": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.KCCSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.KCCSettings.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.KCCSettings",
+      "Summary": "<p sourcefile=\"api/KCC.KCCSettings.yml\" sourcestartlinenumber=\"1\">Container for settings related to KCC.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.KinematicBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.KinematicBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.KinematicBase",
+      "Summary": "<p sourcefile=\"api/KCC.KinematicBase.yml\" sourcestartlinenumber=\"1\">KCC Simulation driven object.\nBase class for KCC Actors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.KinematicCharacterController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.KinematicCharacterController.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.KinematicCharacterController",
+      "Summary": "<p sourcefile=\"api/KCC.KinematicCharacterController.yml\" sourcestartlinenumber=\"1\">KCC Simulation driven character controller object.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.KinematicMover.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.KinematicMover.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.KinematicMover",
+      "Summary": "<p sourcefile=\"api/KCC.KinematicMover.yml\" sourcestartlinenumber=\"1\">KCC Simulation driven object.\nUtility class that makes kinematic elevators and such faster to program.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.RigidBodyInteraction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.RigidBodyInteraction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.RigidBodyInteraction",
+      "Summary": "<p sourcefile=\"api/KCC.RigidBodyInteraction.yml\" sourcestartlinenumber=\"1\">Container for KCC character's RigidBody interactions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.RigidBodyInteractionMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.RigidBodyInteractionMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.RigidBodyInteractionMode",
+      "Summary": "<p sourcefile=\"api/KCC.RigidBodyInteractionMode.yml\" sourcestartlinenumber=\"1\">RigidBody interaction mode for KCC characters.\nDetermines how RigidBodies should interact with the KCC character.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.RigidBodyMoveMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.RigidBodyMoveMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.RigidBodyMoveMode",
+      "Summary": "<p sourcefile=\"api/KCC.RigidBodyMoveMode.yml\" sourcestartlinenumber=\"1\">RigidBody moving mode for KCC characters.\nDetermines how the KCC character should move when standing on top of a RigidBody.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.StairStepGroundMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.StairStepGroundMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.StairStepGroundMode",
+      "Summary": "<p sourcefile=\"api/KCC.StairStepGroundMode.yml\" sourcestartlinenumber=\"1\">Stair stepping mode for KCC characters.\nDetermines what type of stairstepping is allowed.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/introduction.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/introduction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/kccloop.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/kccloop.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/settings.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/settings.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

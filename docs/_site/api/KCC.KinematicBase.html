@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class KinematicBase | KCC </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class KinematicBase | KCC ">
+      
+      <meta name="description" content="KCC Simulation driven object. Base class for KCC Actors.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KCC">
+            KCC
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KCC.KinematicBase">
+
+
+
+  <h1 id="KCC_KinematicBase" data-uid="KCC.KinematicBase" class="text-break">
+Class KinematicBase  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="KCC.html">KCC</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>KCC.CSharp.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>KCC Simulation driven object.
+Base class for KCC Actors.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class KinematicBase : RigidBody</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Object</span></div>
+      <div><span class="xref">SceneObject</span></div>
+      <div><span class="xref">Actor</span></div>
+      <div><span class="xref">RigidBody</span></div>
+      <div><span class="xref">KinematicBase</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="KCC.KinematicCharacterController.html">KinematicCharacterController</a></div>
+      <div><a class="xref" href="KCC.KinematicMover.html">KinematicMover</a></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="KCC_KinematicBase__ctor_" data-uid="KCC.KinematicBase.#ctor*"></a>
+
+  <h3 id="KCC_KinematicBase__ctor" data-uid="KCC.KinematicBase.#ctor">
+  KinematicBase()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of KinematicBase.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KinematicBase()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="KCC_KinematicBase__kccPlugin" data-uid="KCC.KinematicBase._kccPlugin">
+  _kccPlugin
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reference to KCC plugin.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected KCC _kccPlugin</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.KCC.html">KCC</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KCC_KinematicBase__transientOrientation" data-uid="KCC.KinematicBase._transientOrientation">
+  _transientOrientation
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The current orientation in simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Quaternion _transientOrientation</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Quaternion</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KCC_KinematicBase__transientPosition" data-uid="KCC.KinematicBase._transientPosition">
+  _transientPosition
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The current position in simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Vector3 _transientPosition</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="KCC_KinematicBase_InitialOrientation_" data-uid="KCC.KinematicBase.InitialOrientation*"></a>
+
+  <h3 id="KCC_KinematicBase_InitialOrientation" data-uid="KCC.KinematicBase.InitialOrientation">
+  InitialOrientation
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The initial orientation before simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Quaternion InitialOrientation { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Quaternion</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicBase_InitialPosition_" data-uid="KCC.KinematicBase.InitialPosition*"></a>
+
+  <h3 id="KCC_KinematicBase_InitialPosition" data-uid="KCC.KinematicBase.InitialPosition">
+  InitialPosition
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The initial position before simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 InitialPosition { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicBase_TransientOrientation_" data-uid="KCC.KinematicBase.TransientOrientation*"></a>
+
+  <h3 id="KCC_KinematicBase_TransientOrientation" data-uid="KCC.KinematicBase.TransientOrientation">
+  TransientOrientation
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The current orientation in simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Quaternion TransientOrientation { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Quaternion</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicBase_TransientPosition_" data-uid="KCC.KinematicBase.TransientPosition*"></a>
+
+  <h3 id="KCC_KinematicBase_TransientPosition" data-uid="KCC.KinematicBase.TransientPosition">
+  TransientPosition
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The current position in simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 TransientPosition { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="KCC_KinematicBase_SetOrientation_" data-uid="KCC.KinematicBase.SetOrientation*"></a>
+
+  <h3 id="KCC_KinematicBase_SetOrientation_FlaxEngine_Quaternion_" data-uid="KCC.KinematicBase.SetOrientation(FlaxEngine.Quaternion)">
+  SetOrientation(Quaternion)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the mover's orientation directly.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetOrientation(Quaternion orientation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>orientation</code> <span class="xref">Quaternion</span></dt>
+    <dd><p>World space orientation</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicBase_SetPosition_" data-uid="KCC.KinematicBase.SetPosition*"></a>
+
+  <h3 id="KCC_KinematicBase_SetPosition_FlaxEngine_Vector3_" data-uid="KCC.KinematicBase.SetPosition(FlaxEngine.Vector3)">
+  SetPosition(Vector3)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the mover's position directly.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetPosition(Vector3 position)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <span class="xref">Vector3</span></dt>
+    <dd><p>World space position</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

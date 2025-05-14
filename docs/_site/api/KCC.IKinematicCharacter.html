@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IKinematicCharacter | KCC </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IKinematicCharacter | KCC ">
+      
+      <meta name="description" content="The required interface for controlling KinematicCharacterController.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KCC">
+            KCC
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KCC.IKinematicCharacter">
+
+
+
+  <h1 id="KCC_IKinematicCharacter" data-uid="KCC.IKinematicCharacter" class="text-break">
+Interface IKinematicCharacter  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="KCC.html">KCC</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>KCC.CSharp.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>The required interface for controlling KinematicCharacterController.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IKinematicCharacter</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="KCC_IKinematicCharacter_KinematicAttachedRigidBodyEvent_" data-uid="KCC.IKinematicCharacter.KinematicAttachedRigidBodyEvent*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicAttachedRigidBodyEvent_System_Boolean_FlaxEngine_RigidBody_" data-uid="KCC.IKinematicCharacter.KinematicAttachedRigidBodyEvent(System.Boolean,FlaxEngine.RigidBody)">
+  KinematicAttachedRigidBodyEvent(bool, RigidBody?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the character attaches or detaches itself from a rigidbody.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicAttachedRigidBodyEvent(bool attached, RigidBody? rigidBody)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>attached</code> <span class="xref">bool</span></dt>
+    <dd><p>True if attaching, False if detaching</p>
+</dd>
+    <dt><code>rigidBody</code> <span class="xref">RigidBody</span></dt>
+    <dd><p>Rigidbody being attached to, or being detached from</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicAttachedRigidBodyUpdate_" data-uid="KCC.IKinematicCharacter.KinematicAttachedRigidBodyUpdate*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicAttachedRigidBodyUpdate_FlaxEngine_RigidBody_" data-uid="KCC.IKinematicCharacter.KinematicAttachedRigidBodyUpdate(FlaxEngine.RigidBody)">
+  KinematicAttachedRigidBodyUpdate(RigidBody)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called for every tick the character is attached to a rigidbody to move with,
+may be useful if you wish to rotate the camera along side the rigidbody it is attached to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicAttachedRigidBodyUpdate(RigidBody rigidBody)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rigidBody</code> <span class="xref">RigidBody</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicCanAttachToRigidBody_" data-uid="KCC.IKinematicCharacter.KinematicCanAttachToRigidBody*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicCanAttachToRigidBody_FlaxEngine_RigidBody_" data-uid="KCC.IKinematicCharacter.KinematicCanAttachToRigidBody(FlaxEngine.RigidBody)">
+  KinematicCanAttachToRigidBody(RigidBody)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called during the sweep to check if the character can attach to a rigidbody to move with it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool KinematicCanAttachToRigidBody(RigidBody rigidBody)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rigidBody</code> <span class="xref">RigidBody</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if can attach, False if not</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicCollision_" data-uid="KCC.IKinematicCharacter.KinematicCollision*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicCollision_FlaxEngine_RayCastHit_" data-uid="KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit)">
+  KinematicCollision(RayCastHit)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the character collides with something during a sweep,
+this may be useful if you need to have something external react to the collision as the final position of the controller’s collider may not actually end up colliding with whatever it hit at the end of the sweep.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicCollision(RayCastHit hit)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hit</code> <span class="xref">RayCastHit</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicCollisionValid_" data-uid="KCC.IKinematicCharacter.KinematicCollisionValid*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicCollisionValid_FlaxEngine_Collider_" data-uid="KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.Collider)">
+  KinematicCollisionValid(Collider)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the character collides with something during a sweep, this can be used to precisely filter out collisions (eg. teammates).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool KinematicCollisionValid(Collider other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <span class="xref">Collider</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if should collide, False if should pass through</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicGroundProjection_" data-uid="KCC.IKinematicCharacter.KinematicGroundProjection*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicGroundProjection_FlaxEngine_Vector3_FlaxEngine_Vector3_" data-uid="KCC.IKinematicCharacter.KinematicGroundProjection(FlaxEngine.Vector3,FlaxEngine.Vector3)">
+  KinematicGroundProjection(Vector3, Vector3)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called the the character velocity needs to be projected along side the current ground plane during the sweep,
+the velocity supplied here is the remaining velocity for the tick at the point where this callback is triggered.
+This is necessary if you wish to move up sloped surfaces without issues.
+Vector3’s ProjectOnPlane will suffice for modern use.
+Tip: the KinematicCharacterController supplies the function “GroundTangent” to help with retro style projection where the ground normal does not affect any lateral speed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Vector3 KinematicGroundProjection(Vector3 velocity, Vector3 gravityEulerNormalized)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>velocity</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Current velocity</p>
+</dd>
+    <dt><code>gravityEulerNormalized</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Current normalized gravity as euler angles</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd><p>Velocity</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicGroundingEvent_" data-uid="KCC.IKinematicCharacter.KinematicGroundingEvent*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicGroundingEvent_KCC_GroundState_System_Nullable_FlaxEngine_RayCastHit__" data-uid="KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState,System.Nullable{FlaxEngine.RayCastHit})">
+  KinematicGroundingEvent(GroundState, RayCastHit?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the character’s ground state changes during a sweep,
+this may be useful if you wish to implement particle effects upon landing on ground for example.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicGroundingEvent(GroundState groundingState, RayCastHit? hit)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>groundingState</code> <a class="xref" href="KCC.GroundState.html">GroundState</a></dt>
+    <dd><p>The new state</p>
+</dd>
+    <dt><code>hit</code> <span class="xref">RayCastHit</span>?</dt>
+    <dd><p>Hit from grounding check, null if ungrounding</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicMoveUpdate_" data-uid="KCC.IKinematicCharacter.KinematicMoveUpdate*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicMoveUpdate_FlaxEngine_Vector3__FlaxEngine_Quaternion__" data-uid="KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3@,FlaxEngine.Quaternion@)">
+  KinematicMoveUpdate(out Vector3, out Quaternion)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the simulation needs to know the velocity and orientation for a tick before sweeping movement,
+the character will attempt to move until the length of the velocity is more or less zero.
+You may transfer root motion to the system by extracting it from the animation and applying it here.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicMoveUpdate(out Vector3 velocity, out Quaternion orientation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>velocity</code> <span class="xref">Vector3</span></dt>
+    <dd></dd>
+    <dt><code>orientation</code> <span class="xref">Quaternion</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicPostUpdate_" data-uid="KCC.IKinematicCharacter.KinematicPostUpdate*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicPostUpdate" data-uid="KCC.IKinematicCharacter.KinematicPostUpdate">
+  KinematicPostUpdate()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the controller has done all the movement processing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicPostUpdate()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicRigidBodyInteraction_" data-uid="KCC.IKinematicCharacter.KinematicRigidBodyInteraction*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicRigidBodyInteraction_KCC_RigidBodyInteraction_" data-uid="KCC.IKinematicCharacter.KinematicRigidBodyInteraction(KCC.RigidBodyInteraction)">
+  KinematicRigidBodyInteraction(RigidBodyInteraction)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called during the sweep when the character collides with a rigidbody, may be useful if you wish to have rigidbodies react interactively and you want to handle it yourself.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicRigidBodyInteraction(RigidBodyInteraction rbInteraction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rbInteraction</code> <a class="xref" href="KCC.RigidBodyInteraction.html">RigidBodyInteraction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_IKinematicCharacter_KinematicUnstuckEvent_" data-uid="KCC.IKinematicCharacter.KinematicUnstuckEvent*"></a>
+
+  <h3 id="KCC_IKinematicCharacter_KinematicUnstuckEvent_FlaxEngine_Collider_FlaxEngine_Vector3_System_Single_" data-uid="KCC.IKinematicCharacter.KinematicUnstuckEvent(FlaxEngine.Collider,FlaxEngine.Vector3,System.Single)">
+  KinematicUnstuckEvent(Collider, Vector3, float)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when the character unstucks itself during a sweep,
+this may be useful if you want to implement crushers for example.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void KinematicUnstuckEvent(Collider collider, Vector3 penetrationDirection, float penetrationDistance)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collider</code> <span class="xref">Collider</span></dt>
+    <dd></dd>
+    <dt><code>penetrationDirection</code> <span class="xref">Vector3</span></dt>
+    <dd></dd>
+    <dt><code>penetrationDistance</code> <span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

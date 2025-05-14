@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Getting Started | KCC </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Getting Started | KCC ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCC/blob/main/docs/docs/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KCC">
+            KCC
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-started">Getting Started</h1>
+
+<p>To begin, you must first create a <code>KCC Settings</code> file, or use the default file included in the plugin, and add it to the custom settings list with the key <code>KCC Settings</code></p>
+<p><img src="/images/settings.png" alt=" Example image of the custom settings "></p>
+<p>This is required for the plugin to function, and contains some overall settings you may want to adjust.</p>
+<p>After making your kinematic character, you need to make a script that implements the <a href="/api/KCC.IKinematicCharacter.html">IkinematicCharacterController</a> interface and assign the script to the controller’s <code>Controller</code> property (this can be simply done by just assigning it on the script’s OnEnable, check the <a href="https://github.com/Zode/KCCExample">KCCExample repository</a>.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>This method of assigning interfaces means you can hotswap what script is controlling the controller, which may be useful in case you need to swap a character between AI control and Player control.</p>
+</div>
+<p>This interface will provide you with the necessary callbacks to alter the behavior during runtime.
+<strong>The controller MUST have an uniform scale of 1</strong>, if you wish to to resize the character please update the relevant properties in the <code>KinematicCharacterController</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>This plugin overrides the RigidBody/Transform’s Position and Orientation properties, KinematicBase’s TransientPosition and TransientOrientation properties can be used in place of those.</p>
+<p>If you wish to forcibly set the position or forcibly set the orientation of the kinematic object (eg. teleporting), you need to use KinematicBase’s functions “SetPosition” and “SetOrientation”. Both KinematicMover and KinematicCharacterController extend from KinematicBase.</p>
+</div>
+<p>While the system does execute during a <code>FixedUpdate</code> tick and as such it usually does work with code that also relies on FixedUpdate, it has its own order of internal processing. If you need to somehow exactly step in time with the system outside of the callbacks, you may attach yourself to the exposed Actions in the KCC plugin. See <a href="kccloop.html">KCC Update loop</a>.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>The KinematicBase that all KCC Actors inherit from contains some useful information.
+You may use the <code>InitialPosition</code> and <code>InitialOrientation</code> properties to get the information from before any movement processing has happened, and <code>TransientPosition</code> and <code>TransientOrientation</code> properties to get the information from after any movement processing has happened.</p>
+</div>
+<div class="TIP">
+<h5>Tip</h5>
+<p>The <code>KinematicCharacterController</code> exposes some helper functions for smoother development, most notably: <code>OverlapCollider</code> which can be used to query all overlaps with optional inflation for collider size, <code>CastCollider</code> which can be used to do a standard collider cast.</p>
+<p>Both of these functions automatically select the correct collider shape that matches the controller’s shape.</p>
+<p><code>ForceUnground </code>for jumping and other purposes, <code>IsNormalStableGround</code> for querying if a normal is considered stable with the controller’s settings, and <code>GroundTangent</code> which works similarly to Vector3’s <code>ProjectOnPlane</code> without any of the lateral movement.</p>
+<p>Additionally for debugging purposes <code>DebugDrawCollider</code> is exposed for quickly drawing a wire shape that matches the controller’s shape. <strong>If you use this function you need to wrap it in <code>FLAX_EDITOR</code> define guards.</strong></p>
+</div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Zode/KCC/blob/main/docs/docs/getting-started.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

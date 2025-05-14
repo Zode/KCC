@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class KinematicCharacterController | KCC </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class KinematicCharacterController | KCC ">
+      
+      <meta name="description" content="KCC Simulation driven character controller object.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KCC">
+            KCC
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KCC.KinematicCharacterController">
+
+
+
+  <h1 id="KCC_KinematicCharacterController" data-uid="KCC.KinematicCharacterController" class="text-break">
+Class KinematicCharacterController  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="KCC.html">KCC</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>KCC.CSharp.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>KCC Simulation driven character controller object.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[ActorContextMenu(&quot;New/Physics/Kinematic Character Controller&quot;)]
+[ActorToolbox(&quot;Physics&quot;)]
+public class KinematicCharacterController : KinematicBase</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Object</span></div>
+      <div><span class="xref">SceneObject</span></div>
+      <div><span class="xref">Actor</span></div>
+      <div><span class="xref">RigidBody</span></div>
+      <div><a class="xref" href="KCC.KinematicBase.html">KinematicBase</a></div>
+      <div><span class="xref">KinematicCharacterController</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_InitialPosition">KinematicBase.InitialPosition</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_InitialOrientation">KinematicBase.InitialOrientation</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_TransientPosition">KinematicBase.TransientPosition</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__transientPosition">KinematicBase._transientPosition</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_TransientOrientation">KinematicBase.TransientOrientation</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__transientOrientation">KinematicBase._transientOrientation</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__kccPlugin">KinematicBase._kccPlugin</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetPosition_FlaxEngine_Vector3_">KinematicBase.SetPosition(Vector3)</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetOrientation_FlaxEngine_Quaternion_">KinematicBase.SetOrientation(Quaternion)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="KCC_KinematicCharacterController_AllowStairStepping_" data-uid="KCC.KinematicCharacterController.AllowStairStepping*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_AllowStairStepping" data-uid="KCC.KinematicCharacterController.AllowStairStepping">
+  AllowStairStepping
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if stair stepping is allowed at all.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
+[EditorOrder(114)]
+public bool AllowStairStepping { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_AttachedRigidBody_" data-uid="KCC.KinematicCharacterController.AttachedRigidBody*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_AttachedRigidBody" data-uid="KCC.KinematicCharacterController.AttachedRigidBody">
+  AttachedRigidBody
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The RigidBody we are attached to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public RigidBody? AttachedRigidBody { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">RigidBody</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_BoxExtents_" data-uid="KCC.KinematicCharacterController.BoxExtents*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_BoxExtents" data-uid="KCC.KinematicCharacterController.BoxExtents">
+  BoxExtents
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Box extents of the character (only applicable when ColliderType is Box).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 BoxExtents { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_CanGround_" data-uid="KCC.KinematicCharacterController.CanGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CanGround" data-uid="KCC.KinematicCharacterController.CanGround">
+  CanGround
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if grounding is allowed at all.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public bool CanGround { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderContactOffset_" data-uid="KCC.KinematicCharacterController.ColliderContactOffset*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderContactOffset" data-uid="KCC.KinematicCharacterController.ColliderContactOffset">
+  ColliderContactOffset
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The contact offset value for the automatically generated collider (must be positive).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Character&quot;, null)]
+[EditorOrder(101)]
+public float ColliderContactOffset { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderHalfHeight_" data-uid="KCC.KinematicCharacterController.ColliderHalfHeight*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderHalfHeight" data-uid="KCC.KinematicCharacterController.ColliderHalfHeight">
+  ColliderHalfHeight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Half the height of the character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public float ColliderHalfHeight { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderHalfRadius_" data-uid="KCC.KinematicCharacterController.ColliderHalfRadius*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderHalfRadius" data-uid="KCC.KinematicCharacterController.ColliderHalfRadius">
+  ColliderHalfRadius
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Half the radius of the character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public float ColliderHalfRadius { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderHeight_" data-uid="KCC.KinematicCharacterController.ColliderHeight*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderHeight" data-uid="KCC.KinematicCharacterController.ColliderHeight">
+  ColliderHeight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Height of the character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Character&quot;, null)]
+[EditorOrder(103)]
+public float ColliderHeight { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderRadius_" data-uid="KCC.KinematicCharacterController.ColliderRadius*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderRadius" data-uid="KCC.KinematicCharacterController.ColliderRadius">
+  ColliderRadius
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Radius of the character (only applicable when ColliderType is Capsule or Sphere).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Character&quot;, null)]
+[EditorOrder(104)]
+public float ColliderRadius { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderType_" data-uid="KCC.KinematicCharacterController.ColliderType*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderType" data-uid="KCC.KinematicCharacterController.ColliderType">
+  ColliderType
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Collision shape of the character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Character&quot;, null)]
+[EditorOrder(100)]
+public ColliderType ColliderType { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.ColliderType.html">ColliderType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_CollisionMask_" data-uid="KCC.KinematicCharacterController.CollisionMask*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CollisionMask" data-uid="KCC.KinematicCharacterController.CollisionMask">
+  CollisionMask
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The layer mask upon which the character collides with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(107)]
+public LayersMask CollisionMask { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">LayersMask</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_Controller_" data-uid="KCC.KinematicCharacterController.Controller*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_Controller" data-uid="KCC.KinematicCharacterController.Controller">
+  Controller
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The character's controller.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public IKinematicCharacter? Controller { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.IKinematicCharacter.html">IKinematicCharacter</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_FilterCollisions_" data-uid="KCC.KinematicCharacterController.FilterCollisions*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_FilterCollisions" data-uid="KCC.KinematicCharacterController.FilterCollisions">
+  FilterCollisions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Should we filter collisions?
+If enabled, the controller will be queried for collision filtering, this is expensive.
+If disabled, the character will assume everything to be solid, this is less expensive.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(106)]
+public bool FilterCollisions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_GravityEulerNormalized_" data-uid="KCC.KinematicCharacterController.GravityEulerNormalized*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GravityEulerNormalized" data-uid="KCC.KinematicCharacterController.GravityEulerNormalized">
+  GravityEulerNormalized
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The current gravity as normalized euler angles.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 GravityEulerNormalized { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_GroundNormal_" data-uid="KCC.KinematicCharacterController.GroundNormal*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GroundNormal" data-uid="KCC.KinematicCharacterController.GroundNormal">
+  GroundNormal
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ground normal upon which the character is currently standing on.
+If not touching ground this will be the opposite of the gravity orientation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 GroundNormal { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_GroundSnappingDistance_" data-uid="KCC.KinematicCharacterController.GroundSnappingDistance*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GroundSnappingDistance" data-uid="KCC.KinematicCharacterController.GroundSnappingDistance">
+  GroundSnappingDistance
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
+[EditorOrder(112)]
+public float GroundSnappingDistance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_GroundTag_" data-uid="KCC.KinematicCharacterController.GroundTag*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GroundTag" data-uid="KCC.KinematicCharacterController.GroundTag">
+  GroundTag
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tag used to determine if a collision should be considered valid ground or not.
+If left empty, all surfaces determined by MaxSlopeAngle are considered valid ground.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
+[EditorOrder(110)]
+public Tag GroundTag { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Tag</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_GroundingDistance_" data-uid="KCC.KinematicCharacterController.GroundingDistance*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GroundingDistance" data-uid="KCC.KinematicCharacterController.GroundingDistance">
+  GroundingDistance
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Distance to surface until the character is considered grounded, KinematicContactOffset is automatically added on this.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
+[EditorOrder(111)]
+public float GroundingDistance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_IsGrounded_" data-uid="KCC.KinematicCharacterController.IsGrounded*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_IsGrounded" data-uid="KCC.KinematicCharacterController.IsGrounded">
+  IsGrounded
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Is the character currently grounded.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public bool IsGrounded { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_KinematicAttachedVelocity_" data-uid="KCC.KinematicCharacterController.KinematicAttachedVelocity*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_KinematicAttachedVelocity" data-uid="KCC.KinematicCharacterController.KinematicAttachedVelocity">
+  KinematicAttachedVelocity
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Velocity only from rigidbody we stood upon.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 KinematicAttachedVelocity { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_KinematicContactOffset_" data-uid="KCC.KinematicCharacterController.KinematicContactOffset*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_KinematicContactOffset" data-uid="KCC.KinematicCharacterController.KinematicContactOffset">
+  KinematicContactOffset
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The contact offset value that determines the distance that the character hovers above any surface (must be positive).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Character&quot;, null)]
+[EditorOrder(102)]
+public float KinematicContactOffset { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_KinematicVelocity_" data-uid="KCC.KinematicCharacterController.KinematicVelocity*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_KinematicVelocity" data-uid="KCC.KinematicCharacterController.KinematicVelocity">
+  KinematicVelocity
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Velocity, ignoring movements from rigidbody we stood upon.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 KinematicVelocity { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_MaxSlopeAngle_" data-uid="KCC.KinematicCharacterController.MaxSlopeAngle*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_MaxSlopeAngle" data-uid="KCC.KinematicCharacterController.MaxSlopeAngle">
+  MaxSlopeAngle
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
+[EditorOrder(113)]
+public float MaxSlopeAngle { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_MaxStairStepIterations_" data-uid="KCC.KinematicCharacterController.MaxStairStepIterations*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_MaxStairStepIterations" data-uid="KCC.KinematicCharacterController.MaxStairStepIterations">
+  MaxStairStepIterations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum amount of stair step iterations per frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
+[EditorOrder(118)]
+public int MaxStairStepIterations { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_MaxUnstuckIterations_" data-uid="KCC.KinematicCharacterController.MaxUnstuckIterations*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_MaxUnstuckIterations" data-uid="KCC.KinematicCharacterController.MaxUnstuckIterations">
+  MaxUnstuckIterations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum allowed amount of unstuck iterations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(105)]
+public int MaxUnstuckIterations { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_RigidBodyInteractionMode_" data-uid="KCC.KinematicCharacterController.RigidBodyInteractionMode*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_RigidBodyInteractionMode" data-uid="KCC.KinematicCharacterController.RigidBodyInteractionMode">
+  RigidBodyInteractionMode
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determine how to handle dynamic rigidbodies that we have collided with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
+[EditorOrder(121)]
+public RigidBodyInteractionMode RigidBodyInteractionMode { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.RigidBodyInteractionMode.html">RigidBodyInteractionMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_RigidBodyMoveMode_" data-uid="KCC.KinematicCharacterController.RigidBodyMoveMode*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_RigidBodyMoveMode" data-uid="KCC.KinematicCharacterController.RigidBodyMoveMode">
+  RigidBodyMoveMode
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the character should move with rigidbodies it is standing on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
+[EditorOrder(119)]
+public RigidBodyMoveMode RigidBodyMoveMode { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.RigidBodyMoveMode.html">RigidBodyMoveMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SimulatedMass_" data-uid="KCC.KinematicCharacterController.SimulatedMass*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SimulatedMass" data-uid="KCC.KinematicCharacterController.SimulatedMass">
+  SimulatedMass
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The simulated mass amount for dynamic rigidbody handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
+[EditorOrder(122)]
+public float SimulatedMass { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SlideAccountForPhysicsMaterial_" data-uid="KCC.KinematicCharacterController.SlideAccountForPhysicsMaterial*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SlideAccountForPhysicsMaterial" data-uid="KCC.KinematicCharacterController.SlideAccountForPhysicsMaterial">
+  SlideAccountForPhysicsMaterial
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>If set to true, the character slide will also be affected by the surface's physics material settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(109)]
+public bool SlideAccountForPhysicsMaterial { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SlideMultiplier_" data-uid="KCC.KinematicCharacterController.SlideMultiplier*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SlideMultiplier" data-uid="KCC.KinematicCharacterController.SlideMultiplier">
+  SlideMultiplier
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines how much the character should slide upon coming to contact with a surface.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(108)]
+public float SlideMultiplier { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SolveRigidBodyMovements_" data-uid="KCC.KinematicCharacterController.SolveRigidBodyMovements*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SolveRigidBodyMovements" data-uid="KCC.KinematicCharacterController.SolveRigidBodyMovements">
+  SolveRigidBodyMovements
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the character should solve the movements caused by rigidbodies stood upon.
+If enabled the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
+If disabled the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
+[EditorOrder(120)]
+public bool SolveRigidBodyMovements { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_StairStepDistance_" data-uid="KCC.KinematicCharacterController.StairStepDistance*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_StairStepDistance" data-uid="KCC.KinematicCharacterController.StairStepDistance">
+  StairStepDistance
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum allowed stair step height distance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
+[EditorOrder(115)]
+public float StairStepDistance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_StairStepGroundMode_" data-uid="KCC.KinematicCharacterController.StairStepGroundMode*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_StairStepGroundMode" data-uid="KCC.KinematicCharacterController.StairStepGroundMode">
+  StairStepGroundMode
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Behavior mode for stair stepping.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
+[EditorOrder(116)]
+public StairStepGroundMode StairStepGroundMode { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.StairStepGroundMode.html">StairStepGroundMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_StairStepMinimumForwardDistance_" data-uid="KCC.KinematicCharacterController.StairStepMinimumForwardDistance*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_StairStepMinimumForwardDistance" data-uid="KCC.KinematicCharacterController.StairStepMinimumForwardDistance">
+  StairStepMinimumForwardDistance
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Minimum distance the character must be able to move forward on a detected step for it to be considered valid.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
+[EditorOrder(117)]
+public float StairStepMinimumForwardDistance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="KCC_KinematicCharacterController_CastCollider_" data-uid="KCC.KinematicCharacterController.CastCollider*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_System_Boolean_" data-uid="KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,System.Boolean)">
+  CastCollider(Vector3, Vector3, out RayCastHit, float, uint, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Return all colliders collided with by the cast.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, float distance = 3.4028235E+38, uint layerMask = 4294967295, bool hitTriggers = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to trace from</p>
+</dd>
+    <dt><code>direction</code> <span class="xref">Vector3</span></dt>
+    <dd></dd>
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd></dd>
+    <dt><code>distance</code> <span class="xref">float</span></dt>
+    <dd></dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd></dd>
+    <dt><code>hitTriggers</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if collided with anything</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>Thrown if unsupported collider type (should never happen)</p>
+</dd>
+  </dl>
+
+
+
+  <a id="KCC_KinematicCharacterController_ForceUnground_" data-uid="KCC.KinematicCharacterController.ForceUnground*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ForceUnground" data-uid="KCC.KinematicCharacterController.ForceUnground">
+  ForceUnground()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Force the character to unground.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ForceUnground()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_GroundTangent_" data-uid="KCC.KinematicCharacterController.GroundTangent*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GroundTangent_FlaxEngine_Vector3_" data-uid="KCC.KinematicCharacterController.GroundTangent(FlaxEngine.Vector3)">
+  GroundTangent(Vector3)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Utility function to project a direction along the ground normal without any lateral movement (accounts for gravity direction)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 GroundTangent(Vector3 direction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>direction</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Normalized direction</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd><p>Projected normalized direction</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_IsNormalStableGround_" data-uid="KCC.KinematicCharacterController.IsNormalStableGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_IsNormalStableGround_FlaxEngine_Vector3_" data-uid="KCC.KinematicCharacterController.IsNormalStableGround(FlaxEngine.Vector3)">
+  IsNormalStableGround(Vector3)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Is the normal vector considered stable ground?</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsNormalStableGround(Vector3 normal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>normal</code> <span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if stable</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_KinematicUpdate_" data-uid="KCC.KinematicCharacterController.KinematicUpdate*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_KinematicUpdate" data-uid="KCC.KinematicCharacterController.KinematicUpdate">
+  KinematicUpdate()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Calculate movement. This should not ever be called directly.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void KinematicUpdate()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_OnDisable_" data-uid="KCC.KinematicCharacterController.OnDisable*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_OnDisable" data-uid="KCC.KinematicCharacterController.OnDisable">
+  OnDisable()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when actor gets removed from game systems. Occurs on EndPlay event or when actor gets inactivated in hierarchy. Use this event to unregister object from other game system (eg. audio).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void OnDisable()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_OnEnable_" data-uid="KCC.KinematicCharacterController.OnEnable*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_OnEnable" data-uid="KCC.KinematicCharacterController.OnEnable">
+  OnEnable()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when actor gets added to game systems. Occurs on BeginPlay event or when actor gets activated in hierarchy. Use this event to register object to other game system (eg. audio).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void OnEnable()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_OverlapCollider_" data-uid="KCC.KinematicCharacterController.OverlapCollider*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_OverlapCollider_FlaxEngine_Vector3_FlaxEngine_Collider____System_UInt32_System_Boolean_System_Single_" data-uid="KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,System.Boolean,System.Single)">
+  OverlapCollider(Vector3, out Collider[], uint, bool, float)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Return all colliders we are overlapping with.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = 4294967295, bool hitTriggers = true, float inflate = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to trace at</p>
+</dd>
+    <dt><code>colliders</code> <span class="xref">Collider</span>[]</dt>
+    <dd></dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd></dd>
+    <dt><code>hitTriggers</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>inflate</code> <span class="xref">float</span></dt>
+    <dd><p>Extra size added to the collider size</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if overlapped with anything</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>Thrown if unsupported collider type (should never happen)</p>
+</dd>
+  </dl>
+
+
+
+  <a id="KCC_KinematicCharacterController_UnstuckSolve_" data-uid="KCC.KinematicCharacterController.UnstuckSolve*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_UnstuckSolve_System_Single_" data-uid="KCC.KinematicCharacterController.UnstuckSolve(System.Single)">
+  UnstuckSolve(float)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Calculates the necessary vector3 to move out of collisions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 UnstuckSolve(float inflate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inflate</code> <span class="xref">float</span></dt>
+    <dd><p>Extra size added to the collider size</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd><p>Amount to push out by so that the character is no longer colliding with anything</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
