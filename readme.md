@@ -1,6 +1,8 @@
 # Kinematic Character Controller 
 For Flax Engine as a plugin, ideal for retro feel games!
 
+[documentation here](https://zode.github.io/KCC/docs/introduction.html)
+
 Pull requests & suggestions are welcome!
 
 This is a KCC implementation based on:
