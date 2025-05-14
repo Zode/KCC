@@ -1463,8 +1463,12 @@ public class KinematicCharacterController : KinematicBase
         }
 
         DebugDrawCollider(TransientPosition, TransientOrientation, Color.YellowGreen, 0.0f, false);
-        DebugDraw.DrawWireArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, Color.GreenYellow, 0.0f, false);
-        DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalVelocity.Normalized), (float)_internalVelocity.Length*0.01f, 1.0f, Color.YellowGreen, 0.0f, false);
+
+        if(IsDebugDrawEnabled())
+        {
+            DebugDraw.DrawWireArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, Color.GreenYellow, 0.0f, false);
+            DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalVelocity.Normalized), (float)_internalVelocity.Length*0.01f, 1.0f, Color.YellowGreen, 0.0f, false);
+        }
     }
 
     /// <summary>
