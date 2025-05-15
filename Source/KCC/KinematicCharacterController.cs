@@ -757,14 +757,12 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
-        RigidBodyInteraction rbInteraction = new()
-        {
-            RigidBody = rigidBody,
-            Point = trace.Point,
-            Normal = trace.Normal,
-            CharacterVelocity = _internalVelocity,
-            BodyVelocity = rigidBody.LinearVelocity,
-        };
+        RigidBodyInteraction rbInteraction;
+        rbInteraction.RigidBody = rigidBody;
+        rbInteraction.Point = trace.Point;
+        rbInteraction.Normal = trace.Normal;
+        rbInteraction.CharacterVelocity = _internalVelocity;
+        rbInteraction.BodyVelocity = rigidBody.LinearVelocity;
 
         _rigidBodiesCollided.Add(rbInteraction);
     }
