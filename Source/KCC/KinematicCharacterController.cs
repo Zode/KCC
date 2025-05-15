@@ -751,7 +751,7 @@ public class KinematicCharacterController : KinematicBase
                 return;
             }
 
-            //are we about to go backwards? (unwanted direction, fixes issues  with jiggling in corners with obtuse angles)
+            //are we about to go backwards? (unwanted direction, fixes issues with jiggling in corners with obtuse angles)
             if(Math.Round(Vector3.Dot(originalVelocityNormalized, _internalVelocity.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
@@ -840,7 +840,6 @@ public class KinematicCharacterController : KinematicBase
                 if(!isAcute)
                 {
                     Vector3 averagePlane = (trace.Normal + firstPlane).Normalized;
-                    Vector3 averageLeft = Vector3.Left * Quaternion.FromDirection(averagePlane);
 
                     //also nudge by both planes in hopes of pushing out of the corner, similar to how quake3 handles this.
                     //normally the surrounding code would fix the issue, however it is not enough to solve vertical movement in obtuse corners
@@ -1371,8 +1370,6 @@ public class KinematicCharacterController : KinematicBase
         #if FLAX_EDITOR
         Profiler.EndEvent();
         #endif
-        
-        return;
     }
 
     /// <summary>
