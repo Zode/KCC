@@ -185,15 +185,15 @@ public class KinematicCharacterController : KinematicBase
     public int MaxStairStepIterations {get => _maxStairStepIterations; set => _maxStairStepIterations = Math.Clamp(value, 0, int.MaxValue);} 
     private int _maxStairStepIterations = 10;
     /// <summary>
-    /// Determines if the character should move with rigidbodies it is standing on.
+    /// Determines if the character should move with RigidBodies it is standing on.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(119)]
     public RigidBodyMoveMode RigidBodyMoveMode {get; set;} = RigidBodyMoveMode.KinematicMoversOnly;
     /// <summary>
     /// Determines if the character should solve the movements caused by rigidbodies stood upon.
-    /// If enabled the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
-    /// If disabled the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.
+    /// If enabled, the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
+    /// If disabled, the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(120)]
@@ -220,7 +220,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 GravityEulerNormalized {get; private set;} = Vector3.Down;
     /// <summary>
-    /// Velocity, ignoring movements from rigidbody we stood upon.
+    /// Velocity, ignoring movements from RigidBody we stood upon.
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 KinematicVelocity {get; set;} = Vector3.Zero;
     /// <summary>
@@ -356,24 +356,23 @@ public class KinematicCharacterController : KinematicBase
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 _internalVelocity = KinematicAttachedVelocity;
                 SolveSweep();
-                //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
-                TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
             }
             else
             {
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 TransientPosition += KinematicAttachedVelocity;
-                //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
-                TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
             }
+            
+            //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
+            TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
         }
         else
         {
             KinematicAttachedVelocity = Vector3.Zero;
         }
 
-        //Move to the calculated position so that next iterating character will be aware of this character's result
-        // this hopefully improves stability between character character interactions
+        //Move to the calculated position so that the next iterating character will be aware of this character's result
+        // this hopefully improves stability between character <-> character interactions
         Position = TransientPosition;
         Orientation = TransientOrientation;
 
@@ -662,7 +661,7 @@ public class KinematicCharacterController : KinematicBase
     /// Check if the other collider should be ignored.
     /// </summary>
     /// <param name="collider"></param>
-    /// <returns>False if should be ignored, True is should be considered</returns>
+    /// <returns>False if should be ignored, True if should be considered</returns>
     private bool IsColliderValid(Collider collider)
     {
         if(_collider == null)
@@ -700,7 +699,7 @@ public class KinematicCharacterController : KinematicBase
     private void TryAddRigidBodyInteraction(RayCastHit trace, RigidBody rigidBody)
     {
         //only allow non-KCC rigidbodies for now
-        if(rigidBody is KinematicCharacterController otherKCC)
+        if(rigidBody is KinematicCharacterController)
         {
             return;
         }
@@ -728,7 +727,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// The main solver, this will move the character as long as there is velocity left and we haven't gone over 3 collisions in this sweep.
+    /// The main solver, this will move the character as long as there is velocity left, and we haven't gone over 3 collisions in this sweep.
     /// </summary>
     private void SolveSweep()
     {
@@ -739,7 +738,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3 originalVelocityNormalized = _internalVelocity.Normalized;
         int unstuckSolves = 0;
 
-        //we can realistically only collide with 2 planes before we lose all degrees of freedom (3 plane intersection is a point)
+        //we can realistically only collide with 2 planes before we lose all degrees of freedom (intersection of three planes is a point)
         Vector3 firstPlane = Vector3.Zero;
         for(int i = 0; i < 3; i++)
         {
@@ -786,7 +785,7 @@ public class KinematicCharacterController : KinematicBase
             {
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
-                //try to solve issue with inflated collider and re-try sweep.
+                //try to solve the issue with inflated collider and re-try sweep.
                 TransientPosition += UnstuckSolve(0.0f);
                 i--;
                 unstuckSolves++;
@@ -845,7 +844,7 @@ public class KinematicCharacterController : KinematicBase
 
                     //also nudge by both planes in hopes of pushing out of the corner, similar to how quake3 handles this.
                     //normally the surrounding code would fix the issue, however it is not enough to solve vertical movement in obtuse corners
-                    //so this is needed, sadly this does introduce slight jiggling in some obtuse corners :( but its better than getting stuck.
+                    //so this is needed, sadly this does introduce slight jiggling in some obtuse corners :( but it's better than getting stuck.
                     _internalVelocity += averagePlane; 
                     
                     if(Math.Round(Vector3.Dot(_internalVelocity.Normalized, GravityEulerNormalized), 4, MidpointRounding.ToZero) > 0.0f)
@@ -974,9 +973,9 @@ public class KinematicCharacterController : KinematicBase
             }
         }
         
-        //move to possible new wall collision position
+        //move to a possible new wall collision position
         temporaryPosition += remainingVelocityNormalized * temporaryDistance;
-        //can we stand on this? if so then also snap to floor.
+        //can we stand on this? if so, then also snap to the floor.
         bool hasSolidBelow = CastCollider(temporaryPosition, GravityEulerNormalized, out trace, StairStepDistance + KinematicContactOffset, CollisionMask, false);
         //all modes need some sort of solid.
         if(!hasSolidBelow && StairStepGroundMode != StairStepGroundMode.None)
@@ -1071,7 +1070,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Trace to ground and snap to it if necessary.
+    /// Trace to the ground and snap to it if necessary.
     /// </summary>
     /// <returns>Result for the ground standing upon, null if not touching any valid ground or ground at all</returns>
     private RayCastHit? SolveGround()
@@ -1511,7 +1510,7 @@ public class KinematicCharacterController : KinematicBase
 
     private void DebugDrawCapsule(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
-        //for some reason this is rotated by 90 degrees unlike other debug draws..
+        //for some reason, this is rotated by 90 degrees unlike other debug draws..
         Quaternion fixedOrientation = orientation * Quaternion.RotationX(1.57079633f);
         DebugDraw.DrawWireCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight, color, time, depthTest);
     }
@@ -1523,12 +1522,7 @@ public class KinematicCharacterController : KinematicBase
 
     private bool IsDebugDrawEnabled()
     {
-        if(_kccPlugin is null || _kccPlugin.KCCSettingsInstance == null || !_kccPlugin.KCCSettingsInstance.DebugDisplay)
-        {
-            return false;
-        }
-
-        return true;
+        return _kccPlugin is not null && _kccPlugin.KCCSettingsInstance != null && _kccPlugin.KCCSettingsInstance.DebugDisplay;
     }
     #endif
 }

@@ -17,7 +17,7 @@ public interface IKinematicCharacter
 	/// <param name="orientation"></param>
 	public void KinematicMoveUpdate(out Vector3 velocity, out Quaternion orientation);
 	/// <summary>
-	/// Called the the character velocity needs to be projected along side the current ground plane during the sweep,
+	/// Called the character velocity needs to be projected alongside the current ground plane during the sweep,
 	/// the velocity supplied here is the remaining velocity for the tick at the point where this callback is triggered.
 	/// This is necessary if you wish to move up sloped surfaces without issues.
 	/// Vector3’s ProjectOnPlane will suffice for modern use.
@@ -28,7 +28,7 @@ public interface IKinematicCharacter
 	/// <returns>Velocity</returns>
 	public Vector3 KinematicGroundProjection(Vector3 velocity, Vector3 gravityEulerNormalized);
 	/// <summary>
-	/// Called when the character collides with something during a sweep, this can be used to precisely filter out collisions (eg. teammates).
+	/// Called when the character collides with something during a sweep, this can be used to precisely filter out collisions (e.g. teammates).
 	/// </summary>
 	/// <param name="other"></param>
 	/// <returns>True if should collide, False if should pass through</returns>
@@ -68,7 +68,7 @@ public interface IKinematicCharacter
 	public void KinematicAttachedRigidBodyEvent(bool attached, RigidBody? rigidBody);
 	/// <summary>
 	/// Called for every tick the character is attached to a rigidbody to move with, 
-	/// may be useful if you wish to rotate the camera along side the rigidbody it is attached to.
+	/// may be useful if you wish to rotate the camera alongside the rigidbody it is attached to.
 	/// </summary>
 	/// <param name="rigidBody"></param>
 	public void KinematicAttachedRigidBodyUpdate(RigidBody rigidBody);

@@ -121,7 +121,7 @@ public class KCC : GamePlugin
         }
 
         //don't bother processing when game is paused
-        //also fixes an issue where CastCollider would be fed a non-normalized direction as result of game being paused
+        //also fixes an issue where CastCollider would be fed a non-normalized direction as a result of game being paused
         if(!Level.TickEnabled || Time.TimeScale == 0.0f || Time.GamePaused)
         {
             return;
@@ -198,7 +198,7 @@ public class KCC : GamePlugin
 
     /// <summary>
     /// Saves necessary info for interpolation before the simulation.
-    /// All KCC Actors are moved to their finalized positions from previous frame, forcing a finish to the interpolation.
+    /// All KCC Actors are moved to their finalized positions from the previous frame, forcing a finish to the interpolation.
     /// </summary>
     public void PreSimulationUpdate()
     {
@@ -260,7 +260,7 @@ public class KCC : GamePlugin
     /// <summary>
     /// Sets up for interpolation after the simulation.
     /// All KCC Actors are moved back to their initial position, so that the interpolation appears correct.
-    /// If interpolation is disabled all KCC Actors are moved to their final position.
+    /// If interpolation is disabled, all KCC Actors are moved to their final position.
     /// </summary>
     public void PostSimulationUpdate()
     {
@@ -315,7 +315,7 @@ public class KCC : GamePlugin
     }
 
     /// <summary>
-    /// Processes per frame interpolation for all KCC Actors, moving them between ther initial and final positions as determined by last KCC simulation executed.
+    /// Processes per frame interpolation for all KCC Actors, moving them between the initial and final positions as determined by the last KCC simulation executed.
     /// </summary>
     public void InterpolationUpdate()
     {
