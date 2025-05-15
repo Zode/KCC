@@ -1,6 +1,7 @@
 using System;
 using FlaxEngine;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 
 #if FLAX_EDITOR
@@ -236,6 +237,10 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [NoSerialize, HideInEditor] public RigidBody? AttachedRigidBody => _attachedRigidBody;
     private RigidBody? _attachedRigidBody = null;
+    //The amount of maximum colliders flax will ever report back.
+    private const int FLAX_PHYSICS_MAX_QUERY = 128;
+    //Evil optimization global variable, used to cache collider validity for sorting colliders in OverlapCollider
+    private static BitArray _colliderValidities = new(FLAX_PHYSICS_MAX_QUERY, false);
 
     /// <inheritdoc />
     public override void OnEnable()
@@ -455,9 +460,9 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="layerMask"></param>
     /// <param name="hitTriggers"></param>
     /// <param name="inflate">Extra size added to the collider size</param>
-    /// <returns>True if overlapped with anything</returns>
+    /// <returns>Amount of collisions in the collider array that are valid starting from beginning of array, will be 0 if no collisions happened</returns>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 0.0f)
+    public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 0.0f)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
@@ -478,27 +483,63 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return result;
+            return colliders.Length;
         }
 
-        #pragma warning disable IDE0018
-        Collider[] temporaryColliders;
-        #pragma warning restore IDE0018 
         result = ColliderType switch
         {
-            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents * inflate, out temporaryColliders, TransientOrientation, layerMask, hitTriggers),
-            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius * inflate), (float)((ColliderHeight - ColliderHalfRadius) * inflate), out temporaryColliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
-            ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius * inflate), out temporaryColliders, layerMask, hitTriggers),
+            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents * inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
+            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius * inflate), (float)((ColliderHeight - ColliderHalfRadius) * inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+            ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius * inflate), out colliders, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
         };
 
-        colliders = Array.FindAll(temporaryColliders, IsColliderValid);
+        if(!result)
+        {
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
+            return 0;
+        }
+
+        //first check the collider validity and cache it so we don't cause overhead from function calls
+        int i;
+        for(i = 0; i < colliders.Length; i++)
+        {
+            _colliderValidities[i] = IsColliderValid(colliders[i]);
+        }
+
+        //sort collider array so that all valid colliders are in unordered sequence
+        for(i = 0; i < colliders.Length; i++)
+        {
+            //what we have is already ok, continue on
+            if(_colliderValidities[i])
+            {
+                continue;
+            }
+
+            //this is not valid, see if we have anything ahead of us that we can swap with.
+            for(int j = i + 1; j < colliders.Length; j++)
+            {
+                if(!_colliderValidities[j])
+                {
+                    continue;
+                }
+                
+                //tuple not used here to avoid allocating a ValueTuple<T,T>
+                Collider temp = colliders[i];
+                colliders[i] = colliders[j];
+                colliders[j] = temp;
+                break;
+			}
+		}
 
         #if FLAX_EDITOR
         Profiler.EndEvent();
         #endif
 
-        return result;
+        return Math.Max(i - 1, 0);
     }
 
     /// <summary>
@@ -1269,7 +1310,8 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        if(!OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, inflate))
+        int overlaps = 0;
+        if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, inflate)) == 0)
         {
             #if FLAX_EDITOR
             Profiler.EndEvent();
@@ -1283,7 +1325,7 @@ public class KinematicCharacterController : KinematicBase
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
         SetColliderSizeWithInflation(inflate);
-        for(int i = 0; i < colliders.Length; i++)
+        for(int i = 0; i < overlaps; i++)
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
