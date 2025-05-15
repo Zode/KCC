@@ -206,7 +206,10 @@ public class KinematicCharacterController : KinematicBase
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(121)]
     public RigidBodyInteractionMode RigidBodyInteractionMode {get; set;} = RigidBodyInteractionMode.PureKinematic;
-    private readonly List<RigidBodyInteraction> _rigidBodiesCollided = [];
+    private const int KCC_MAX_RB_INTERACTIONS = 1024;
+    //Evil optimization global variables, used to track rigidbody interactions
+    private static readonly RigidBodyInteraction[] _rigidBodiesCollided = new RigidBodyInteraction[KCC_MAX_RB_INTERACTIONS];
+    private static int _rigidBodiesCollidedCount = 0;
     /// <summary>
     /// The simulated mass amount for dynamic rigidbody handling.
     /// </summary>
@@ -241,7 +244,7 @@ public class KinematicCharacterController : KinematicBase
     //The amount of maximum colliders flax will ever report back.
     private const int FLAX_PHYSICS_MAX_QUERY = 128;
     //Evil optimization global variable, used to cache collider validity for sorting colliders in OverlapCollider
-    private static BitArray _colliderValidities = new(FLAX_PHYSICS_MAX_QUERY, false);
+    private static readonly BitArray _colliderValidities = new(FLAX_PHYSICS_MAX_QUERY, false);
 
     /// <inheritdoc />
     public override void OnEnable()
@@ -322,7 +325,7 @@ public class KinematicCharacterController : KinematicBase
         _internalGravityVelocity = _internalVelocity.Y;
         _internalVelocity *= TransientOrientation;
 
-        _rigidBodiesCollided.Clear();
+        _rigidBodiesCollidedCount = 0;
 
         if(IsGrounded)
         {
@@ -528,6 +531,12 @@ public class KinematicCharacterController : KinematicBase
             {
                 if(!_colliderValidities[b])
                 {
+                    //early exit the sort in case we have boatloads of invalids at the end, no point trying to sort them when there is nothing to sort.
+                    if(b + 1 == colliders.Length)
+                    {
+                        goto earlyExitFromSort;
+                    }
+
                     continue;
                 }
                 
@@ -543,6 +552,7 @@ public class KinematicCharacterController : KinematicBase
 			}
 		}
 
+        earlyExitFromSort:
         #if FLAX_EDITOR
         Profiler.EndEvent();
         #endif
@@ -758,19 +768,20 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
-        if(_rigidBodiesCollided.Any(x => x.RigidBody == rigidBody))
+        for(int i = 0; i < _rigidBodiesCollidedCount; i++)
         {
-            return;
+            if(_rigidBodiesCollided[i].RigidBody == rigidBody)
+            {
+                return;
+            }
         }
 
-        RigidBodyInteraction rbInteraction;
-        rbInteraction.RigidBody = rigidBody;
-        rbInteraction.Point = trace.Point;
-        rbInteraction.Normal = trace.Normal;
-        rbInteraction.CharacterVelocity = _internalVelocity;
-        rbInteraction.BodyVelocity = rigidBody.LinearVelocity;
-
-        _rigidBodiesCollided.Add(rbInteraction);
+        _rigidBodiesCollided[_rigidBodiesCollidedCount].RigidBody = rigidBody;
+        _rigidBodiesCollided[_rigidBodiesCollidedCount].Point = trace.Point;
+        _rigidBodiesCollided[_rigidBodiesCollidedCount].Normal = trace.Normal;
+        _rigidBodiesCollided[_rigidBodiesCollidedCount].CharacterVelocity = _internalVelocity;
+        _rigidBodiesCollided[_rigidBodiesCollidedCount].BodyVelocity = rigidBody.LinearVelocity;
+        _rigidBodiesCollidedCount++;
     }
 
     /// <summary>
@@ -1384,9 +1395,9 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
-        foreach(RigidBodyInteraction rbInteraction in _rigidBodiesCollided)
+        for(int i = 0; i < _rigidBodiesCollidedCount; i++)
         {
-            if(rbInteraction.RigidBody == AttachedRigidBody)
+            if(_rigidBodiesCollided[i].RigidBody == AttachedRigidBody)
             {
                 continue;
             }
@@ -1403,19 +1414,19 @@ public class KinematicCharacterController : KinematicBase
                     return;
                 }
                 
-                Controller.KinematicRigidBodyInteraction(rbInteraction);
+                Controller.KinematicRigidBodyInteraction(_rigidBodiesCollided[i]);
                 continue;
             }
 
             float massRatio = 1.0f;
             if(RigidBodyInteractionMode == RigidBodyInteractionMode.SimulateKinematic)
             {
-                massRatio = SimulatedMass / (SimulatedMass + rbInteraction.RigidBody.Mass);
+                massRatio = SimulatedMass / (SimulatedMass + _rigidBodiesCollided[i].RigidBody.Mass);
             }
 
-            Vector3 force = Vector3.ProjectOnPlane(rbInteraction.CharacterVelocity, GravityEulerNormalized) * SimulatedMass;
-            rbInteraction.RigidBody.WakeUp();
-            rbInteraction.RigidBody.AddForceAtPosition(force * massRatio, rbInteraction.Point, ForceMode.Impulse);
+            Vector3 force = Vector3.ProjectOnPlane(_rigidBodiesCollided[i].CharacterVelocity, GravityEulerNormalized) * SimulatedMass;
+            _rigidBodiesCollided[i].RigidBody.WakeUp();
+            _rigidBodiesCollided[i].RigidBody.AddForceAtPosition(force * massRatio, _rigidBodiesCollided[i].Point, ForceMode.Impulse);
         }
 
         #if FLAX_EDITOR
