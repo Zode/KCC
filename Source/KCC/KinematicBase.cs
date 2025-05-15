@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using FlaxEngine;
 
 namespace KCC;
@@ -50,6 +51,7 @@ public class KinematicBase : RigidBody
 	/// Set the mover's position directly.
 	/// </summary>
 	/// <param name="position">World space position</param>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetPosition(Vector3 position)
 	{
 		Position = position;
@@ -61,6 +63,7 @@ public class KinematicBase : RigidBody
 	/// Set the mover's orientation directly.
 	/// </summary>
 	/// <param name="orientation">World space orientation</param>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetOrientation(Quaternion orientation)
 	{
 		Orientation = orientation;

@@ -3,6 +3,7 @@ using FlaxEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 #if FLAX_EDITOR
 using FlaxEditor;
@@ -419,6 +420,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     /// <param name="inflate">Extra size added to the collider size</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SetColliderSizeWithInflation(float inflate)
     {
         if(_collider == null)
@@ -1104,6 +1106,7 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Force the character to unground.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ForceUnground()
     {
         _forceUnground = true;
@@ -1274,6 +1277,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     /// <param name="normal"></param>
     /// <returns>True if stable</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsNormalStableGround(Vector3 normal)
     {
         return Vector3.Angle(-GravityEulerNormalized, normal) <= MaxSlopeAngle;
@@ -1350,6 +1354,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     /// <param name="direction">Normalized direction</param>
     /// <returns>Projected normalized direction</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector3 GroundTangent(Vector3 direction)
     {
         Vector3 right = Vector3.Cross(direction, -GravityEulerNormalized) ;
@@ -1466,6 +1471,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     #if FLAX_EDITOR
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool DebugIsSelected()
     {
         if(!IsDebugDrawEnabled())
@@ -1518,6 +1524,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="time">Draw time</param>
     /// <param name="depthTest">Depth test</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DebugDrawCollider(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         switch(ColliderType)
@@ -1539,6 +1546,7 @@ public class KinematicCharacterController : KinematicBase
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DebugDrawBox(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         Matrix matrix = Matrix.CreateWorld(position, Vector3.Forward * orientation, Vector3.Up * orientation);
@@ -1547,6 +1555,7 @@ public class KinematicCharacterController : KinematicBase
             color, time, depthTest);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DebugDrawCapsule(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         //for some reason, this is rotated by 90 degrees unlike other debug draws..
@@ -1554,11 +1563,13 @@ public class KinematicCharacterController : KinematicBase
         DebugDraw.DrawWireCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight, color, time, depthTest);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DebugDrawSphere(Vector3 position, Color color, float time, bool depthTest)
     {
         DebugDraw.DrawWireSphere(new(position, ColliderRadius), color, time, depthTest);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsDebugDrawEnabled()
     {
         return _kccPlugin is not null && _kccPlugin.KCCSettingsInstance != null && _kccPlugin.KCCSettingsInstance.DebugDisplay;
