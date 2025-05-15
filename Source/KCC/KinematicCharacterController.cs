@@ -454,15 +454,16 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Return all colliders we are overlapping with.
+    /// Return all colliders we are overlapping with in an array.
     /// Will filter if collision filtering is enabled for this character.
+    /// Array is also sorted in an unordered sequence where all valid colliders are at the beginning of the array, and all invalid colliders are at the end of the array.
     /// </summary>
     /// <param name="origin">Point in world space to trace at</param>
     /// <param name="colliders"></param>
     /// <param name="layerMask"></param>
     /// <param name="hitTriggers"></param>
     /// <param name="inflate">Extra size added to the collider size</param>
-    /// <returns>Amount of collisions in the collider array that are valid starting from beginning of array, will be 0 if no collisions happened</returns>
+    /// <returns>Last "valid collision" index in the collider array, will be 0 if no collisions happened</returns>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 0.0f)
     {
@@ -506,33 +507,38 @@ public class KinematicCharacterController : KinematicBase
         }
 
         //first check the collider validity and cache it so we don't cause overhead from function calls
-        int i;
-        for(i = 0; i < colliders.Length; i++)
+        for(int i = 0; i < colliders.Length; i++)
         {
             _colliderValidities[i] = IsColliderValid(colliders[i]);
         }
 
         //sort collider array so that all valid colliders are in unordered sequence
-        for(i = 0; i < colliders.Length; i++)
+        int lastValidIndex = 0;
+        for(int a = 0; a < colliders.Length; a++)
         {
             //what we have is already ok, continue on
-            if(_colliderValidities[i])
+            if(_colliderValidities[a])
             {
+                lastValidIndex++;
                 continue;
             }
 
-            //this is not valid, see if we have anything ahead of us that we can swap with.
-            for(int j = i + 1; j < colliders.Length; j++)
+            //this is not valid, see if we have anything valid ahead of us that we can swap with.
+            for(int b = a + 1; b < colliders.Length; b++)
             {
-                if(!_colliderValidities[j])
+                if(!_colliderValidities[b])
                 {
                     continue;
                 }
                 
-                //tuple not used here to avoid allocating a ValueTuple<T,T>
-                Collider temp = colliders[i];
-                colliders[i] = colliders[j];
-                colliders[j] = temp;
+                //tuple swap not used here to avoid allocating a ValueTuple<T,T>
+                Collider tempCollider = colliders[a];
+                colliders[a] = colliders[b];
+                colliders[b] = tempCollider;
+                bool tempValidity = _colliderValidities[a];
+                _colliderValidities[a] = _colliderValidities[b];
+                _colliderValidities[b] = tempValidity;
+
                 break;
 			}
 		}
@@ -541,7 +547,7 @@ public class KinematicCharacterController : KinematicBase
         Profiler.EndEvent();
         #endif
 
-        return Math.Max(i - 1, 0);
+        return lastValidIndex;
     }
 
     /// <summary>
