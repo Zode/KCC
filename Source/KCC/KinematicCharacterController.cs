@@ -768,6 +768,15 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
+        if(_rigidBodiesCollidedCount >= KCC_MAX_RB_INTERACTIONS)
+        {
+            #if FLAX_EDITOR
+            Debug.LogWarning($"Maximum RigidBody interactions reached! (have: {_rigidBodiesCollidedCount}, limit: {KCC_MAX_RB_INTERACTIONS})", this);
+            #endif
+
+            return;
+        }
+
         for(int i = 0; i < _rigidBodiesCollidedCount; i++)
         {
             if(_rigidBodiesCollided[i].RigidBody == rigidBody)
