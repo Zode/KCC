@@ -1288,66 +1288,31 @@ references:
 - uid: KCC.RigidBodyInteraction.BodyVelocity
   name: BodyVelocity
   href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_BodyVelocity
-  commentId: P:KCC.RigidBodyInteraction.BodyVelocity
-  fullName: KCC.RigidBodyInteraction.BodyVelocity
-  nameWithType: RigidBodyInteraction.BodyVelocity
-- uid: KCC.RigidBodyInteraction.BodyVelocity*
-  name: BodyVelocity
-  href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_BodyVelocity_
-  commentId: Overload:KCC.RigidBodyInteraction.BodyVelocity
-  isSpec: "True"
+  commentId: F:KCC.RigidBodyInteraction.BodyVelocity
   fullName: KCC.RigidBodyInteraction.BodyVelocity
   nameWithType: RigidBodyInteraction.BodyVelocity
 - uid: KCC.RigidBodyInteraction.CharacterVelocity
   name: CharacterVelocity
   href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_CharacterVelocity
-  commentId: P:KCC.RigidBodyInteraction.CharacterVelocity
-  fullName: KCC.RigidBodyInteraction.CharacterVelocity
-  nameWithType: RigidBodyInteraction.CharacterVelocity
-- uid: KCC.RigidBodyInteraction.CharacterVelocity*
-  name: CharacterVelocity
-  href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_CharacterVelocity_
-  commentId: Overload:KCC.RigidBodyInteraction.CharacterVelocity
-  isSpec: "True"
+  commentId: F:KCC.RigidBodyInteraction.CharacterVelocity
   fullName: KCC.RigidBodyInteraction.CharacterVelocity
   nameWithType: RigidBodyInteraction.CharacterVelocity
 - uid: KCC.RigidBodyInteraction.Normal
   name: Normal
   href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_Normal
-  commentId: P:KCC.RigidBodyInteraction.Normal
-  fullName: KCC.RigidBodyInteraction.Normal
-  nameWithType: RigidBodyInteraction.Normal
-- uid: KCC.RigidBodyInteraction.Normal*
-  name: Normal
-  href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_Normal_
-  commentId: Overload:KCC.RigidBodyInteraction.Normal
-  isSpec: "True"
+  commentId: F:KCC.RigidBodyInteraction.Normal
   fullName: KCC.RigidBodyInteraction.Normal
   nameWithType: RigidBodyInteraction.Normal
 - uid: KCC.RigidBodyInteraction.Point
   name: Point
   href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_Point
-  commentId: P:KCC.RigidBodyInteraction.Point
-  fullName: KCC.RigidBodyInteraction.Point
-  nameWithType: RigidBodyInteraction.Point
-- uid: KCC.RigidBodyInteraction.Point*
-  name: Point
-  href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_Point_
-  commentId: Overload:KCC.RigidBodyInteraction.Point
-  isSpec: "True"
+  commentId: F:KCC.RigidBodyInteraction.Point
   fullName: KCC.RigidBodyInteraction.Point
   nameWithType: RigidBodyInteraction.Point
 - uid: KCC.RigidBodyInteraction.RigidBody
   name: RigidBody
   href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_RigidBody
-  commentId: P:KCC.RigidBodyInteraction.RigidBody
-  fullName: KCC.RigidBodyInteraction.RigidBody
-  nameWithType: RigidBodyInteraction.RigidBody
-- uid: KCC.RigidBodyInteraction.RigidBody*
-  name: RigidBody
-  href: api/KCC.RigidBodyInteraction.html#KCC_RigidBodyInteraction_RigidBody_
-  commentId: Overload:KCC.RigidBodyInteraction.RigidBody
-  isSpec: "True"
+  commentId: F:KCC.RigidBodyInteraction.RigidBody
   fullName: KCC.RigidBodyInteraction.RigidBody
   nameWithType: RigidBodyInteraction.RigidBody
 - uid: KCC.RigidBodyInteractionMode

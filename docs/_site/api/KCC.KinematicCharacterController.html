@@ -891,7 +891,7 @@ public float KinematicContactOffset { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Velocity, ignoring movements from rigidbody we stood upon.</p>
+  <div class="markdown level1 summary"><p>Velocity, ignoring movements from RigidBody we stood upon.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1061,7 +1061,7 @@ public RigidBodyInteractionMode RigidBodyInteractionMode { get; set; }</code></p
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines if the character should move with rigidbodies it is standing on.</p>
+  <div class="markdown level1 summary"><p>Determines if the character should move with RigidBodies it is standing on.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1198,8 +1198,8 @@ public float SlideMultiplier { get; set; }</code></pre>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines if the character should solve the movements caused by rigidbodies stood upon.
-If enabled the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
-If disabled the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.</p>
+If enabled, the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
+If disabled, the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1580,13 +1580,14 @@ Will filter if collision filtering is enabled for this character.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Return all colliders we are overlapping with.
-Will filter if collision filtering is enabled for this character.</p>
+  <div class="markdown level1 summary"><p>Return all colliders we are overlapping with in an array.
+Will filter if collision filtering is enabled for this character.
+Array is also sorted in an unordered sequence where all valid colliders are at the beginning of the array, and all invalid colliders are at the end of the array.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = 4294967295, bool hitTriggers = true, float inflate = 0)</code></pre>
+    <pre><code class="lang-csharp hljs">public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = 4294967295, bool hitTriggers = true, float inflate = 0)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -1607,8 +1608,8 @@ Will filter if collision filtering is enabled for this character.</p>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">bool</span></dt>
-    <dd><p>True if overlapped with anything</p>
+    <dt><span class="xref">int</span></dt>
+    <dd><p>Last &quot;valid collision&quot; index in the collider array, will be 0 if no collisions happened</p>
 </dd>
   </dl>
 
