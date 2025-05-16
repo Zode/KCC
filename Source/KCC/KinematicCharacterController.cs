@@ -479,9 +479,9 @@ public class KinematicCharacterController : KinematicBase
         {
             result = ColliderType switch
             {
-                ColliderType.Box => Physics.OverlapBox(origin, BoxExtents * inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
-                ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius * inflate), (float)((ColliderHeight - ColliderHalfRadius) * inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
-                ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius * inflate), out colliders, layerMask, hitTriggers),
+                ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
+                ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight - ColliderHalfRadius + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+                ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
             };
 
@@ -494,9 +494,9 @@ public class KinematicCharacterController : KinematicBase
 
         result = ColliderType switch
         {
-            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents * inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
-            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius * inflate), (float)((ColliderHeight - ColliderHalfRadius) * inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
-            ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius * inflate), out colliders, layerMask, hitTriggers),
+            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
+            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight - ColliderHalfRadius + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+            ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
         };
 
