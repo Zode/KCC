@@ -547,7 +547,7 @@ public class KinematicCharacterController : KinematicBase
                 bool tempValidity = _colliderValidities[a];
                 _colliderValidities[a] = _colliderValidities[b];
                 _colliderValidities[b] = tempValidity;
-
+                lastValidIndex++;
                 break;
 			}
 		}
