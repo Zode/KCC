@@ -570,9 +570,9 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="distance"></param>
     /// <param name="layerMask"></param>
     /// <param name="hitTriggers"></param>
-    /// <returns>True if collided with anything</returns>
+    /// <param name="dispatchEvent">If True, will dispatch KinematicCollision event to the controller</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = true)
+    public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = true, bool dispatchEvent = false)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.CastCollider");
@@ -625,7 +625,10 @@ public class KinematicCharacterController : KinematicBase
             }
             else
             {
-                Controller.KinematicCollision(trace);
+                if(dispatchEvent)
+                {
+                    Controller.KinematicCollision(trace);
+                }
 
                 RigidBody? otherRb = trace.Collider.AttachedRigidBody;
                 if(otherRb is not null)
@@ -692,8 +695,12 @@ public class KinematicCharacterController : KinematicBase
         }
         else
         {
-            trace = traces[i]; //have to do it this way, because C# cries otherwise
-            Controller.KinematicCollision(trace);
+            trace = traces[i];
+
+            if(dispatchEvent)
+            {
+                Controller.KinematicCollision(trace);
+            }
 
             RigidBody? otherRb = trace.Collider.AttachedRigidBody;
             if(otherRb is not null)
@@ -828,7 +835,7 @@ public class KinematicCharacterController : KinematicBase
                 return;
             }
             
-            if(!CastCollider(TransientPosition, _internalVelocity.Normalized, out RayCastHit trace, _internalVelocity.Length + KinematicContactOffset, CollisionMask, false))
+            if(!CastCollider(TransientPosition, _internalVelocity.Normalized, out RayCastHit trace, _internalVelocity.Length + KinematicContactOffset, CollisionMask, false, true))
             {
                 #if FLAX_EDITOR
                 if(DebugIsSelected())
@@ -852,8 +859,8 @@ public class KinematicCharacterController : KinematicBase
             {
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
-                //try to solve the issue with inflated collider and re-try sweep.
-                TransientPosition += UnstuckSolve((float)KinematicContactOffset);
+                //try to solve the issue and re-try sweep.
+                TransientPosition += UnstuckSolve(0.0f);
                 i--;
                 unstuckSolves++;
                 continue;
