@@ -339,7 +339,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve((float)KinematicContactOffset);
+        TransientPosition += UnstuckSolve(0.0f);
 
         SolveSweep();
         SolveRigidBodyInteractions();
@@ -441,7 +441,7 @@ public class KinematicCharacterController : KinematicBase
             case ColliderType.Capsule:
                 CapsuleCollider capsule = _collider.As<CapsuleCollider>();
                 capsule.Radius = ColliderRadius + inflate;
-                capsule.Height = ColliderHeight - ColliderHalfRadius + inflate;
+                capsule.Height = ColliderHeight + inflate;
                 //and for some reason this is wrongly rotated in the Z axis by default..
                 capsule.LocalOrientation = Quaternion.RotationZ(1.57079633f);
                 break;
@@ -480,7 +480,7 @@ public class KinematicCharacterController : KinematicBase
             result = ColliderType switch
             {
                 ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
-                ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight - ColliderHalfRadius + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+                ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
                 ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
             };
@@ -495,7 +495,7 @@ public class KinematicCharacterController : KinematicBase
         result = ColliderType switch
         {
             ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
-            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight - ColliderHalfRadius + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
             ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
         };
@@ -614,7 +614,7 @@ public class KinematicCharacterController : KinematicBase
             result = ColliderType switch
             {
                 ColliderType.Box => Physics.BoxCast(origin, BoxExtents, direction, out trace, TransientOrientation, (float)distance, layerMask, hitTriggers),
-                ColliderType.Capsule => Physics.CapsuleCast(origin, ColliderRadius, ColliderHeight - ColliderHalfRadius, direction, out trace, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
+                ColliderType.Capsule => Physics.CapsuleCast(origin, ColliderRadius, ColliderHeight, direction, out trace, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
                 ColliderType.Sphere => Physics.SphereCast(origin, ColliderRadius, direction, out trace, (float)distance, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
             };
@@ -654,7 +654,7 @@ public class KinematicCharacterController : KinematicBase
         result = ColliderType switch
         {
             ColliderType.Box => Physics.BoxCastAll(origin, BoxExtents, direction, out traces, TransientOrientation, (float)distance, layerMask, hitTriggers),
-            ColliderType.Capsule => Physics.CapsuleCastAll(origin, ColliderRadius, ColliderHeight - ColliderHalfRadius, direction, out traces, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
+            ColliderType.Capsule => Physics.CapsuleCastAll(origin, ColliderRadius, ColliderHeight, direction, out traces, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
             ColliderType.Sphere => Physics.SphereCastAll(origin, ColliderRadius, direction, out traces, (float)distance, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
         };
@@ -853,7 +853,7 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve the issue with inflated collider and re-try sweep.
-                TransientPosition += UnstuckSolve(0.0f);
+                TransientPosition += UnstuckSolve((float)KinematicContactOffset);
                 i--;
                 unstuckSolves++;
                 continue;
@@ -1352,12 +1352,19 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        SetColliderSizeWithInflation(inflate);
+        SetColliderSizeWithInflation((float)KinematicContactOffset);
         for(int i = 0; i < overlaps; i++)
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
+                Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}. validity: {_colliderValidities[i]}");
                 continue; 
+            }
+            //TODO: this shit is broken! also check unstuck 0.0f if it needs to be kinematic contact offset.
+            if(penetrationDistance == 0.0f)
+            {
+                Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}");
+                continue;
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
