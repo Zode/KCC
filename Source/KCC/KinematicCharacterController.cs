@@ -1364,13 +1364,13 @@ public class KinematicCharacterController : KinematicBase
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
-                Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}. validity: {_colliderValidities[i]}");
+                //Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}. validity: {_colliderValidities[i]}");
                 continue; 
             }
             //TODO: this shit is broken! also check unstuck 0.0f if it needs to be kinematic contact offset.
             if(penetrationDistance == 0.0f)
             {
-                Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}");
+                //Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}");
                 continue;
             }
 
