@@ -36,11 +36,12 @@ public interface IKinematicCharacter
 	/// <returns>True if should collide, False if should pass through</returns>
 	public bool KinematicCollisionValid(Collider other);
 	/// <summary>
-	/// Called when the character collides with something during a sweep,
-	/// this may be useful if you need to have something external react to the collision as the final position of the controller’s collider may not actually end up colliding with whatever it hit at the end of the sweep.
+	/// Called when the character collides with something during a sweep.
+	/// This may be useful if you need to have something external react to the collision as the final position of the controller’s collider may not actually end up colliding with whatever it hit at the end of the sweep,
+	/// or you need to adjust the hit itself.
 	/// </summary>
 	/// <param name="hit"></param>
-	public void KinematicCollision(RayCastHit hit);
+	public void KinematicCollision(ref RayCastHit hit);
 	/// <summary>
 	/// Called when the character unstucks itself during a sweep,
 	/// this may be useful if you want to implement crushers for example.

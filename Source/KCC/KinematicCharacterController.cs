@@ -622,7 +622,7 @@ public class KinematicCharacterController : KinematicBase
             {
                 if(dispatchEvent)
                 {
-                    Controller.KinematicCollision(trace);
+                    Controller.KinematicCollision(ref trace);
                 }
 
                 RigidBody? otherRb = trace.Collider.AttachedRigidBody;
@@ -694,7 +694,7 @@ public class KinematicCharacterController : KinematicBase
 
             if(dispatchEvent)
             {
-                Controller.KinematicCollision(trace);
+                Controller.KinematicCollision(ref trace);
             }
 
             RigidBody? otherRb = trace.Collider.AttachedRigidBody;
