@@ -9,24 +9,26 @@ namespace KCC;
 public interface IKinematicCharacter
 {
 	/// <summary>
-	/// Called when the simulation needs to know the velocity for a tick before sweeping movement,
-	/// the character will attempt to move until the length of the velocity is more or less zero.
+	/// Called when the simulation needs to know the desired movement for a tick before sweeping movement,
+	/// the character will attempt to process the move until the length of the movement is more or less zero.
+	/// KCC will attempt to move the character by the given movement vector.
 	/// Change the character orientation here by calling SetOrientation on it.
 	/// You may transfer root motion to the system by extracting it from the animation and applying it here.
+	/// You may also need to multiply this value by deltaTime depending on your situation.
 	/// </summary>
-	/// <param name="velocity"></param>
-	public void KinematicMoveUpdate(out Vector3 velocity);
+	/// <param name="movement">The desired movement for this tick</param>
+	public void KinematicMoveUpdate(out Vector3 movement);
 	/// <summary>
-	/// Called the character velocity needs to be projected alongside the current ground plane during the sweep,
-	/// the velocity supplied here is the remaining velocity for the tick at the point where this callback is triggered.
+	/// Called the character movement needs to be projected alongside the current ground plane during the sweep,
+	/// the movement supplied here is the remaining movement for the tick at the point where this callback is triggered.
 	/// This is necessary if you wish to move up sloped surfaces without issues.
 	/// Vector3’s ProjectOnPlane will suffice for modern use.
 	/// Tip: the KinematicCharacterController supplies the function “GroundTangent” to help with retro style projection where the ground normal does not affect any lateral speed.
 	/// </summary>
-	/// <param name="velocity">Current velocity</param>
+	/// <param name="movement">Current movement delta</param>
 	/// <param name="gravityEulerNormalized">Current normalized gravity as euler angles</param>
-	/// <returns>Velocity</returns>
-	public Vector3 KinematicGroundProjection(Vector3 velocity, Vector3 gravityEulerNormalized);
+	/// <returns>New movement</returns>
+	public Vector3 KinematicGroundProjection(Vector3 movement, Vector3 gravityEulerNormalized);
 	/// <summary>
 	/// Called when the character collides with something during a sweep, this can be used to precisely filter out collisions (e.g. teammates).
 	/// </summary>

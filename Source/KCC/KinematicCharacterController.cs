@@ -218,8 +218,8 @@ public class KinematicCharacterController : KinematicBase
     public float SimulatedMass {get => _simulatedMass; set => _simulatedMass = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _simulatedMass = 1000.0f;
 
-    private Vector3 _internalVelocity = Vector3.Zero;
-    private Real _internalGravityVelocity = 0.0f;
+    private Vector3 _internalDelta = Vector3.Zero;
+    private Real _internalGravityDelta = 0.0f;
     /// <summary>
     /// The current gravity as normalized euler angles.
     /// </summary>
@@ -312,7 +312,7 @@ public class KinematicCharacterController : KinematicBase
         Profiler.BeginEvent("Controller.KinematicMoveUpdate");
         #endif
 
-        Controller.KinematicMoveUpdate(out _internalVelocity);
+        Controller.KinematicMoveUpdate(out _internalDelta);
 
         #if FLAX_EDITOR
         Profiler.EndEvent();
@@ -322,14 +322,14 @@ public class KinematicCharacterController : KinematicBase
         TransientOrientation = InitialOrientation;
         GravityEulerNormalized = (Vector3.Down * TransientOrientation).Normalized;
 
-        _internalGravityVelocity = _internalVelocity.Y;
-        _internalVelocity *= TransientOrientation;
+        _internalGravityDelta = _internalDelta.Y;
+        _internalDelta *= TransientOrientation;
 
         _rigidBodiesCollidedCount = 0;
 
         if(IsGrounded)
         {
-            _internalVelocity = Controller.KinematicGroundProjection(_internalVelocity, GravityEulerNormalized);
+            _internalDelta = Controller.KinematicGroundProjection(_internalDelta, GravityEulerNormalized);
         }
 
         //flax bug with quaternions from eulers: for now, force perfect down if this is somehow wrong.
@@ -363,7 +363,7 @@ public class KinematicCharacterController : KinematicBase
             if(SolveRigidBodyMovements)
             {
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
-                _internalVelocity = KinematicAttachedVelocity;
+                _internalDelta = KinematicAttachedVelocity;
                 SolveSweep();
             }
             else
@@ -790,13 +790,13 @@ public class KinematicCharacterController : KinematicBase
         _rigidBodiesCollided[_rigidBodiesCollidedCount].RigidBody = rigidBody;
         _rigidBodiesCollided[_rigidBodiesCollidedCount].Point = trace.Point;
         _rigidBodiesCollided[_rigidBodiesCollidedCount].Normal = trace.Normal;
-        _rigidBodiesCollided[_rigidBodiesCollidedCount].CharacterVelocity = _internalVelocity;
+        _rigidBodiesCollided[_rigidBodiesCollidedCount].CharacterVelocity = _internalDelta;
         _rigidBodiesCollided[_rigidBodiesCollidedCount].BodyVelocity = rigidBody.LinearVelocity;
         _rigidBodiesCollidedCount++;
     }
 
     /// <summary>
-    /// The main solver, this will move the character as long as there is velocity left, and we haven't gone over 3 collisions in this sweep.
+    /// The main solver, this will move the character as long as there is any movement delta left, and we haven't gone over 3 collisions in this sweep.
     /// </summary>
     private void SolveSweep()
     {
@@ -804,14 +804,14 @@ public class KinematicCharacterController : KinematicBase
         Profiler.BeginEvent("KCC.SolveSweep");
         #endif
 
-        Vector3 originalVelocityNormalized = _internalVelocity.Normalized;
+        Vector3 originalDeltaNormalized = _internalDelta.Normalized;
         int unstuckSolves = 0;
 
         //we can realistically only collide with 2 planes before we lose all degrees of freedom (intersection of three planes is a point)
         Vector3 firstPlane = Vector3.Zero;
         for(int i = 0; i < 3; i++)
         {
-            if(_internalVelocity.IsZero)
+            if(_internalDelta.IsZero)
             {
                 #if FLAX_EDITOR
                 Profiler.EndEvent();
@@ -821,7 +821,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //are we about to go backwards? (unwanted direction, fixes issues with jiggling in corners with obtuse angles)
-            if(Math.Round(Vector3.Dot(originalVelocityNormalized, _internalVelocity.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
+            if(Math.Round(Vector3.Dot(originalDeltaNormalized, _internalDelta.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
                 Profiler.EndEvent();
@@ -830,18 +830,18 @@ public class KinematicCharacterController : KinematicBase
                 return;
             }
             
-            if(!CastCollider(TransientPosition, _internalVelocity.Normalized, out RayCastHit trace, _internalVelocity.Length + KinematicContactOffset, CollisionMask, false, true))
+            if(!CastCollider(TransientPosition, _internalDelta.Normalized, out RayCastHit trace, _internalDelta.Length + KinematicContactOffset, CollisionMask, false, true))
             {
                 #if FLAX_EDITOR
                 if(DebugIsSelected())
                 {
-                    DebugDrawCollider(TransientPosition + _internalVelocity, TransientOrientation, Color.Blue, Time.DeltaTime, false);
-                    DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalVelocity.Normalized), (float)_internalVelocity.Length * 0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
+                    DebugDrawCollider(TransientPosition + _internalDelta, TransientOrientation, Color.Blue, Time.DeltaTime, false);
+                    DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)_internalDelta.Length * 0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
                 }
                 #endif
 
                 //no collision, full speed ahead!
-                TransientPosition += _internalVelocity;
+                TransientPosition += _internalDelta;
 
                 #if FLAX_EDITOR
                 Profiler.EndEvent();
@@ -867,33 +867,33 @@ public class KinematicCharacterController : KinematicBase
             #if FLAX_EDITOR
             if(DebugIsSelected())
             {
-                DebugDrawCollider(TransientPosition + (_internalVelocity.Normalized * distance), TransientOrientation, Color.Blue, Time.DeltaTime, false);
-                DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalVelocity.Normalized), (float)distance*0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
+                DebugDrawCollider(TransientPosition + (_internalDelta.Normalized * distance), TransientOrientation, Color.Blue, Time.DeltaTime, false);
+                DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)distance*0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
             }
             #endif
 
             //move to collision point
-            TransientPosition += _internalVelocity.Normalized * distance;
+            TransientPosition += _internalDelta.Normalized * distance;
 
             if(IsGrounded)
             {
-                SolveStairSteps(ref _transientPosition, ref _internalVelocity, ref distance, ref trace.Normal);
+                SolveStairSteps(ref _transientPosition, ref _internalDelta, ref distance, ref trace.Normal);
             }
 
             if(i == 0)
             {
                 firstPlane = trace.Normal;
                 //project for next iteration
-                _internalVelocity = Vector3.ProjectOnPlane(_internalVelocity.Normalized, trace.Normal) * Math.Max(_internalVelocity.Length - distance, 0.0f);
+                _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * Math.Max(_internalDelta.Length - distance, 0.0f);
             }
             else if(i == 1)
             {
                 //project for next (final) iteration, but only along the crease
-                Vector3 wantedVelocity = Vector3.ProjectOnPlane(_internalVelocity.Normalized, firstPlane) * Math.Max(_internalVelocity.Length - distance, 0.0f);
-                wantedVelocity = Vector3.ProjectOnPlane(wantedVelocity.Normalized, trace.Normal) * Math.Max(wantedVelocity.Length - distance, 0.0f);
+                Vector3 wishDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, firstPlane) * Math.Max(_internalDelta.Length - distance, 0.0f);
+                wishDelta = Vector3.ProjectOnPlane(wishDelta.Normalized, trace.Normal) * Math.Max(wishDelta.Length - distance, 0.0f);
 
                 Vector3 crease = Vector3.Cross(firstPlane, trace.Normal).Normalized;
-                Real creaseDistance = Vector3.Dot(wantedVelocity, crease);
+                Real creaseDistance = Vector3.Dot(wishDelta, crease);
 
                 #if FLAX_EDITOR
                 if(DebugIsSelected())
@@ -913,23 +913,23 @@ public class KinematicCharacterController : KinematicBase
                     //also nudge by both planes in hopes of pushing out of the corner, similar to how quake3 handles this.
                     //normally the surrounding code would fix the issue, however it is not enough to solve vertical movement in obtuse corners
                     //so this is needed, sadly this does introduce slight jiggling in some obtuse corners :( but it's better than getting stuck.
-                    _internalVelocity += averagePlane; 
+                    _internalDelta += averagePlane; 
                     
-                    if(Math.Round(Vector3.Dot(_internalVelocity.Normalized, GravityEulerNormalized), 4, MidpointRounding.ToZero) > 0.0f)
+                    if(Math.Round(Vector3.Dot(_internalDelta.Normalized, GravityEulerNormalized), 4, MidpointRounding.ToZero) > 0.0f)
                     {
                         TransientPosition += averagePlane * 0.1f;
                     }
                 }
 
                 //constrain to crease
-                _internalVelocity = Vector3.ProjectOnPlane(crease, trace.Normal) * creaseDistance;
+                _internalDelta = Vector3.ProjectOnPlane(crease, trace.Normal) * creaseDistance;
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
-            _internalVelocity *= (1.0f - Math.Abs(Vector3.Dot(_internalVelocity.Normalized, trace.Normal))) * SlideMultiplier;
+            _internalDelta *= (1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal))) * SlideMultiplier;
             if(SlideAccountForPhysicsMaterial && trace.Material is not null)
             {
-                _internalVelocity *= 1.0f - trace.Material.Friction;
+                _internalDelta *= 1.0f - trace.Material.Friction;
             }
         }
 
@@ -939,13 +939,13 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Solve all stair steps for the remaining velocity as long as valid stairs are found.
+    /// Solve all stair steps for the remaining delta movement as long as valid stairs are found.
     /// </summary>
     /// <param name="position"></param>
-    /// <param name="velocity"></param>
+    /// <param name="delta"></param>
     /// <param name="distance"></param>
     /// <param name="sweepNormal"></param>
-    private void SolveStairSteps(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
+    private void SolveStairSteps(ref Vector3 position, ref Vector3 delta, ref Real distance, ref Vector3 sweepNormal)
     {
         if(!AllowStairStepping || AttachedRigidBody is not null)
         {
@@ -958,7 +958,7 @@ public class KinematicCharacterController : KinematicBase
 
         Vector3 oldPosition = position;
         int iterations = 0;
-        while(SolveStairStep(ref position, ref velocity, ref distance, ref sweepNormal) && iterations < MaxStairStepIterations)
+        while(SolveStairStep(ref position, ref delta, ref distance, ref sweepNormal) && iterations < MaxStairStepIterations)
         {
             iterations++;
 
@@ -975,21 +975,21 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Attempt to do a single stair step for the given velocity.
+    /// Attempt to do a single stair step for the given delta movement.
     /// </summary>
     /// <param name="position"></param>
-    /// <param name="velocity"></param>
+    /// <param name="delta"></param>
     /// <param name="distance"></param>
     /// <param name="sweepNormal"></param>
     /// <returns>True if succeeded in stepping a stair</returns>
-    private bool SolveStairStep(ref Vector3 position, ref Vector3 velocity, ref Real distance, ref Vector3 sweepNormal)
+    private bool SolveStairStep(ref Vector3 position, ref Vector3 delta, ref Real distance, ref Vector3 sweepNormal)
     {
-        if(velocity.IsZero)
+        if(delta.IsZero)
         {
             return false;
         }
 
-        Vector3 velocityNormalized = velocity.Normalized;
+        Vector3 deltaNormalized = delta.Normalized;
         if(IsNormalStableGround(sweepNormal))
         {
             return false;
@@ -1006,22 +1006,22 @@ public class KinematicCharacterController : KinematicBase
 
         //move to possible ceiling position
         Vector3 temporaryPosition = position - (GravityEulerNormalized * temporaryDistance);
-        temporaryDistance = Math.Max(velocity.Length - distance, 0.0f);
+        temporaryDistance = Math.Max(delta.Length - distance, 0.0f);
         if(temporaryDistance == 0.0f)
         {
             return false;
         }
 
-        Vector3 remainingVelocity = velocityNormalized * temporaryDistance;
-        if(remainingVelocity.IsZero)
+        Vector3 remainingDelta = deltaNormalized * temporaryDistance;
+        if(remainingDelta.IsZero)
         {
             return false;
         }
 
-        Vector3 remainingVelocityNormalized = remainingVelocity.Normalized;
+        Vector3 remainingDeltaNormalized = remainingDelta.Normalized;
 
-        //can we clear forwards with the remaining velocity (by any amount)?
-        bool HitForward = CastCollider(temporaryPosition, remainingVelocityNormalized, out trace, temporaryDistance + KinematicContactOffset, CollisionMask, false);
+        //can we clear forwards with the remaining delta (by any amount)?
+        bool HitForward = CastCollider(temporaryPosition, remainingDeltaNormalized, out trace, temporaryDistance + KinematicContactOffset, CollisionMask, false);
         Vector3 newNormal = trace.Normal;
         temporaryDistance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
         if(temporaryDistance == 0.0f || temporaryDistance < StairStepMinimumForwardDistance)
@@ -1042,7 +1042,7 @@ public class KinematicCharacterController : KinematicBase
         }
         
         //move to a possible new wall collision position
-        temporaryPosition += remainingVelocityNormalized * temporaryDistance;
+        temporaryPosition += remainingDeltaNormalized * temporaryDistance;
         //can we stand on this? if so, then also snap to the floor.
         bool hasSolidBelow = CastCollider(temporaryPosition, GravityEulerNormalized, out trace, StairStepDistance + KinematicContactOffset, CollisionMask, false);
         //all modes need some sort of solid.
@@ -1076,7 +1076,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         position = temporaryPosition + (GravityEulerNormalized * Math.Max(trace.Distance - KinematicContactOffset, 0.0f));
-        velocity = remainingVelocity;
+        delta = remainingDelta;
         distance = temporaryDistance;
 
         //update potential wall for next sweep solve iteration also
@@ -1175,7 +1175,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
-        if(!IsGrounded && _internalGravityVelocity > 0)
+        if(!IsGrounded && _internalGravityDelta > 0)
         {
             #if FLAX_EDITOR
             Profiler.EndEvent();
@@ -1544,7 +1544,7 @@ public class KinematicCharacterController : KinematicBase
         if(IsDebugDrawEnabled())
         {
             DebugDraw.DrawWireArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, Color.GreenYellow, 0.0f, false);
-            DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalVelocity.Normalized), (float)_internalVelocity.Length*0.01f, 1.0f, Color.YellowGreen, 0.0f, false);
+            DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)_internalDelta.Length*0.01f, 1.0f, Color.YellowGreen, 0.0f, false);
         }
     }
 
