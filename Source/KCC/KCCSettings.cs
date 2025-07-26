@@ -22,10 +22,6 @@ public class KCCSettings
 	/// </summary>
 	public int MoverInitialCapacity = 100;
 	/// <summary>
-	/// The update mode where interpolation should happen (if enabled).
-	/// </summary>
-	public InterpolationMode InterpolationMode = InterpolationMode.LateUpdate;
-	/// <summary>
 	/// Determines if KCC should display its debug visuals in editor when a KCC character is selected.
 	/// </summary>
 	public bool DebugDisplay = true;

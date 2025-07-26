@@ -68,9 +68,8 @@ public class KCC : GamePlugin
             return;
         }
 
-        Scripting.LateUpdate += OnLateUpdate;
         Scripting.FixedUpdate += OnFixedUpdate;
-        Scripting.Update += OnUpdate;
+        Scripting.Draw += OnDraw;
 
         _kccSettings = kccSettingsJson.CreateInstance<KCCSettings>();
         _kinematicMovers = new(_kccSettings.MoverInitialCapacity);
@@ -80,31 +79,15 @@ public class KCC : GamePlugin
     /// <inheritdoc />
     public override void Deinitialize()
     {
-        Scripting.Update -= OnUpdate;
+        Scripting.Draw -= OnDraw;
         Scripting.FixedUpdate -= OnFixedUpdate;
-        Scripting.LateUpdate -= OnLateUpdate;
         base.Deinitialize();
     }
 
     /// <inheritdoc />
-    public void OnLateUpdate()
+    public void OnDraw()
     {
-        if(_kccSettings is null ||
-            !_kccSettings.Interpolate ||
-            _kccSettings.InterpolationMode != InterpolationMode.LateUpdate)
-        {
-            return;
-        }
-
-        InterpolationUpdate();
-    }
-
-    /// <inheritdoc />
-    public void OnUpdate()
-    {
-        if(_kccSettings is null ||
-            !_kccSettings.Interpolate ||
-            _kccSettings.InterpolationMode != InterpolationMode.Update)
+        if(_kccSettings is null || !_kccSettings.Interpolate)
         {
             return;
         }
