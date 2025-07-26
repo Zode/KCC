@@ -9,13 +9,13 @@ namespace KCC;
 public interface IKinematicCharacter
 {
 	/// <summary>
-	/// Called when the simulation needs to know the velocity and orientation for a tick before sweeping movement,
+	/// Called when the simulation needs to know the velocity for a tick before sweeping movement,
 	/// the character will attempt to move until the length of the velocity is more or less zero.
+	/// Change the character orientation here by calling SetOrientation on it.
 	/// You may transfer root motion to the system by extracting it from the animation and applying it here.
 	/// </summary>
 	/// <param name="velocity"></param>
-	/// <param name="orientation"></param>
-	public void KinematicMoveUpdate(out Vector3 velocity, out Quaternion orientation);
+	public void KinematicMoveUpdate(out Vector3 velocity);
 	/// <summary>
 	/// Called the character velocity needs to be projected alongside the current ground plane during the sweep,
 	/// the velocity supplied here is the remaining velocity for the tick at the point where this callback is triggered.

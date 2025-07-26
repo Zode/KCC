@@ -312,14 +312,14 @@ public class KinematicCharacterController : KinematicBase
         Profiler.BeginEvent("Controller.KinematicMoveUpdate");
         #endif
 
-        Controller.KinematicMoveUpdate(out _internalVelocity, out Quaternion _internalOrientation);
+        Controller.KinematicMoveUpdate(out _internalVelocity);
 
         #if FLAX_EDITOR
         Profiler.EndEvent();
         Profiler.BeginEvent("KCC.KinematicUpdate");
         #endif
 
-        TransientOrientation = _internalOrientation;
+        TransientOrientation = InitialOrientation;
         GravityEulerNormalized = (Vector3.Down * TransientOrientation).Normalized;
 
         _internalGravityVelocity = _internalVelocity.Y;
@@ -539,10 +539,10 @@ public class KinematicCharacterController : KinematicBase
 
                     continue;
                 }
-                
-                (colliders[b], colliders[a]) = (colliders[a], colliders[b]);
+
+				(colliders[b], colliders[a]) = (colliders[a], colliders[b]);
 				(_colliderValidities[b], _colliderValidities[a]) = (_colliderValidities[a], _colliderValidities[b]);
-                lastValidIndex++;
+				lastValidIndex++;
                 break;
 			}
 		}
