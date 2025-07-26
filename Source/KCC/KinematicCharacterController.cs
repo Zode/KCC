@@ -540,13 +540,8 @@ public class KinematicCharacterController : KinematicBase
                     continue;
                 }
                 
-                //tuple swap not used here to avoid allocating a ValueTuple<T,T>
-                Collider tempCollider = colliders[a];
-                colliders[a] = colliders[b];
-                colliders[b] = tempCollider;
-                bool tempValidity = _colliderValidities[a];
-                _colliderValidities[a] = _colliderValidities[b];
-                _colliderValidities[b] = tempValidity;
+                (colliders[b], colliders[a]) = (colliders[a], colliders[b]);
+				(_colliderValidities[b], _colliderValidities[a]) = (_colliderValidities[a], _colliderValidities[b]);
                 lastValidIndex++;
                 break;
 			}
