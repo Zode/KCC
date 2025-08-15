@@ -339,7 +339,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve(0.0f);
+        TransientPosition += UnstuckSolve(KinematicContactOffset);
 
         SolveSweep();
         SolveRigidBodyInteractions();
@@ -855,7 +855,7 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve the issue and re-try sweep.
-                TransientPosition += UnstuckSolve(0.0f);
+                TransientPosition += UnstuckSolve(KinematicContactOffset);
                 i--;
                 unstuckSolves++;
                 continue;
@@ -1362,7 +1362,7 @@ public class KinematicCharacterController : KinematicBase
                 //Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}. validity: {_colliderValidities[i]}");
                 continue; 
             }
-            //TODO: this shit is broken! also check unstuck 0.0f if it needs to be kinematic contact offset.
+            //TODO: this is suspicious, investigate later.
             if(penetrationDistance == 0.0f)
             {
                 //Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}");
