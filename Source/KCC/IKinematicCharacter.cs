@@ -34,7 +34,7 @@ public interface IKinematicCharacter
 	/// </summary>
 	/// <param name="other"></param>
 	/// <returns>True if should collide, False if should pass through</returns>
-	public bool KinematicCollisionValid(Collider other);
+	public bool KinematicCollisionValid(PhysicsColliderActor other);
 	/// <summary>
 	/// Called when the character collides with something during a sweep.
 	/// This may be useful if you need to have something external react to the collision as the final position of the controller’s collider may not actually end up colliding with whatever it hit at the end of the sweep,

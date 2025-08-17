@@ -665,14 +665,7 @@ public class KinematicCharacterController : KinematicBase
             Array.Sort(traces, (lValue, rValue) => lValue.Distance.CompareTo(rValue.Distance));
             for(; i < traces.Length; i++)
             {
-                if(traces[i].Collider is not Collider collider)
-                {
-                    //must be a terrain patch, for now we always collide with terrain
-                    result = true;
-                    break;
-                }
-
-                if(IsColliderValid(collider))
+                if(IsColliderValid(traces[i].Collider))
                 {
                     result = true;
                     break;
@@ -719,11 +712,11 @@ public class KinematicCharacterController : KinematicBase
     }
     
     /// <summary>
-    /// Check if the other collider should be ignored.
+    /// Check if the other physics collider should be ignored.
     /// </summary>
-    /// <param name="collider"></param>
+    /// <param name="physicsCollider"></param>
     /// <returns>False if should be ignored, True if should be considered</returns>
-    private bool IsColliderValid(Collider collider)
+    private bool IsColliderValid(PhysicsColliderActor physicsCollider)
     {
         if(_collider == null)
         {
@@ -734,7 +727,7 @@ public class KinematicCharacterController : KinematicBase
             return false;
         }
 
-        if(collider == _collider)
+        if(physicsCollider == _collider)
         {
             return false;
         }
@@ -748,7 +741,7 @@ public class KinematicCharacterController : KinematicBase
             return false;
         }
 
-        return Controller.KinematicCollisionValid(collider);
+        return Controller.KinematicCollisionValid(physicsCollider);
     }
 
     /// <summary>
