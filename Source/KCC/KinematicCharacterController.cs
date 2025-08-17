@@ -1341,7 +1341,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         int overlaps = 0;
-        if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, inflate)) == 0)
+        if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, 0.0f)) == 0)
         {
             #if FLAX_EDITOR
             Profiler.EndEvent();
