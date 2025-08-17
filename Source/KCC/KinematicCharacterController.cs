@@ -925,9 +925,10 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
+            _internalDelta *= 1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal));
             if(!SlideSkipMultiplierWhileAirborne || (SlideSkipMultiplierWhileAirborne && IsGrounded))
             {
-                _internalDelta *= (1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal))) * SlideMultiplier;
+                _internalDelta *= SlideMultiplier;
                 if(SlideAccountForPhysicsMaterial && trace.Material is not null)
                 {
                     _internalDelta *= 1.0f - trace.Material.Friction;
