@@ -111,6 +111,12 @@ public class KinematicCharacterController : KinematicBase
     [EditorOrder(107)]
     public LayersMask CollisionMask {get; set;} = new();
     /// <summary>
+    /// If set to true, the character slide multiplier will be ignored during airborne movement
+    /// </summary>
+    [EditorDisplay("Physics")]
+    [EditorOrder(110)]
+    public bool SlideSkipMultiplierWhileAirborne {get; set;} = true;
+    /// <summary>
     /// Tag used to determine if a collision should be considered valid ground or not.
     /// If left empty, all surfaces determined by MaxSlopeAngle are considered valid ground.
     /// </summary>
@@ -919,10 +925,13 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
-            _internalDelta *= (1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal))) * SlideMultiplier;
-            if(SlideAccountForPhysicsMaterial && trace.Material is not null)
+            if(!SlideSkipMultiplierWhileAirborne || (SlideSkipMultiplierWhileAirborne && IsGrounded))
             {
-                _internalDelta *= 1.0f - trace.Material.Friction;
+                _internalDelta *= (1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal))) * SlideMultiplier;
+                if(SlideAccountForPhysicsMaterial && trace.Material is not null)
+                {
+                    _internalDelta *= 1.0f - trace.Material.Friction;
+                }
             }
         }
 
