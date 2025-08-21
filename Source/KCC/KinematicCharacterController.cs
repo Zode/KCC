@@ -1034,13 +1034,10 @@ public class KinematicCharacterController : KinematicBase
 
         if(HitForward)
         {
-            RigidBody? rb = trace.Collider.AttachedRigidBody;
-            if(rb is not null)
+            RigidBody rb = trace.Collider.AttachedRigidBody;
+            if(rb != null && !rb.IsKinematic)
             {
-                if(!rb.IsKinematic)
-                {
-                    return false;
-                }
+                return false;
             }
         }
         
