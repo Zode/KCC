@@ -316,13 +316,17 @@ public class KinematicCharacterController : KinematicBase
 
         #if FLAX_EDITOR
         Profiler.BeginEvent("Controller.KinematicMoveUpdate");
+        KCCDebugger.BeginEvent(this, Name);
+        KCCDebugger.BeginEvent("MoveUpdate");
         #endif
 
         Controller.KinematicMoveUpdate(out _internalDelta);
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         Profiler.BeginEvent("KCC.KinematicUpdate");
+        KCCDebugger.BeginEvent("Update");
         #endif
 
         TransientOrientation = InitialOrientation;
@@ -335,7 +339,15 @@ public class KinematicCharacterController : KinematicBase
 
         if(IsGrounded)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.BeginEvent("GroundProjection");
+            #endif
+            
             _internalDelta = Controller.KinematicGroundProjection(_internalDelta, GravityEulerNormalized);
+            
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
         }
 
         //flax bug with quaternions from eulers: for now, force perfect down if this is somehow wrong.
@@ -392,13 +404,17 @@ public class KinematicCharacterController : KinematicBase
         Orientation = TransientOrientation;
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         Profiler.BeginEvent("Controller.KinematicPostUpdate");
+        KCCDebugger.BeginEvent("PostUpdate");
         #endif
 
         Controller.KinematicPostUpdate();
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -478,6 +494,7 @@ public class KinematicCharacterController : KinematicBase
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
+        KCCDebugger.BeginEvent("OverlapCollider");
         #endif
 
         bool result = false;
@@ -492,6 +509,7 @@ public class KinematicCharacterController : KinematicBase
             };
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -509,6 +527,7 @@ public class KinematicCharacterController : KinematicBase
         if(!result)
         {
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -555,6 +574,7 @@ public class KinematicCharacterController : KinematicBase
 
         earlyExitFromSort:
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
 
@@ -602,11 +622,11 @@ public class KinematicCharacterController : KinematicBase
         {
             Debug.LogError($"CastCollider direction is not normalized! {direction}", this);
         }
-
-        if(DebugIsSelected())
-        {
-            DebugDraw.DrawWireArrow(origin, Quaternion.FromDirection(direction), (float)distance*0.01f, 1.0f, Color.Yellow, Time.DeltaTime, false);
-        }
+        
+        KCCDebugger.BeginEvent("CastCollider");
+        KCCDebugDrawCollider(origin, TransientOrientation, Color.Transparent, Color.Blue, false);
+        KCCDebugger.DrawLine(origin, origin + direction * distance, Color.Blue, false);
+        KCCDebugDrawCollider(origin + direction * distance, TransientOrientation, Color.Transparent, Color.Blue, false);
         #endif
 
         bool result;
@@ -636,16 +656,13 @@ public class KinematicCharacterController : KinematicBase
                 {
                     TryAddRigidBodyInteraction(trace, otherRb);
                 }
-
-                #if FLAX_EDITOR
-                if(DebugIsSelected())
-                {
-                    DebugDraw.DrawWireArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, Color.Red, Time.DeltaTime, false);
-                }
-                #endif
             }
 
             #if FLAX_EDITOR
+            KCCDebugger.DrawLine(origin, origin + direction * trace.Distance, Color.Cyan, false);
+            KCCDebugDrawCollider(origin + direction * trace.Distance, TransientOrientation, Color.Transparent, Color.Cyan, false);
+            
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -701,16 +718,13 @@ public class KinematicCharacterController : KinematicBase
             {
                 TryAddRigidBodyInteraction(trace, otherRb);
             }
-
-            #if FLAX_EDITOR
-            if(DebugIsSelected())
-            {
-                DebugDraw.DrawWireArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, Color.Red, Time.DeltaTime, false);
-            }
-            #endif
         }
 
         #if FLAX_EDITOR
+        KCCDebugger.DrawLine(origin, origin + direction * trace.Distance, Color.Cyan, false);
+        KCCDebugDrawCollider(origin + direction * trace.Distance, TransientOrientation, Color.Transparent, Color.Cyan, false);
+
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
 
@@ -801,6 +815,7 @@ public class KinematicCharacterController : KinematicBase
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SolveSweep");
+        KCCDebugger.BeginEvent("SolveSweep");
         #endif
 
         Vector3 originalDeltaNormalized = _internalDelta.Normalized;
@@ -813,6 +828,7 @@ public class KinematicCharacterController : KinematicBase
             if(_internalDelta.IsZero)
             {
                 #if FLAX_EDITOR
+                KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
 
@@ -823,6 +839,7 @@ public class KinematicCharacterController : KinematicBase
             if(Math.Round(Vector3.Dot(originalDeltaNormalized, _internalDelta.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
+                KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
 
@@ -834,7 +851,7 @@ public class KinematicCharacterController : KinematicBase
                 #if FLAX_EDITOR
                 if(DebugIsSelected())
                 {
-                    DebugDrawCollider(TransientPosition + _internalDelta, TransientOrientation, Color.Blue, Time.DeltaTime, false);
+                    FlaxDebugDrawCollider(TransientPosition + _internalDelta, TransientOrientation, Color.Blue, Time.DeltaTime, false);
                     DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)_internalDelta.Length * 0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
                 }
                 #endif
@@ -843,6 +860,7 @@ public class KinematicCharacterController : KinematicBase
                 TransientPosition += _internalDelta;
 
                 #if FLAX_EDITOR
+                KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
 
@@ -866,7 +884,7 @@ public class KinematicCharacterController : KinematicBase
             #if FLAX_EDITOR
             if(DebugIsSelected())
             {
-                DebugDrawCollider(TransientPosition + (_internalDelta.Normalized * distance), TransientOrientation, Color.Blue, Time.DeltaTime, false);
+                FlaxDebugDrawCollider(TransientPosition + (_internalDelta.Normalized * distance), TransientOrientation, Color.Blue, Time.DeltaTime, false);
                 DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)distance*0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
             }
             #endif
@@ -937,6 +955,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -957,6 +976,7 @@ public class KinematicCharacterController : KinematicBase
 
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SolveStairSteps");
+        KCCDebugger.BeginEvent("SolveStairSteps");
         #endif
 
         Vector3 oldPosition = position;
@@ -973,6 +993,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -987,14 +1008,26 @@ public class KinematicCharacterController : KinematicBase
     /// <returns>True if succeeded in stepping a stair</returns>
     private bool SolveStairStep(ref Vector3 position, ref Vector3 delta, ref Real distance, ref Vector3 sweepNormal)
     {
+        #if FLAX_EDITOR
+        KCCDebugger.BeginEvent("StairStep");
+        #endif
+
         if(delta.IsZero)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
         Vector3 deltaNormalized = delta.Normalized;
         if(IsNormalStableGround(sweepNormal))
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
@@ -1004,6 +1037,10 @@ public class KinematicCharacterController : KinematicBase
         Real temporaryDistance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
         if(temporaryDistance == 0.0f)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
@@ -1012,12 +1049,20 @@ public class KinematicCharacterController : KinematicBase
         temporaryDistance = Math.Max(delta.Length - distance, 0.0f);
         if(temporaryDistance == 0.0f)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
         Vector3 remainingDelta = deltaNormalized * temporaryDistance;
         if(remainingDelta.IsZero)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
@@ -1029,6 +1074,10 @@ public class KinematicCharacterController : KinematicBase
         temporaryDistance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
         if(temporaryDistance == 0.0f || temporaryDistance < StairStepMinimumForwardDistance)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
@@ -1037,6 +1086,10 @@ public class KinematicCharacterController : KinematicBase
             RigidBody rb = trace.Collider.AttachedRigidBody;
             if(rb != null && !rb.IsKinematic)
             {
+                #if FLAX_EDITOR
+                KCCDebugger.EndEvent();
+                #endif
+
                 return false;
             }
         }
@@ -1048,6 +1101,10 @@ public class KinematicCharacterController : KinematicBase
         //all modes need some sort of solid.
         if(!hasSolidBelow && StairStepGroundMode != StairStepGroundMode.None)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
+            #endif
+
             return false;
         }
 
@@ -1057,6 +1114,10 @@ public class KinematicCharacterController : KinematicBase
             case StairStepGroundMode.RequireStableGround:
                 if(!IsNormalStableGround(trace.Normal))
                 {
+                    #if FLAX_EDITOR
+                    KCCDebugger.EndEvent();
+                    #endif
+
                     return false;
                 }
 
@@ -1069,6 +1130,10 @@ public class KinematicCharacterController : KinematicBase
             case StairStepGroundMode.RequireStableGround:
                 if(GroundTag.Index != 0 && !trace.Collider.HasTag(GroundTag))
                 {
+                    #if FLAX_EDITOR
+                    KCCDebugger.EndEvent();
+                    #endif
+
                     return false;
                 }
 
@@ -1088,8 +1153,10 @@ public class KinematicCharacterController : KinematicBase
         #if FLAX_EDITOR
         if(DebugIsSelected())
         {
-            DebugDrawCollider(position, TransientOrientation, Color.Magenta, 1.0f, false);
+            FlaxDebugDrawCollider(position, TransientOrientation, Color.Magenta, 1.0f, false);
         }
+
+        KCCDebugger.EndEvent();
         #endif
 
         return true;
@@ -1213,6 +1280,7 @@ public class KinematicCharacterController : KinematicBase
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.GroundCheck");
+        KCCDebugger.BeginEvent("GroundCheck");
         #endif
 
         IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, distance + KinematicContactOffset, CollisionMask, false);
@@ -1222,6 +1290,7 @@ public class KinematicCharacterController : KinematicBase
             GroundNormal = -GravityEulerNormalized;
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1235,6 +1304,7 @@ public class KinematicCharacterController : KinematicBase
             GroundNormal = -GravityEulerNormalized;
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1248,6 +1318,7 @@ public class KinematicCharacterController : KinematicBase
             GroundNormal = -GravityEulerNormalized;
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1258,6 +1329,7 @@ public class KinematicCharacterController : KinematicBase
         AttachToRigidBody(trace.Collider.AttachedRigidBody);
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
 
@@ -1271,11 +1343,13 @@ public class KinematicCharacterController : KinematicBase
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SnapToGround");
+        KCCDebugger.BeginEvent("SnapToGround");
         #endif
 
         if(!IsGrounded)
         {
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1285,6 +1359,7 @@ public class KinematicCharacterController : KinematicBase
         if(!CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, GroundSnappingDistance + KinematicContactOffset, CollisionMask, false))
         {
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1294,6 +1369,7 @@ public class KinematicCharacterController : KinematicBase
         TransientPosition += GravityEulerNormalized * Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -1318,12 +1394,14 @@ public class KinematicCharacterController : KinematicBase
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.UnstuckSolve");
+        KCCDebugger.BeginEvent("UnstuckSolve");
         #endif
 
         if(Controller is null)
         {
             #if FLAX_EDITOR
             Debug.LogError("IKinematicCharacter controller is missing", this);
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1334,6 +1412,7 @@ public class KinematicCharacterController : KinematicBase
         {
             #if FLAX_EDITOR
             Debug.LogError("KinematicCharacterController collider is missing", this);
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1344,6 +1423,7 @@ public class KinematicCharacterController : KinematicBase
         if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, 0.0f)) == 0)
         {
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1376,6 +1456,7 @@ public class KinematicCharacterController : KinematicBase
         SetColliderSizeWithInflation(0.0f);
         
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
 
@@ -1535,11 +1616,11 @@ public class KinematicCharacterController : KinematicBase
 
         if(!Editor.IsPlayMode)
         {
-            DebugDrawCollider(Position, Orientation, Color.YellowGreen, 0.0f, false);
+            FlaxDebugDrawCollider(Position, Orientation, Color.YellowGreen, 0.0f, false);
             return;
         }
 
-        DebugDrawCollider(TransientPosition, TransientOrientation, Color.YellowGreen, 0.0f, false);
+        FlaxDebugDrawCollider(TransientPosition, TransientOrientation, Color.YellowGreen, 0.0f, false);
 
         if(IsDebugDrawEnabled())
         {
@@ -1549,7 +1630,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Draw this KinematicCharacterController's collider, EDITOR ONLY
+    /// Draw this KinematicCharacterController's collider using Flax engine's <seealso cref="DebugDraw" />, EDITOR ONLY
     /// </summary>
     /// <param name="position">World position</param>
     /// <param name="orientation">World orientation</param>
@@ -1558,20 +1639,20 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="depthTest">Depth test</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DebugDrawCollider(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
+    public void FlaxDebugDrawCollider(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         switch(ColliderType)
         {
             case ColliderType.Box:
-                DebugDrawBox(position, orientation, color, time, depthTest);
+                FlaxDebugDrawBox(position, orientation, color, time, depthTest);
                 break;
 
             case ColliderType.Capsule:
-                DebugDrawCapsule(position, orientation, color, time, depthTest);
+                FlaxDebugDrawCapsule(position, orientation, color, time, depthTest);
                 break;
 
             case ColliderType.Sphere:
-                DebugDrawSphere(position, color, time, depthTest);
+                FlaxDebugDrawSphere(position, color, time, depthTest);
                 break;
 
             default:
@@ -1580,7 +1661,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void DebugDrawBox(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
+    private void FlaxDebugDrawBox(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         Matrix matrix = Matrix.CreateWorld(position, Vector3.Forward * orientation, Vector3.Up * orientation);
         DebugDraw.DrawWireBox(new OrientedBoundingBox(
@@ -1589,7 +1670,7 @@ public class KinematicCharacterController : KinematicBase
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void DebugDrawCapsule(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
+    private void FlaxDebugDrawCapsule(Vector3 position, Quaternion orientation, Color color, float time, bool depthTest)
     {
         //for some reason, this is rotated by 90 degrees unlike other debug draws..
         Quaternion fixedOrientation = orientation * Quaternion.RotationX(1.57079633f);
@@ -1597,9 +1678,62 @@ public class KinematicCharacterController : KinematicBase
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void DebugDrawSphere(Vector3 position, Color color, float time, bool depthTest)
+    private void FlaxDebugDrawSphere(Vector3 position, Color color, float time, bool depthTest)
     {
         DebugDraw.DrawWireSphere(new(position, ColliderRadius), color, time, depthTest);
+    }
+
+    /// <summary>
+    /// Draw this KinematicCharacterController's collider using KCC's <seealso cref="KCCDebugger" />, EDITOR ONLY
+    /// </summary>
+    /// <param name="position">World position</param>
+    /// <param name="orientation">World orientation</param>
+    /// <param name="fillColor">Fill color</param>
+    /// <param name="outlineColor">Outline color</param>
+    /// <param name="depthTest">Depth test</param>
+    /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void KCCDebugDrawCollider(Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)
+    {
+        switch(ColliderType)
+        {
+            case ColliderType.Box:
+                KCCDebugDrawBox(position, orientation, fillColor, outlineColor, depthTest);
+                break;
+
+            case ColliderType.Capsule:
+                KCCDebugDrawCapsule(position, orientation, fillColor, outlineColor, depthTest);
+                break;
+
+            case ColliderType.Sphere:
+                KCCDebugDrawSphere(position, fillColor, outlineColor, depthTest);
+                break;
+
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void KCCDebugDrawBox(Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)
+    {
+        Matrix matrix = Matrix.CreateWorld(position, Vector3.Forward * orientation, Vector3.Up * orientation);
+        OrientedBoundingBox obb = new(new Vector3(ColliderHalfRadius, -ColliderHalfHeight, -ColliderHalfRadius), matrix);
+        KCCDebugger.DrawBox(obb, fillColor, outlineColor, depthTest);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void KCCDebugDrawCapsule(Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)
+    {
+        //for some reason, this is rotated by 90 degrees unlike other debug draws..
+        Quaternion fixedOrientation = orientation * Quaternion.RotationX(1.57079633f);
+        KCCDebugger.DrawCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight, fillColor, outlineColor, depthTest);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void KCCDebugDrawSphere(Vector3 position, Color fillColor, Color outlineColor, bool depthTest)
+    {
+        KCCDebugger.DrawSphere(position, ColliderRadius, fillColor, outlineColor, depthTest);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

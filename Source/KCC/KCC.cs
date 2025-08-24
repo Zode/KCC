@@ -187,6 +187,7 @@ public class KCC : GamePlugin
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.PreSimulationUpdate");
+        KCCDebugger.BeginFrame();
         #endif
 
         PreSimulationUpdateEvent?.Invoke();
@@ -293,6 +294,7 @@ public class KCC : GamePlugin
         PostSimulationUpdateEvent?.Invoke();
 
         #if FLAX_EDITOR
+        KCCDebugger.EndFrame();
         Profiler.EndEvent();
         #endif
     }
