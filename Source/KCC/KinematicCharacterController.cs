@@ -357,7 +357,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve(KinematicContactOffset);
+        TransientPosition += UnstuckSolve((float)KinematicContactOffset);
 
         #if FLAX_EDITOR
         KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, Color.GreenYellow, false);
@@ -876,7 +876,7 @@ public class KinematicCharacterController : KinematicBase
 
                 #if FLAX_EDITOR
                 fromToPosition = TransientPosition - oldPosition;
-                KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), fromToPosition.Length * 0.01f, 1.0f, Color.Orange, false);
+                KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, Color.Orange, false);
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Orange, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
@@ -890,7 +890,7 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve the issue and re-try sweep.
-                TransientPosition += UnstuckSolve(KinematicContactOffset);
+                TransientPosition += UnstuckSolve((float)KinematicContactOffset);
                 i--;
                 unstuckSolves++;
                 continue;
@@ -904,7 +904,7 @@ public class KinematicCharacterController : KinematicBase
 
             #if FLAX_EDITOR
             fromToPosition = TransientPosition - oldPosition;
-            KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), fromToPosition.Length * 0.01f, 1.0f, Color.Orange, false);
+            KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, Color.Orange, false);
             KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Orange, false);
             KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 100.0f, Color.FromRGBA(0xFF7F0020), Color.Orange, false);
             #endif
