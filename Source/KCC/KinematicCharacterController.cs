@@ -359,6 +359,11 @@ public class KinematicCharacterController : KinematicBase
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
         TransientPosition += UnstuckSolve(KinematicContactOffset);
 
+        #if FLAX_EDITOR
+        KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, Color.GreenYellow, false);
+        KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), 1.0f, 1.0f, Color.YellowGreen, false);
+        #endif
+
         SolveSweep();
         SolveRigidBodyInteractions();
         KinematicVelocity = TransientPosition - InitialPosition;
@@ -1160,10 +1165,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         #if FLAX_EDITOR
-        if(DebugIsSelected())
-        {
-            FlaxDebugDrawCollider(position, TransientOrientation, Color.Magenta, 1.0f, false);
-        }
+        KCCDebugDrawCollider(position, TransientOrientation, Color.Transparent, Color.Magenta, false);
 
         KCCDebugger.EndEvent();
         #endif
@@ -1594,30 +1596,6 @@ public class KinematicCharacterController : KinematicBase
     }
 
     #if FLAX_EDITOR
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool DebugIsSelected()
-    {
-        if(!IsDebugDrawEnabled())
-        {
-            return false;
-        } 
-
-        foreach(SceneGraphNode node in Editor.Instance.SceneEditing.Selection)
-        {
-            if(node is not ActorNode actorNode)
-            {
-                continue;
-            }
-
-            if(actorNode.Actor == this)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /// <inheritdoc />
     public override void OnDebugDrawSelected()
     {
@@ -1630,12 +1608,6 @@ public class KinematicCharacterController : KinematicBase
         }
 
         FlaxDebugDrawCollider(TransientPosition, TransientOrientation, Color.YellowGreen, 0.0f, false);
-
-        if(IsDebugDrawEnabled())
-        {
-            DebugDraw.DrawWireArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, Color.GreenYellow, 0.0f, false);
-            DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)_internalDelta.Length*0.01f, 1.0f, Color.YellowGreen, 0.0f, false);
-        }
     }
 
     /// <summary>
@@ -1743,12 +1715,6 @@ public class KinematicCharacterController : KinematicBase
     private void KCCDebugDrawSphere(Vector3 position, Color fillColor, Color outlineColor, bool depthTest)
     {
         KCCDebugger.DrawSphere(position, ColliderRadius, fillColor, outlineColor, depthTest);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsDebugDrawEnabled()
-    {
-        return _kccPlugin is not null && _kccPlugin.KCCSettingsInstance != null && _kccPlugin.KCCSettingsInstance.DebugDisplay;
     }
     #endif
 }
