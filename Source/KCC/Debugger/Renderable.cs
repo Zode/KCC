@@ -37,11 +37,14 @@ public abstract class Renderable
 	/// </summary>
 	public OrientedBoundingBox OrientedBoundingBox {get; set;} = OrientedBoundingBox.Default;
 	/// <summary>
-	/// The radius of the capsule or sphere.
+	/// The radius of a capsule or sphere.
+	/// The scale of a wirearrow.
+	/// The size of a quad.
 	/// </summary>
 	public float Radius {get; set;} = 0.0f;
 	/// <summary>
-	/// The height of the capsule.
+	/// The height of a capsule.
+	/// The cap scale of a wirearrow.
 	/// </summary>
 	public float Height {get; set;} = 0.0f;
 

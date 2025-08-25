@@ -217,8 +217,8 @@ public static class KCCDebugger
 	/// <summary>
 	/// Draw an oriented capsule. If fill color alpha is zero, the capsule will be outline only.
 	/// </summary>
-	/// <param name="position"></param>
-	/// <param name="orientation"></param>
+	/// <param name="position">Position in world ppace.</param>
+	/// <param name="orientation">Orientation in world space.</param>
 	/// <param name="radius"></param>
 	/// <param name="height"></param>
 	/// <param name="fillColor"></param>
@@ -252,7 +252,7 @@ public static class KCCDebugger
 	/// <summary>
 	/// Draw a sphere. If fill color alpha is zero, the sphere will be outline only.
 	/// </summary>
-	/// <param name="position"></param>
+	/// <param name="position">Position in world space.</param>
 	/// <param name="radius"></param>
 	/// <param name="fillColor"></param>
 	/// <param name="outlineColor"></param>
@@ -274,6 +274,72 @@ public static class KCCDebugger
 		{
 			StartPosition = position,
 			Radius = radius,
+			FillColor = fillColor,
+			OutlineColor = outlineColor,
+			DepthTest = depthTest,
+		});
+	}
+
+	/// <summary>
+	/// Draw an arrow.
+	/// </summary>
+	/// <param name="position">Position in world space.</param>
+	/// <param name="orientation">Orientation in world space.</param>
+	/// <param name="scale"></param>
+	/// <param name="capScale"></param>
+	/// <param name="color"></param>
+	/// <param name="depthTest"></param>
+	public static void DrawArrow(Vector3 position, Quaternion orientation, float scale, float capScale, Color color, bool depthTest)
+	{
+		if(!CanProcessHasFrame)
+		{
+			return;
+		}
+
+		if(_frameParents.Count == 0)
+		{
+			Debug.LogWarning("KCCDebugger: Can't draw arrow without an event. Please ensure you are only drawing inside events.");
+			return;
+		}
+
+		_frameParents.Peek().Renderables.Add(new Arrow()
+		{
+			StartPosition = position,
+			Orientation = orientation,
+			Radius = scale,
+			Height = capScale,
+			OutlineColor = color,
+			DepthTest = depthTest,
+		});
+	}
+
+	/// <summary>
+	/// Draw a quad.
+	/// </summary>
+	/// <param name="position">Position in world space.</param>
+	/// <param name="orientation">Orientation in world space.</param>
+	/// <param name="scale"></param>
+	/// <param name="fillColor"></param>
+	/// <param name="outlineColor"></param>
+	/// <param name="depthTest"></param>
+	public static void DrawQuad(Vector3 position, Quaternion orientation, float scale, Color fillColor, Color outlineColor, bool depthTest)
+	{
+		if(!CanProcessHasFrame)
+		{
+			return;
+		}
+
+		if(_frameParents.Count == 0)
+		{
+			Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
+			return;
+		}
+
+		_frameParents.Peek().Renderables.Add(new Quad()
+		{
+			StartPosition = position,
+			Orientation = orientation,
+			Radius = scale,
 			FillColor = fillColor,
 			OutlineColor = outlineColor,
 			DepthTest = depthTest,

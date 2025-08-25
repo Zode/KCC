@@ -656,6 +656,11 @@ public class KinematicCharacterController : KinematicBase
                 {
                     TryAddRigidBodyInteraction(trace, otherRb);
                 }
+                
+                #if FLAX_EDITOR
+                KCCDebugger.DrawArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, Color.Red, false);
+                KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 25.0f, Color.FromRGBA(0xFF000020), Color.Red, false);
+                #endif
             }
 
             #if FLAX_EDITOR
@@ -718,6 +723,11 @@ public class KinematicCharacterController : KinematicBase
             {
                 TryAddRigidBodyInteraction(trace, otherRb);
             }
+
+            #if FLAX_EDITOR
+            KCCDebugger.DrawArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, Color.Red, false);
+            KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 25.0f, Color.FromRGBA(0xFF000020), Color.Red, false);
+            #endif
         }
 
         #if FLAX_EDITOR
@@ -816,6 +826,7 @@ public class KinematicCharacterController : KinematicBase
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SolveSweep");
         KCCDebugger.BeginEvent("SolveSweep");
+        KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Yellow, false);
         #endif
 
         Vector3 originalDeltaNormalized = _internalDelta.Normalized;
@@ -828,6 +839,7 @@ public class KinematicCharacterController : KinematicBase
             if(_internalDelta.IsZero)
             {
                 #if FLAX_EDITOR
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Orange, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
@@ -839,6 +851,7 @@ public class KinematicCharacterController : KinematicBase
             if(Math.Round(Vector3.Dot(originalDeltaNormalized, _internalDelta.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Orange, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
@@ -846,20 +859,20 @@ public class KinematicCharacterController : KinematicBase
                 return;
             }
             
+            #if FLAX_EDITOR
+            Vector3 oldPosition = TransientPosition;
+            Vector3 fromToPosition;
+            #endif
+
             if(!CastCollider(TransientPosition, _internalDelta.Normalized, out RayCastHit trace, _internalDelta.Length + KinematicContactOffset, CollisionMask, false, true))
             {
-                #if FLAX_EDITOR
-                if(DebugIsSelected())
-                {
-                    FlaxDebugDrawCollider(TransientPosition + _internalDelta, TransientOrientation, Color.Blue, Time.DeltaTime, false);
-                    DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)_internalDelta.Length * 0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
-                }
-                #endif
-
                 //no collision, full speed ahead!
                 TransientPosition += _internalDelta;
 
                 #if FLAX_EDITOR
+                fromToPosition = TransientPosition - oldPosition;
+                KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), fromToPosition.Length * 0.01f, 1.0f, Color.Orange, false);
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Orange, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
@@ -881,16 +894,15 @@ public class KinematicCharacterController : KinematicBase
             //pull back a bit, otherwise we would be constantly intersecting with the plane
             Real distance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
 
-            #if FLAX_EDITOR
-            if(DebugIsSelected())
-            {
-                FlaxDebugDrawCollider(TransientPosition + (_internalDelta.Normalized * distance), TransientOrientation, Color.Blue, Time.DeltaTime, false);
-                DebugDraw.DrawWireArrow(TransientPosition, Quaternion.FromDirection(_internalDelta.Normalized), (float)distance*0.01f, 1.0f, Color.Blue, Time.DeltaTime, false);
-            }
-            #endif
-
             //move to collision point
             TransientPosition += _internalDelta.Normalized * distance;
+
+            #if FLAX_EDITOR
+            fromToPosition = TransientPosition - oldPosition;
+            KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), fromToPosition.Length * 0.01f, 1.0f, Color.Orange, false);
+            KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Orange, false);
+            KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 100.0f, Color.FromRGBA(0xFF7F0020), Color.Orange, false);
+            #endif
 
             if(IsGrounded)
             {
@@ -913,10 +925,7 @@ public class KinematicCharacterController : KinematicBase
                 Real creaseDistance = Vector3.Dot(wishDelta, crease);
 
                 #if FLAX_EDITOR
-                if(DebugIsSelected())
-                {
-                    DebugDraw.DrawLine(TransientPosition + (crease * 64), TransientPosition - (crease * 64), Color.Purple, Time.DeltaTime, false);
-                }
+                KCCDebugger.DrawLine(TransientPosition + (crease * 64), TransientPosition - (crease * 64), Color.Purple, false);
                 #endif
 
                 //consider anything less than 90 deg to be acute, and anything above to be obtuse.
