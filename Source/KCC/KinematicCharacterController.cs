@@ -923,11 +923,11 @@ public class KinematicCharacterController : KinematicBase
                 {
                     #if FLAX_EDITOR
                     KCCDebugger.BeginEvent("UnstuckRescue");
+                    Debug.Log("SOS");
                     #endif
 
                     //still stuck on second try? fuck it: move slightly opposite of whatever we collided with
                     TransientPosition += (trace.Point - TransientPosition).Normalized * KinematicContactOffset;
-                    Debug.Log("SOS");
 
                     #if FLAX_EDITOR
                     KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Magenta, false);
