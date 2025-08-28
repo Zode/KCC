@@ -334,16 +334,138 @@ public static class KCCDebugger
 			Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
+		
+		Float3[] quadVerts = [
+			new Float3(-0.5f, 0.5f, 0.0f),
+			new Float3(0.5f, 0.5f, 0.0f),
+			new Float3(-0.5f, -0.5f, 0.0f),
+			new Float3(0.5f, -0.5f, 0.0f),
+		];
+
+		Matrix world = Matrix.Scaling(scale) * Matrix.RotationQuaternion(orientation) * Matrix.Translation(new Float3((float)position.X, (float)position.Y, (float)position.Z));
+
+		for(int i = 0; i < 4; i++)
+		{
+			quadVerts[i] = Float3.Transform(quadVerts[i], world);
+		}
 
 		_frameParents.Peek().Renderables.Add(new Quad()
 		{
-			StartPosition = position,
-			Orientation = orientation,
-			Radius = scale,
+			Vertices = quadVerts,
 			FillColor = fillColor,
 			OutlineColor = outlineColor,
 			DepthTest = depthTest,
 		});
+	}
+
+	/// <summary>
+	/// Draw a mesh.
+	/// </summary>
+	/// <param name="vertices"></param>
+	/// <param name="indices"></param>
+	/// <param name="position">Position in world space.</param>
+	/// <param name="orientation">Orientation in world space.</param>
+	/// <param name="fillColor"></param>
+	/// <param name="outlineColor"></param>
+	/// <param name="depthTest"></param>
+	public static void DrawMesh(Float3[] vertices, int[] indices, Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)
+	{
+		if(!CanProcessHasFrame)
+		{
+			return;
+		}
+
+		if(_frameParents.Count == 0)
+		{
+			Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
+			return;
+		}
+
+		Matrix world = Matrix.RotationQuaternion(orientation) * Matrix.Translation(new Float3((float)position.X, (float)position.Y, (float)position.Z));
+
+		for(int i = 0; i < vertices.Length; i++)
+		{
+			vertices[i] = Float3.Transform(vertices[i], world);
+		}
+
+		_frameParents.Peek().Renderables.Add(new Debugger.Renderables.Mesh()
+		{
+			Vertices = vertices,
+			Indices = indices,
+			FillColor = fillColor,
+			OutlineColor = outlineColor,
+			DepthTest = depthTest,
+		});
+	}
+
+	/// <summary>
+	/// Draw a collider.
+	/// </summary>
+	/// <param name="collider"></param>
+	/// <param name="fillColor"></param>
+	/// <param name="outlineColor"></param>
+	/// <param name="depthTest"></param>
+	public static void DrawCollider(PhysicsColliderActor collider, Color fillColor, Color outlineColor, bool depthTest)
+	{
+		if(!CanProcessHasFrame)
+		{
+			return;
+		}
+
+		if(_frameParents.Count == 0)
+		{
+			Debug.LogWarning("KCCDebugger: Can't draw collider without an event. Please ensure you are only drawing inside events.");
+			return;
+		}
+
+		switch(collider)
+		{
+			case BoxCollider box:
+				DrawBox(box.OrientedBox, fillColor, outlineColor, depthTest);
+				break;
+
+			case SphereCollider sphere:
+				DrawSphere(sphere.Position, sphere.Radius, fillColor, outlineColor, depthTest);
+				break;
+
+			case CapsuleCollider capsule:
+				DrawCapsule(capsule.Position, capsule.Orientation, capsule.Radius, capsule.Height, fillColor, outlineColor, depthTest);
+				break;
+
+			case MeshCollider mesh:
+			{
+				mesh.CollisionData.ExtractGeometry(out Float3[] verts, out int[] indices);
+				DrawMesh(verts, indices, mesh.Position, mesh.Orientation, fillColor, outlineColor, depthTest);
+				break;
+			}
+
+			case SplineCollider spline:
+			{
+				spline.CollisionData.ExtractGeometry(out Float3[] verts, out int[] indices);
+				DrawMesh(verts, indices, spline.Position, spline.Orientation, fillColor, outlineColor, depthTest);
+				break;
+			}
+
+			case Terrain terrain:
+			{
+				Vector3 relativePosition = collider.Position - terrain.Position;
+				float size = terrain.ChunkSize * Terrain.UnitsPerVertex * Terrain.PatchEdgeChunksCount;
+				Int2 patchCoord = new((int)(relativePosition.X / size), (int)(relativePosition.Z / size));
+				if(!terrain.HasPatch(ref patchCoord))
+				{
+					Debug.LogWarning($"KCCDebugger: Can't draw terrain. Somehow have a position ({relativePosition} -> {patchCoord}) that is not inside any patch.");
+					break;
+				}
+
+				TerrainPatch patch = terrain.GetPatch(ref patchCoord);
+				patch.ExtractCollisionGeometry(out Float3[] verts, out int[] indices);
+				DrawMesh(verts, indices, Vector3.Zero, Quaternion.Identity, fillColor, outlineColor, depthTest);
+				break;
+			}
+
+			default:
+				throw new NotImplementedException($"Unsupported collider: {collider.GetType()}");
+		}
 	}
 }
 #endif

@@ -500,6 +500,7 @@ public class KinematicCharacterController : KinematicBase
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
         KCCDebugger.BeginEvent("OverlapCollider");
+        //TODO: needs draws
         #endif
 
         bool result = false;
@@ -514,6 +515,7 @@ public class KinematicCharacterController : KinematicBase
             };
 
             #if FLAX_EDITOR
+            KCCDebugDrawCollider(origin, TransientOrientation, Color.FromRGBA(0xFFFF0020), Color.Yellow, false);
             KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
@@ -529,6 +531,10 @@ public class KinematicCharacterController : KinematicBase
             _ => throw new NotImplementedException(),
         };
 
+        #if FLAX_EDITOR
+        KCCDebugDrawCollider(origin, TransientOrientation, Color.FromRGBA(0xFFFF0020), Color.Yellow, false);
+        #endif
+
         if(!result)
         {
             #if FLAX_EDITOR
@@ -543,6 +549,13 @@ public class KinematicCharacterController : KinematicBase
         for(int i = 0; i < colliders.Length; i++)
         {
             _colliderValidities[i] = IsColliderValid(colliders[i]);
+
+            #if FLAX_EDITOR
+            if(_colliderValidities[i])
+            {
+                KCCDebugger.DrawCollider(colliders[i], Color.FromRGBA(0xFF00FF20), Color.Magenta, false);
+            }
+            #endif
         }
 
         //sort collider array so that all valid colliders are in unordered sequence
@@ -1450,23 +1463,28 @@ public class KinematicCharacterController : KinematicBase
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
-                //Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}. validity: {_colliderValidities[i]}");
+                Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                 continue; 
             }
             //TODO: this is suspicious, investigate later.
             if(penetrationDistance == 0.0f)
             {
-                //Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.ID}, {colliders[i].ID}");
+                Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name}, {colliders[i].Name}");
                 continue;
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
             requiredPush += penetrationDirection * penetrationDistance;
+
+            #if FLAX_EDITOR
+            KCCDebugger.DrawArrow(colliders[i].Position, Quaternion.FromDirection(penetrationDirection), penetrationDistance * 0.01f, 1.0f, Color.Red, false);
+            #endif
         }
 
         SetColliderSizeWithInflation(0.0f);
         
         #if FLAX_EDITOR
+        KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(requiredPush.Normalized), (float)requiredPush.Length * 0.01f, 1.0f, Color.Green, false);
         KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
@@ -1676,6 +1694,11 @@ public class KinematicCharacterController : KinematicBase
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void KCCDebugDrawCollider(Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)
     {
+        if(!KCCDebugger.Enabled)
+        {
+            return;
+        }
+
         switch(ColliderType)
         {
             case ColliderType.Box:

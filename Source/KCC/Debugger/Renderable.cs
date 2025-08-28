@@ -39,7 +39,6 @@ public abstract class Renderable
 	/// <summary>
 	/// The radius of a capsule or sphere.
 	/// The scale of a wirearrow.
-	/// The size of a quad.
 	/// </summary>
 	public float Radius {get; set;} = 0.0f;
 	/// <summary>
@@ -47,6 +46,14 @@ public abstract class Renderable
 	/// The cap scale of a wirearrow.
 	/// </summary>
 	public float Height {get; set;} = 0.0f;
+	/// <summary>
+	/// Vertex buffer used for meshes.
+	/// </summary>
+	public Float3[] Vertices {get; set;} = [];
+	/// <summary>
+	/// Index buffer used for meshes.
+	/// </summary>
+	public int[] Indices {get; set;} = [];
 
 	/// <summary>
 	/// Render this debug renderable.
