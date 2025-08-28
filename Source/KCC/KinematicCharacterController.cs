@@ -380,6 +380,11 @@ public class KinematicCharacterController : KinematicBase
         KinematicVelocity = TransientPosition - InitialPosition;
 
         RayCastHit? groundTrace = SolveGround();
+
+        #if FLAX_EDITOR
+        KCCDebugger.DrawText(TransientPosition, $"IsGrounded: {IsGrounded}  ForceUnground: {_forceUnground}", Color.White, false);
+        #endif
+
         _forceUnground = false;
         if(!_wasPreviouslyGrounded && IsGrounded)
         {
@@ -390,7 +395,11 @@ public class KinematicCharacterController : KinematicBase
         {
             _wasPreviouslyGrounded = false;
             Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundTrace);
-        } 
+        }
+
+        #if FLAX_EDITOR
+        KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"WasPreviouslyUngrounded: {_wasPreviouslyGrounded}", Color.White, false);
+        #endif
 
         if(AttachedRigidBody is not null && RigidBodyMoveMode != RigidBodyMoveMode.None)
         {

@@ -178,7 +178,7 @@ public static class KCCDebugger
 
 		_frameParents.Peek().Renderables.Add(new Line()
 		{
-			StartPosition = start,
+			Position = start,
 			EndPosition = end,
 			OutlineColor = color,
 			DepthTest = depthTest,
@@ -239,7 +239,7 @@ public static class KCCDebugger
 
 		_frameParents.Peek().Renderables.Add(new Capsule()
 		{
-			StartPosition = position,
+			Position = position,
 			Orientation = orientation,
 			Radius = radius,
 			Height = height,
@@ -272,7 +272,7 @@ public static class KCCDebugger
 
 		_frameParents.Peek().Renderables.Add(new Sphere()
 		{
-			StartPosition = position,
+			Position = position,
 			Radius = radius,
 			FillColor = fillColor,
 			OutlineColor = outlineColor,
@@ -304,10 +304,10 @@ public static class KCCDebugger
 
 		_frameParents.Peek().Renderables.Add(new Arrow()
 		{
-			StartPosition = position,
+			Position = position,
 			Orientation = orientation,
-			Radius = scale,
-			Height = capScale,
+			Scale = scale,
+			CapScale = capScale,
 			OutlineColor = color,
 			DepthTest = depthTest,
 		});
@@ -466,6 +466,66 @@ public static class KCCDebugger
 			default:
 				throw new NotImplementedException($"Unsupported collider: {collider.GetType()}");
 		}
+	}
+
+	/// <summary>
+	/// Draw some text.
+	/// </summary>
+	/// <param name="position">Position in world space</param>
+	/// <param name="text"></param>
+	/// <param name="size">Font size to use</param>
+	/// <param name="color"></param>
+	/// <param name="depthTest"></param>
+	public static void DrawText(Vector3 position, string text, int size, Color color, bool depthTest)
+	{
+		if(!CanProcessHasFrame)
+		{
+			return;
+		}
+
+		if(_frameParents.Count == 0)
+		{
+			Debug.LogWarning("KCCDebugger: Can't draw text without an event. Please ensure you are only drawing inside events.");
+			return;
+		}
+
+		_frameParents.Peek().Renderables.Add(new Text()
+		{
+			Position = position,
+			Content = text,
+			Size = size,
+			OutlineColor = color,
+			DepthTest = depthTest,
+		});
+	}
+
+	/// <summary>
+	/// Draw some text with font size of 12.
+	/// </summary>
+	/// <param name="position">Position in world space</param>
+	/// <param name="text"></param>
+	/// <param name="color"></param>
+	/// <param name="depthTest"></param>
+	public static void DrawText(Vector3 position, string text, Color color, bool depthTest)
+	{
+		if(!CanProcessHasFrame)
+		{
+			return;
+		}
+
+		if(_frameParents.Count == 0)
+		{
+			Debug.LogWarning("KCCDebugger: Can't draw text without an event. Please ensure you are only drawing inside events.");
+			return;
+		}
+
+		_frameParents.Peek().Renderables.Add(new Text()
+		{
+			Position = position,
+			Content = text,
+			OutlineColor = color,
+			DepthTest = depthTest,
+		});
 	}
 }
 #endif
