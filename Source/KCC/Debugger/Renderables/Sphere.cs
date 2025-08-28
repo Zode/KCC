@@ -11,7 +11,7 @@ public class Sphere : Renderable
 	{
 		if(FillColor.A > 0.0f)
 		{
-			DebugDraw.DrawWireSphere(new(StartPosition, Radius), FillColor, Time.DeltaTime, DepthTest);
+			DebugDraw.DrawSphere(new(StartPosition, Radius), FillColor, Time.DeltaTime, DepthTest);
 		}
 
 		DebugDraw.DrawWireSphere(new(StartPosition, Radius), OutlineColor, Time.DeltaTime, DepthTest);

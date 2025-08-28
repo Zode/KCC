@@ -21,8 +21,4 @@ public class KCCSettings
 	/// Initial list capacity of kinematic movers, this is not the limit but rather will avoid unnecessary memory allocations.
 	/// </summary>
 	public int MoverInitialCapacity = 100;
-	/// <summary>
-	/// Determines if KCC should display its debug visuals in editor when a KCC character is selected.
-	/// </summary>
-	public bool DebugDisplay = true;
 }

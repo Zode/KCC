@@ -11,7 +11,7 @@ public class Capsule : Renderable
 	{
 		if(FillColor.A > 0.0f)
 		{
-			DebugDraw.DrawWireCapsule(StartPosition, Orientation, Radius, Height, FillColor, Time.DeltaTime, DepthTest);
+			DebugDraw.DrawCapsule(StartPosition, Orientation, Radius, Height, FillColor, Time.DeltaTime, DepthTest);
 		}
 
 		DebugDraw.DrawWireCapsule(StartPosition, Orientation, Radius, Height, OutlineColor, Time.DeltaTime, DepthTest);

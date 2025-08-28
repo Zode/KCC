@@ -80,48 +80,54 @@ public class KinematicCharacterController : KinematicBase
     /// Maximum allowed amount of unstuck iterations.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(105)]
+    [EditorOrder(200)]
     public int MaxUnstuckIterations {get => _maxUnstuckIterations; set => _maxUnstuckIterations = Math.Clamp(value, 0, int.MaxValue);}
     private int _maxUnstuckIterations = 10;
+    /// <summary>
+    /// Determine behavioral mode which to use solve situations where the physics solve can not solve penetration for non-convex mesh colliders.
+    /// </summary>
+    [EditorDisplay("Physics")]
+    [EditorOrder(201)]
+    public TriangleMeshUnstuckMode TriangleMeshUnstuckMode = TriangleMeshUnstuckMode.ClosestPoint;
     /// <summary>
     /// Should we filter collisions?
     /// If enabled, the controller will be queried for collision filtering, this is expensive.
     /// If disabled, the character will assume everything to be solid, this is less expensive.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(106)]
+    [EditorOrder(202)]
     public bool FilterCollisions {get; set;} = false;
     /// <summary>
     /// Determines how much the character should slide upon coming to contact with a surface.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(108)]
+    [EditorOrder(204)]
     public float SlideMultiplier {get => _slideMultiplier; set => _slideMultiplier = Mathf.Clamp(value, 0.0f, 1.0f);}
     private float _slideMultiplier = 0.75f;
     /// <summary>
     /// If set to true, the character slide will also be affected by the surface's physics material settings.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(109)]
+    [EditorOrder(205)]
     public bool SlideAccountForPhysicsMaterial {get; set;} = true;
     /// <summary>
     /// The layer mask upon which the character collides with.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(107)]
+    [EditorOrder(203)]
     public LayersMask CollisionMask {get; set;} = new();
     /// <summary>
     /// If set to true, the character slide multiplier will be ignored during airborne movement
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(110)]
+    [EditorOrder(206)]
     public bool SlideSkipMultiplierWhileAirborne {get; set;} = true;
     /// <summary>
     /// Tag used to determine if a collision should be considered valid ground or not.
     /// If left empty, all surfaces determined by MaxSlopeAngle are considered valid ground.
     /// </summary>
     [EditorDisplay("Grounding")]
-    [EditorOrder(110)]
+    [EditorOrder(300)]
     public Tag GroundTag {get; set;} = new();
     /// <summary>
     /// Is the character currently grounded.
@@ -142,61 +148,61 @@ public class KinematicCharacterController : KinematicBase
     /// Distance to surface until the character is considered grounded, KinematicContactOffset is automatically added on this.
     /// </summary>
     [EditorDisplay("Grounding")]
-    [EditorOrder(111)]
+    [EditorOrder(301)]
     public float GroundingDistance {get => _groundingDistance; set => _groundingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _groundingDistance = 1.0f;
     /// <summary>
     /// Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true.
     /// </summary>
     [EditorDisplay("Grounding")]
-    [EditorOrder(112)]
+    [EditorOrder(302)]
     public float GroundSnappingDistance {get => _groundSnappingDistance; set => _groundSnappingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _groundSnappingDistance = 1024.0f;
     /// <summary>
     /// Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground.
     /// </summary>
     [EditorDisplay("Grounding")]
-    [EditorOrder(113)]
+    [EditorOrder(303)]
     public float MaxSlopeAngle {get => _maxSlopeAngle; set => _maxSlopeAngle = Mathf.Clamp(value, 0.0f, 180.0f);}
     private float _maxSlopeAngle = 66.0f;
     /// <summary>
     /// Determines if stair stepping is allowed at all.
     /// </summary>
     [EditorDisplay("Stairstepping")]
-    [EditorOrder(114)]
+    [EditorOrder(400)]
     public bool AllowStairStepping {get; set;} = true;
     /// <summary>
     /// Maximum allowed stair step height distance.
     /// </summary>
     [EditorDisplay("Stairstepping")]
-    [EditorOrder(115)]
+    [EditorOrder(401)]
     public float StairStepDistance {get => _stairStepDistance; set => _stairStepDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepDistance = 50.0f;
     /// <summary>
     /// Behavior mode for stair stepping.
     /// </summary>
     [EditorDisplay("Stairstepping")]
-    [EditorOrder(116)]
+    [EditorOrder(402)]
     public StairStepGroundMode StairStepGroundMode {get; set;} = StairStepGroundMode.RequireStableSolid;
     /// <summary>
     /// Minimum distance the character must be able to move forward on a detected step for it to be considered valid.
     /// </summary>
     [EditorDisplay("Stairstepping")]
-    [EditorOrder(117)]
+    [EditorOrder(403)]
     public float StairStepMinimumForwardDistance {get => _stairStepMinimumForwardDistance; set => _stairStepMinimumForwardDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _stairStepMinimumForwardDistance = 0.01f;
     /// <summary>
     /// Maximum amount of stair step iterations per frame.
     /// </summary>
     [EditorDisplay("Stairstepping")]
-    [EditorOrder(118)]
+    [EditorOrder(404)]
     public int MaxStairStepIterations {get => _maxStairStepIterations; set => _maxStairStepIterations = Math.Clamp(value, 0, int.MaxValue);} 
     private int _maxStairStepIterations = 10;
     /// <summary>
     /// Determines if the character should move with RigidBodies it is standing on.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
-    [EditorOrder(119)]
+    [EditorOrder(500)]
     public RigidBodyMoveMode RigidBodyMoveMode {get; set;} = RigidBodyMoveMode.KinematicMoversOnly;
     /// <summary>
     /// Determines if the character should solve the movements caused by rigidbodies stood upon.
@@ -204,13 +210,13 @@ public class KinematicCharacterController : KinematicBase
     /// If disabled, the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
-    [EditorOrder(120)]
+    [EditorOrder(501)]
     public bool SolveRigidBodyMovements {get; set;} = false;
     /// <summary>
     /// Determine how to handle dynamic rigidbodies that we have collided with.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
-    [EditorOrder(121)]
+    [EditorOrder(502)]
     public RigidBodyInteractionMode RigidBodyInteractionMode {get; set;} = RigidBodyInteractionMode.PureKinematic;
     private const int KCC_MAX_RB_INTERACTIONS = 1024;
     //Evil optimization global variables, used to track rigidbody interactions
@@ -220,7 +226,7 @@ public class KinematicCharacterController : KinematicBase
     /// The simulated mass amount for dynamic rigidbody handling.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
-    [EditorOrder(122)]
+    [EditorOrder(503)]
     public float SimulatedMass {get => _simulatedMass; set => _simulatedMass = Mathf.Clamp(value, 0.0f, float.MaxValue);}
     private float _simulatedMass = 1000.0f;
 
@@ -337,6 +343,11 @@ public class KinematicCharacterController : KinematicBase
 
         _rigidBodiesCollidedCount = 0;
 
+        #if FLAX_EDITOR
+        KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Gray, false);
+        Vector3 oldPosition = TransientPosition;
+        #endif
+
         if(IsGrounded)
         {
             #if FLAX_EDITOR
@@ -409,6 +420,10 @@ public class KinematicCharacterController : KinematicBase
         Orientation = TransientOrientation;
 
         #if FLAX_EDITOR
+        Vector3 fromToPosition = TransientPosition - oldPosition;
+        KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, Color.White, false);
+        KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.White, false);
+       
         KCCDebugger.EndEvent();
         Profiler.EndEvent();
         Profiler.BeginEvent("Controller.KinematicPostUpdate");
@@ -500,7 +515,6 @@ public class KinematicCharacterController : KinematicBase
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
         KCCDebugger.BeginEvent("OverlapCollider");
-        //TODO: needs draws
         #endif
 
         bool result = false;
@@ -1463,14 +1477,47 @@ public class KinematicCharacterController : KinematicBase
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
-                Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
-                continue; 
+                if(colliders[i] is MeshCollider meshCollider)
+                {
+                    if(!ComputePenetrationTriangles(meshCollider, ref penetrationDirection, ref penetrationDistance))
+                    {
+                        #if FLAX_EDITOR
+                        Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
+                        #endif
+
+                        #pragma warning disable IDE0035
+                        #pragma warning disable CS0162
+                        continue;
+                        #pragma warning restore CS0162
+                        #pragma warning restore IDE0035
+                    }
+                }
+                else
+                {
+                    #if FLAX_EDITOR
+                    Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
+                    #endif
+
+                    #pragma warning disable IDE0035
+                    #pragma warning disable CS0162
+                    continue;
+                    #pragma warning restore CS0162
+                    #pragma warning restore IDE0035
+                }
             }
+
             //TODO: this is suspicious, investigate later.
             if(penetrationDistance == 0.0f)
             {
-                Debug.Log($"zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name}, {colliders[i].Name}");
+                #if FLAX_EDITOR
+                Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name}, {colliders[i].Name}");
+                #endif
+
+                #pragma warning disable IDE0035
+                #pragma warning disable CS0162
                 continue;
+                #pragma warning restore CS0162
+                #pragma warning restore IDE0035
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
@@ -1490,6 +1537,94 @@ public class KinematicCharacterController : KinematicBase
         #endif
 
         return requiredPush;
+    }
+
+    /// <summary>
+    /// Compute penetration for special case non-convex triangle meshes
+    /// </summary>
+    /// <param name="meshCollider"></param>
+    /// <param name="penetrationDirection"></param>
+    /// <param name="penetrationDistance"></param>
+    /// <returns></returns>
+    private bool ComputePenetrationTriangles(MeshCollider meshCollider, ref Vector3 penetrationDirection, ref float penetrationDistance)
+    {
+        if(meshCollider.CollisionData.Options.Type != CollisionDataType.TriangleMesh)
+        {
+            return false;
+        }
+
+        #if FLAX_EDITOR
+        KCCDebugger.BeginEvent("ComputePenetrationTriangles");
+        #endif
+
+        switch(TriangleMeshUnstuckMode)
+        {
+            case TriangleMeshUnstuckMode.BoundingBox:
+            {
+                BoxCollider tempBox = new()
+                {
+                    //Position = meshCollider.Position,
+                    //Orientation = meshCollider.Orientation,
+                    //Scale = meshCollider.Scale,
+                    Size = meshCollider.Box.Size,
+                    ContactOffset = meshCollider.ContactOffset,
+                    PhysicsScene = meshCollider.PhysicsScene,
+                    Parent = meshCollider.Parent,
+                };
+
+                #if FLAX_EDITOR
+                KCCDebugger.DrawCollider(tempBox, Color.FromRGBA(0xFF000020), Color.Red, false);
+                KCCDebugger.EndEvent();
+                #endif
+
+                bool result = Collider.ComputePenetration(_collider, tempBox, out penetrationDirection, out penetrationDistance);
+                Destroy(tempBox);
+
+                return result;
+            }
+
+            case TriangleMeshUnstuckMode.ClosestPoint:
+            {
+                if(_collider == null)
+                {
+                    return false;
+                }
+
+                Vector3 direction = (TransientPosition - meshCollider.Position).Normalized;
+                bool result = meshCollider.RayCast(meshCollider.Position + direction * meshCollider.Sphere.Radius, -direction, out RayCastHit trace);
+                bool result2 = _collider.RayCast(TransientPosition - direction * _collider.Sphere.Radius, direction, out RayCastHit trace2);
+
+                if(result && result2)
+                {
+                    Vector3 position = TransientPosition + (trace2.Point - TransientPosition);
+
+                    Vector3 penetration = trace.Point - position;
+                    penetrationDirection = penetration.Normalized;
+                    penetrationDistance = (float)penetration.Length;
+
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawSphere(trace2.Point, 1.0f, Color.DarkRed, Color.Red, false);
+                    KCCDebugger.DrawSphere(trace.Point, 1.0f, Color.Red, Color.Red, false);
+                    #endif
+                }
+                
+                #if FLAX_EDITOR
+                KCCDebugger.DrawLine(TransientPosition - direction * meshCollider.Sphere.Radius, meshCollider.Position, Color.DarkRed, false);
+                KCCDebugger.DrawLine(meshCollider.Position + direction * meshCollider.Sphere.Radius, meshCollider.Position, Color.Red, false);
+                KCCDebugger.EndEvent();
+                #endif
+
+                return result;
+            }
+
+            default:
+            case TriangleMeshUnstuckMode.None:
+                #if FLAX_EDITOR
+                KCCDebugger.EndEvent();
+                #endif
+
+                return false;
+        }
     }
 
     /// <summary>
