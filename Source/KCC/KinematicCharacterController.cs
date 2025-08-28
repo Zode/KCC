@@ -522,7 +522,7 @@ public class KinematicCharacterController : KinematicBase
         {
             result = ColliderType switch
             {
-                ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
+                ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + (inflate * 0.5f), out colliders, TransientOrientation, layerMask, hitTriggers),
                 ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
                 ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
@@ -917,7 +917,24 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve the issue and re-try sweep.
-                TransientPosition += UnstuckSolve((float)KinematicContactOffset);
+                Vector3 push = UnstuckSolve((float)KinematicContactOffset);
+                TransientPosition += push;
+                if(unstuckSolves > 0 && push.IsZero)
+                {
+                    #if FLAX_EDITOR
+                    KCCDebugger.BeginEvent("UnstuckRescue");
+                    #endif
+
+                    //still stuck on second try? fuck it: move slightly opposite of whatever we collided with
+                    TransientPosition += (trace.Point - TransientPosition).Normalized * KinematicContactOffset;
+                    Debug.Log("SOS");
+
+                    #if FLAX_EDITOR
+                    KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Magenta, false);
+                    KCCDebugger.EndEvent();
+                    #endif
+                }
+
                 i--;
                 unstuckSolves++;
                 continue;
