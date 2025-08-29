@@ -13,6 +13,7 @@ namespace KCC;
 /// </summary>
 public class KCCDebuggerWindow : EditorWindow
 {
+	private readonly ToolStrip _toolStrip;
 	private readonly ToolStripButton _recordButton;
 	private readonly ToolStripButton _clearButton;
 	private readonly ToolStripButton _toBeginningButton;
@@ -20,6 +21,7 @@ public class KCCDebuggerWindow : EditorWindow
 	private readonly ToolStripButton _toEndButton;
 	private readonly ToolStripButton _nextFrameButton;
 	private readonly Label _infoLabel;
+	private readonly Slider _frameSlider;
 	private readonly Panel _treePanel;
 	private readonly Tree _tree;
 
@@ -45,27 +47,27 @@ public class KCCDebuggerWindow : EditorWindow
 	{
 		Title = "KCC Debugger";
 
-		ToolStrip toolStrip = new()
+		_toolStrip = new ToolStrip()
 		{
 			Parent = this,
 		};
 
-		_recordButton = toolStrip.AddButton(Editor.Icons.Play64);
+		_recordButton = _toolStrip.AddButton(Editor.Icons.Play64);
 		_recordButton.AutoCheck = true;
 		_recordButton.LinkTooltip("Start capturing KCC events");
 		_recordButton.Clicked += OnRecordingChanged;
 
-		_clearButton = toolStrip.AddButton(Editor.Icons.Rotate64);
+		_clearButton = _toolStrip.AddButton(Editor.Icons.Rotate64);
 		_clearButton.LinkTooltip("Clear all captured KCC events");
 		_clearButton.Clicked += KCCDebugger.ClearFrames;
 
-		toolStrip.AddSeparator();
+		_toolStrip.AddSeparator();
 
-		_toBeginningButton = toolStrip.AddButton(Editor.Icons.Left64);
+		_toBeginningButton = _toolStrip.AddButton(Editor.Icons.Left64);
 		_toBeginningButton.LinkTooltip("To first frame");
 		_toBeginningButton.Clicked += () => { KCCDebugger.Frame = 0; };
 
-		_previousFrameButton = toolStrip.AddButton(Editor.Icons.Left64);
+		_previousFrameButton = _toolStrip.AddButton(Editor.Icons.Left64);
 		_previousFrameButton.LinkTooltip("Previous frame");
 		_previousFrameButton.Clicked += () =>
 		{
@@ -75,7 +77,7 @@ public class KCCDebuggerWindow : EditorWindow
 			}
 		};
 
-		_nextFrameButton = toolStrip.AddButton(Editor.Icons.Right64);
+		_nextFrameButton = _toolStrip.AddButton(Editor.Icons.Right64);
 		_nextFrameButton.LinkTooltip("Next frame");
 		_nextFrameButton.Clicked += () =>
 		{
@@ -85,15 +87,26 @@ public class KCCDebuggerWindow : EditorWindow
 			}
 		};
 
-		_toEndButton = toolStrip.AddButton(Editor.Icons.Right64);
+		_toEndButton = _toolStrip.AddButton(Editor.Icons.Right64);
 		_toEndButton.LinkTooltip("To last frame");
 		_toEndButton.Clicked += () => { KCCDebugger.Frame = KCCDebugger.Frames.Count - 1; };
 
-		toolStrip.AddSeparator();
+		_toolStrip.AddSeparator();
 		_infoLabel = new Label()
 		{
-			Parent = toolStrip,
+			Parent = _toolStrip,
 			Text = "No frames.",
+		};
+
+		_frameSlider = new Slider()
+		{
+			Parent = _toolStrip,
+			Minimum = 0.0f,
+			Maximum = 100.0f,
+		};
+
+		_frameSlider.ValueChanged += () => {
+			KCCDebugger.Frame = (int)Mathf.Min(_frameSlider.Value / 100.0f * KCCDebugger.Frames.Count, KCCDebugger.Frames.Count - 1);
 		};
 
 		_treePanel = new Panel()
@@ -102,7 +115,7 @@ public class KCCDebuggerWindow : EditorWindow
 			IsScrollable = true,
 			ScrollBars = ScrollBars.Both,
 			AnchorPreset = AnchorPresets.StretchAll,
-			Offsets = new Margin(0, 0, toolStrip.Bottom, 0),
+			Offsets = new Margin(0, 0, _toolStrip.Bottom, 0),
 		};
 
 		_tree = new Tree(true)
@@ -132,7 +145,7 @@ public class KCCDebuggerWindow : EditorWindow
 			_infoLabel.Text = "No frames";
 			return;
 		}
-		
+
 		TreeNode root = new(false)
 		{
 			ChildrenIndent = 0,
@@ -153,6 +166,10 @@ public class KCCDebuggerWindow : EditorWindow
 
 		root.Expand(true);
 		_infoLabel.Text = $"Frame {KCCDebugger.Frame} / {KCCDebugger.Frames.Count - 1}";
+		if(!_frameSlider.IsSliding)
+		{
+			_frameSlider.Value = Mathf.Min(KCCDebugger.Frame / KCCDebugger.Frames.Count * 100.0f, KCCDebugger.Frames.Count - 1);
+		}
 	}
 
 	private void UpdateButtons()
@@ -161,6 +178,22 @@ public class KCCDebuggerWindow : EditorWindow
 		_nextFrameButton.Enabled = KCCDebugger.Frame < KCCDebugger.Frames.Count - 1;
 		_toBeginningButton.Enabled = KCCDebugger.Frame != KCCDebugger.NO_FRAMES;
 		_toEndButton.Enabled = KCCDebugger.Frame != KCCDebugger.NO_FRAMES;
+		_frameSlider.Enabled = KCCDebugger.Frame != KCCDebugger.NO_FRAMES;
+	}
+
+	/// <inheritdoc />
+	public override void OnParentResized()
+	{
+		base.OnParentResized();
+
+		float totalWidth = 32.0f; //arbitrary amount, just to pervent the slider being cut off.
+		for(int i = 0; i < _toolStrip.ChildrenCount - 1; i++)
+		{
+			Control child = _toolStrip.Children[i];
+			totalWidth += child.Width;
+		}
+
+		_frameSlider.Width = _toolStrip.Width - totalWidth;
 	}
 
 	/// <summary>
