@@ -1,19 +1,20 @@
 #if FLAX_EDITOR
+using System;
 using System.Collections.Generic;
 using FlaxEngine;
 
 namespace KCC.Debugger;
-#nullable enable
 
 /// <summary>
 /// Represents a KCC Debugger event.
 /// </summary>
-public class Event(Actor actor, string name)
+public class Event(Guid? id, string name)
 {
 	/// <summary>
-	/// The associated Flax actor.
+	/// The associated Flax actor. If set this is the "topmost" event for this actor,
+	/// used for synching selection between scene and debugger.
 	/// </summary>
-	public Actor Actor {get; set;} = actor;
+	public Guid? ActorID {get; set;} = id;
 	/// <summary>
 	/// Child events (if any).
 	/// </summary>
@@ -30,11 +31,16 @@ public class Event(Actor actor, string name)
 	/// <summary>
 	/// Render all the renderables from this event and its sub events.
 	/// </summary>
-	public void Render()
+	public void Render(bool skipChild = false)
 	{
 		foreach(Renderable renderable in Renderables)
 		{
 			renderable.Render();
+		}
+
+		if(skipChild)
+		{
+			return;
 		}
 
 		foreach(Event @event in Events)

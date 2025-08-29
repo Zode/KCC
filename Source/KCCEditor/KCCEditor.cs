@@ -42,12 +42,14 @@ public class KCCEditor : EditorPlugin
         }
 
         Scripting.Update += OnUpdate;
+        Editor.Instance.SceneEditing.SelectionChanged += OnSceneEditingSelectionChanged;
     }
 
 	/// <inheritdoc />
     public override void DeinitializeEditor()
     {
         Scripting.Update -= OnUpdate;
+        Editor.Instance.SceneEditing.SelectionChanged -= OnSceneEditingSelectionChanged;
 
         _debuggerButton.Dispose();
         _debuggerButton = null;
@@ -64,5 +66,10 @@ public class KCCEditor : EditorPlugin
     private void OnUpdate()
     {
         DebuggerWindow.DrawRenderables();
+    }
+
+    private void OnSceneEditingSelectionChanged()
+    {
+        DebuggerWindow.OnSceneEditingSelectionChanged();
     }
 }

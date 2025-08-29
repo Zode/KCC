@@ -105,7 +105,13 @@ public static class KCCDebugger
 			return;
 		}
 
-		Event @event = new(actor, name);
+		if(actor is null)
+		{
+			Debug.LogWarning("KCCDebugger: Can't begin actor event without non null actor. Please ensure you are starting events properly.");
+			return;
+		}
+
+		Event @event = new(actor.ID, name);
 		if(_frameParents.Count == 0)
 		{
 			Frames[_internalFrame].Events.Add(@event);
@@ -134,9 +140,8 @@ public static class KCCDebugger
 			return;
 		}
 
-		Event parent = _frameParents.Peek();
-		Event @event = new(parent.Actor, name);
-		parent.Events.Add(@event);
+		Event @event = new(null, name);
+		_frameParents.Peek().Events.Add(@event);
 		_frameParents.Push(@event);
 	}
 

@@ -332,7 +332,6 @@ public class KinematicCharacterController : KinematicBase
         KCCDebugger.EndEvent();
         Profiler.EndEvent();
         Profiler.BeginEvent("KCC.KinematicUpdate");
-        KCCDebugger.BeginEvent("Update");
         #endif
 
         TransientOrientation = InitialOrientation;
@@ -346,6 +345,7 @@ public class KinematicCharacterController : KinematicBase
         #if FLAX_EDITOR
         KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Gray, false);
         Vector3 oldPosition = TransientPosition;
+        KCCDebugger.BeginEvent("Update");
         #endif
 
         if(IsGrounded)
@@ -429,12 +429,13 @@ public class KinematicCharacterController : KinematicBase
         Orientation = TransientOrientation;
 
         #if FLAX_EDITOR
-        Vector3 fromToPosition = TransientPosition - oldPosition;
-        KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, Color.White, false);
-        KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.White, false);
-       
         KCCDebugger.EndEvent();
         Profiler.EndEvent();
+        
+        Vector3 fromToPosition = TransientPosition - oldPosition;
+        KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, Color.White, false);
+        KCCDebugDrawCollider(TransientPosition, TransientOrientation, Color.Transparent, Color.Gray, false);
+       
         Profiler.BeginEvent("Controller.KinematicPostUpdate");
         KCCDebugger.BeginEvent("PostUpdate");
         #endif

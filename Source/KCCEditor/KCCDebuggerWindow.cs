@@ -1,13 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using FlaxEditor;
 using FlaxEditor.GUI;
 using FlaxEditor.GUI.Tree;
+using FlaxEditor.SceneGraph;
 using FlaxEditor.Surface.Archetypes;
 using FlaxEditor.Windows;
 using FlaxEngine;
 using FlaxEngine.GUI;
 using KCC.Debugger;
+using KCC.Debugger.Renderables;
 
 namespace KCC;
+#nullable enable
 
 /// <summary>
 /// </summary>
@@ -106,7 +113,10 @@ public class KCCDebuggerWindow : EditorWindow
 		};
 
 		_frameSlider.ValueChanged += () => {
-			KCCDebugger.Frame = (int)Mathf.Min(_frameSlider.Value / 100.0f * KCCDebugger.Frames.Count, KCCDebugger.Frames.Count - 1);
+			if(_frameSlider.IsSliding)
+			{
+				KCCDebugger.Frame = (int)Mathf.Min(_frameSlider.Value / 100.0f * KCCDebugger.Frames.Count, KCCDebugger.Frames.Count - 1);
+			}
 		};
 
 		_treePanel = new Panel()
@@ -139,6 +149,7 @@ public class KCCDebuggerWindow : EditorWindow
 	private void OnFrameChanged()
 	{
 		UpdateButtons();
+		_tree.Selection.Clear();
 		_tree.RemoveChildren();
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
 		{
@@ -168,8 +179,11 @@ public class KCCDebuggerWindow : EditorWindow
 		_infoLabel.Text = $"Frame {KCCDebugger.Frame} / {KCCDebugger.Frames.Count - 1}";
 		if(!_frameSlider.IsSliding)
 		{
-			_frameSlider.Value = Mathf.Min(KCCDebugger.Frame / KCCDebugger.Frames.Count * 100.0f, KCCDebugger.Frames.Count - 1);
+			_frameSlider.Value = Mathf.Min(KCCDebugger.Frame, KCCDebugger.Frames.Count - 1) / (float)KCCDebugger.Frames.Count * 100.0f;
 		}
+
+		OnSceneEditingSelectionChanged(); //force selection in KCC Debugger window, since we refreshed the tree
+		FocusOnFrame(KCCDebugger.Frame);
 	}
 
 	private void UpdateButtons()
@@ -201,14 +215,193 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	public void DrawRenderables()
 	{
-		if(!Visible || _tree.SelectedNode == null)
+		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
 		{
 			return;
 		}
 
-		if(_tree.SelectedNode is EventNode eventNode)
+		foreach(TreeNode node in _tree.Selection)
 		{
+			if(node is not EventNode eventNode)
+			{
+				continue;
+			}
+
 			eventNode.Event.Render();
 		}
+
+		DrawOnionSkin(KCCDebugger.Frame, 10);
+	}
+
+	private void DrawOnionSkin(int frame, int around)
+	{
+		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
+		{
+			return;
+		}
+
+		IEnumerable<EventNode> eventNodes = _tree.Selection.Cast<EventNode>();
+		for(int i = frame - around; i <= frame + around; i++)
+		{
+			if(i >= KCCDebugger.Frames.Count)
+			{
+				return;
+			}
+
+			if(i == KCCDebugger.Frame || i < 0)
+			{
+				continue;
+			}
+
+			foreach(Event @event in KCCDebugger.Frames[i].Events)
+			{
+				foreach(EventNode eventNode in eventNodes)
+				{
+					if(eventNode.Event.ActorID != @event.ActorID)
+					{
+						continue;
+					}
+
+					@event.Render(true);
+					goto breakToOnionSkinLoop;
+				}	
+			}
+
+			breakToOnionSkinLoop:
+			;
+		}
+	}
+
+	private void FocusOnFrame(int frame)
+	{
+		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
+		{
+			return;
+		}
+
+		IEnumerable<EventNode> eventNodes = _tree.Selection.Cast<EventNode>();
+		//hack: calculate center from the events first renderable, since we know that to always exist.
+		BoundingSphere averageSphere = BoundingSphere.Empty;
+		Vector3 averageCenter = Vector3.Zero;
+		int count = 0;
+		foreach(EventNode eventNode in eventNodes)
+		{
+			if(eventNode.Event.ActorID is null)
+			{
+				continue;
+			}
+
+			switch(eventNode.Event.Renderables[0])
+			{
+				case Box box:
+				{
+					averageSphere = BoundingSphere.Merge(averageSphere, BoundingSphere.FromBox(box.OrientedBoundingBox.GetBoundingBox()));
+					averageCenter = box.OrientedBoundingBox.Center;
+					count++;
+					break;
+				}
+
+				case Sphere sphere:
+				{
+					averageSphere = BoundingSphere.Merge(averageSphere, new BoundingSphere(sphere.Position, sphere.Radius));
+					averageCenter = sphere.Position;
+					count++;
+					break;
+				}
+
+				case Capsule capsule:
+				{
+					averageSphere = BoundingSphere.Merge(averageSphere, new BoundingSphere(capsule.Position, capsule.Radius));
+					averageCenter = capsule.Position;
+					count++;
+					break;
+				}
+
+				default:
+					throw new NotImplementedException();
+			}
+		}
+
+		if(count == 0 || averageSphere == BoundingSphere.Empty)
+		{
+			return;
+		}
+
+		averageCenter /= count;
+		Editor.Instance.Windows.EditWin.Viewport.ViewportCamera.SetArcBallView(
+			Editor.Instance.Windows.EditWin.Viewport.ViewOrientation,
+			averageCenter, averageSphere.Radius * 5
+		);
+	}
+
+	/// <summary>
+	/// Called when the scene editing selection changes, used to synch up the current scene selection with the tree event node. 
+	/// </summary>
+	public void OnSceneEditingSelectionChanged()
+	{
+		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
+		{
+			return;
+		}
+
+		IEnumerable<ActorNode> actors = Editor.Instance.SceneEditing.Selection
+			.OfType<ActorNode>();
+
+		//select new
+		foreach(ActorNode actorNode in actors)
+		{
+			EventNode? eventNode = FindTopmostEvent(actorNode.Actor, (ContainerControl)_tree.Children[0]);
+			if(eventNode is null)
+			{
+				continue;
+			}
+
+			if(!_tree.Selection.Contains(eventNode))
+			{
+				_tree.Selection.Add(eventNode);
+			}
+		}
+
+		//deselect old
+		for(int i = _tree.Selection.Count - 1; i >= 0; i--)
+		{
+			if(_tree.Selection[i] is not EventNode eventNode)
+			{
+				continue;
+			}
+
+			if(actors.Any(actorNode => actorNode.Actor.ID == eventNode.Event.ActorID))
+			{
+				continue;
+			}
+
+			_tree.Selection.RemoveAt(i);
+		}
+	}
+
+	private static EventNode? FindTopmostEvent(Actor actor, ContainerControl parentContainer)
+	{
+		EventNode? result = null;
+		foreach(Control control in parentContainer.Children)
+		{
+			if(control is not EventNode eventNode)
+			{
+				continue;
+			}
+
+			if(eventNode.Event.ActorID == actor.ID)
+			{
+				result = eventNode;
+				break;
+			}
+
+			result = FindTopmostEvent(actor, eventNode);
+			if(result != null)
+			{
+				break;
+			}
+		}
+
+		return result;
 	}
 }
