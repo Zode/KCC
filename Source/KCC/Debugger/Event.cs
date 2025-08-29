@@ -27,12 +27,22 @@ public class Event(Guid? id, string name)
 	/// List of renderables.
 	/// </summary>
 	public List<Renderable> Renderables {get; set;} = [];
+	/// <summary>
+	/// Was this already rendered during this pass?
+	/// </summary>
+	public bool AlreadyRendered {get; set;} = false;
 
 	/// <summary>
 	/// Render all the renderables from this event and its sub events.
 	/// </summary>
 	public void Render(bool skipChild = false)
 	{
+		if(AlreadyRendered)
+		{
+			return;
+		}
+
+		AlreadyRendered = true;
 		foreach(Renderable renderable in Renderables)
 		{
 			renderable.Render();
@@ -46,6 +56,24 @@ public class Event(Guid? id, string name)
 		foreach(Event @event in Events)
 		{
 			@event.Render();
+		}
+	}
+
+	/// <summary>
+	/// Reset the pass flag on this event and its subevents
+	/// </summary>
+	public void ResetRenderables(bool skipChild = false)
+	{
+		AlreadyRendered = false;
+
+		if(skipChild)
+		{
+			return;
+		}
+		
+		foreach(Event @event in Events)
+		{
+			@event.ResetRenderables();
 		}
 	}
 }

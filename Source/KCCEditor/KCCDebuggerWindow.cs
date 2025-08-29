@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -31,6 +32,8 @@ public class KCCDebuggerWindow : EditorWindow
 	private readonly Slider _frameSlider;
 	private readonly Panel _treePanel;
 	private readonly Tree _tree;
+	private bool _ignoreNextSelectionChange = false;
+	private List<Guid> _actorRestoreList = [];
 
 	/// <summary>
 	/// Value indicating if KCC event recording is enabled.
@@ -137,6 +140,8 @@ public class KCCDebuggerWindow : EditorWindow
 		};
 
 		KCCDebugger.FrameChanged += OnFrameChanged;
+		_tree.SelectedChanged += OnTreeSelectionChanged;
+
 		UpdateButtons();
 	}
 
@@ -148,9 +153,20 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void OnFrameChanged()
 	{
+		if(KCCDebugger.Frame != KCCDebugger.NO_FRAMES)
+		{
+			BubbleUpSelections();
+			_actorRestoreList = _tree.Selection
+				.Cast<EventNode>()
+				.Where(node => node.Event.ActorID is not null)
+				.Select(node => (Guid)node.Event.ActorID!)
+				.ToList();
+		}
+		
 		UpdateButtons();
 		_tree.Selection.Clear();
 		_tree.RemoveChildren();
+
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
 		{
 			_infoLabel.Text = "No frames";
@@ -176,13 +192,29 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 
 		root.Expand(true);
+		foreach(Guid id in _actorRestoreList)
+		{
+			EventNode? eventNode = FindTopmostEventForActor(id, root);
+			if(eventNode is null)
+			{
+				continue;
+			}
+
+			_tree.Selection.Add(eventNode);
+			eventNode.ExpandAllParents();
+		}
+
+		_actorRestoreList.Clear();
 		_infoLabel.Text = $"Frame {KCCDebugger.Frame} / {KCCDebugger.Frames.Count - 1}";
 		if(!_frameSlider.IsSliding)
 		{
 			_frameSlider.Value = Mathf.Min(KCCDebugger.Frame, KCCDebugger.Frames.Count - 1) / (float)KCCDebugger.Frames.Count * 100.0f;
 		}
 
-		OnSceneEditingSelectionChanged(); //force selection in KCC Debugger window, since we refreshed the tree
+		//force selection in KCC Debugger window, since we refreshed the tree
+		OnTreeSelectionChanged(_tree.Selection, _tree.Selection);
+		OnSceneEditingSelectionChanged(); 
+
 		FocusOnFrame(KCCDebugger.Frame);
 	}
 
@@ -220,6 +252,7 @@ public class KCCDebuggerWindow : EditorWindow
 			return;
 		}
 
+		KCCDebugger.Frames[KCCDebugger.Frame].ResetRenderables();
 		foreach(TreeNode node in _tree.Selection)
 		{
 			if(node is not EventNode eventNode)
@@ -235,6 +268,7 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void DrawOnionSkin(int frame, int around)
 	{
+		//TODO: setting for this
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
 		{
 			return;
@@ -262,6 +296,7 @@ public class KCCDebuggerWindow : EditorWindow
 						continue;
 					}
 
+					@event.ResetRenderables(true);
 					@event.Render(true);
 					goto breakToOnionSkinLoop;
 				}	
@@ -274,6 +309,7 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void FocusOnFrame(int frame)
 	{
+		//TODO: setting for this
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
 		{
 			return;
@@ -344,28 +380,20 @@ public class KCCDebuggerWindow : EditorWindow
 			return;
 		}
 
+		if(_ignoreNextSelectionChange)
+		{
+			_ignoreNextSelectionChange = false;
+			return;
+		}
+
 		IEnumerable<ActorNode> actors = Editor.Instance.SceneEditing.Selection
 			.OfType<ActorNode>();
-
-		//select new
-		foreach(ActorNode actorNode in actors)
-		{
-			EventNode? eventNode = FindTopmostEvent(actorNode.Actor, (ContainerControl)_tree.Children[0]);
-			if(eventNode is null)
-			{
-				continue;
-			}
-
-			if(!_tree.Selection.Contains(eventNode))
-			{
-				_tree.Selection.Add(eventNode);
-			}
-		}
 
 		//deselect old
 		for(int i = _tree.Selection.Count - 1; i >= 0; i--)
 		{
-			if(_tree.Selection[i] is not EventNode eventNode)
+			if(_tree.Selection[i] is not EventNode eventNode ||
+				eventNode.Event.ActorID is null)
 			{
 				continue;
 			}
@@ -377,9 +405,31 @@ public class KCCDebuggerWindow : EditorWindow
 
 			_tree.Selection.RemoveAt(i);
 		}
+
+		//select new
+		foreach(ActorNode actorNode in actors)
+		{
+			EventNode? topmostNode = FindTopmostEventForActor(actorNode.Actor, (ContainerControl)_tree.Children[0]);
+			if(topmostNode is null)
+			{
+				continue;
+			}
+
+			if(!_tree.Selection.Contains(topmostNode))
+			{
+				_tree.Selection.Add(topmostNode);
+				topmostNode.ExpandAllParents();
+			}
+		}
 	}
 
-	private static EventNode? FindTopmostEvent(Actor actor, ContainerControl parentContainer)
+	/// <summary>
+	/// Traverse the tree and find the topmost event from root
+	/// </summary>
+	/// <param name="actor"></param>
+	/// <param name="parentContainer"></param>
+	/// <returns></returns>
+	private static EventNode? FindTopmostEventForActor(Actor actor, ContainerControl parentContainer)
 	{
 		EventNode? result = null;
 		foreach(Control control in parentContainer.Children)
@@ -395,7 +445,7 @@ public class KCCDebuggerWindow : EditorWindow
 				break;
 			}
 
-			result = FindTopmostEvent(actor, eventNode);
+			result = FindTopmostEventForActor(actor, eventNode);
 			if(result != null)
 			{
 				break;
@@ -403,5 +453,144 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 
 		return result;
+	}
+
+	/// <summary>
+	/// Traverse the tree and find the topmost event from root
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="parentContainer"></param>
+	/// <returns></returns>
+	private static EventNode? FindTopmostEventForActor(Guid id, ContainerControl parentContainer)
+	{
+		EventNode? result = null;
+		foreach(Control control in parentContainer.Children)
+		{
+			if(control is not EventNode eventNode)
+			{
+				continue;
+			}
+
+			if(eventNode.Event.ActorID == id)
+			{
+				result = eventNode;
+				break;
+			}
+
+			result = FindTopmostEventForActor(id, eventNode);
+			if(result != null)
+			{
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	/// <summary>
+	/// Tarverse the tree and find the topmost event from subevent
+	/// </summary>
+	/// <param name="container"></param>
+	/// <returns></returns>
+	private static EventNode? FindTopmostEventForSubevent(ContainerControl container)
+	{
+		if(container is not EventNode eventNode)
+		{
+			return null;
+		}
+
+		if(eventNode.Event.ActorID is not null)
+		{
+			return eventNode;
+		}
+
+		return FindTopmostEventForSubevent(eventNode.Parent);
+	}
+
+	/// <summary>
+	/// Called when the KCC debugger tree selection changes, used to synch up the current scene selection with the tree event node. 
+	/// </summary>
+	private void OnTreeSelectionChanged(List<TreeNode> before, List<TreeNode> after)
+	{
+		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
+		{
+			return;
+		}
+
+		if(_ignoreNextSelectionChange)
+		{
+			_ignoreNextSelectionChange = false;
+			return;
+		}
+
+		IEnumerable<EventNode> eventNodes = after
+			.OfType<EventNode>()
+			.Where(node => node.Event.ActorID is not null);
+
+		//deselect old
+		for(int i = Editor.Instance.SceneEditing.Selection.Count - 1; i >= 0; i--)
+		{
+			if(Editor.Instance.SceneEditing.Selection[i] is not ActorNode actorNode)
+			{
+				continue;
+			}
+
+			if(eventNodes.Any(node => node.Event.ActorID == actorNode.ID))
+			{
+				continue;
+			}
+
+			_ignoreNextSelectionChange = true;
+			Editor.Instance.SceneEditing.Deselect(actorNode);
+		}
+
+		//select new
+		foreach(EventNode node in eventNodes)
+		{
+			if(node.Event.ActorID is null)
+			{
+				continue;
+			}
+
+			if(Editor.Instance.SceneEditing.Selection.Any(actor => actor.ID == node.Event.ActorID))
+			{
+				continue;
+			}
+
+			_ignoreNextSelectionChange = true;
+			Editor.Instance.SceneEditing.Select(Editor.Instance.Scene.GetActorNode((Guid)node.Event.ActorID), true);
+		} 
+	}
+
+	/// <summary>
+	/// Move all selections from subevents to topmost event for actors
+	/// </summary>
+	public void BubbleUpSelections()
+	{
+		for(int i = _tree.Selection.Count - 1; i >= 0; i--)
+		{
+			if(_tree.Selection[i] is not EventNode eventNode)
+			{
+				continue;
+			}
+
+			if(eventNode.Event.ActorID is not null)
+			{
+				continue;
+			}
+
+			EventNode? topmostNode = FindTopmostEventForSubevent(eventNode);
+			if(topmostNode is null)
+			{
+				continue;
+			}
+
+			_tree.Selection.RemoveAt(i);
+			if(!_tree.Selection.Contains(topmostNode))
+			{
+				_tree.Selection.Add(topmostNode);
+				topmostNode.ExpandAllParents();
+			}
+		}
 	}
 }
