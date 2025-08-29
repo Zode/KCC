@@ -593,4 +593,12 @@ public class KCCDebuggerWindow : EditorWindow
 			}
 		}
 	}
+
+	/// <summary>
+	/// Called just before when the editor play mode begins
+	/// </summary>
+	public void OnPlayModeBeginning()
+	{
+		KCCDebugger.ClearFrames();
+	}
 }
