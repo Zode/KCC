@@ -14,11 +14,15 @@ public class Text : Renderable
 	/// Font size of the text.
 	/// </summary>
 	public int Size {get; set;} = 12;
+	/// <summary>
+	/// Font scale
+	/// </summary>
+	public float Scale {get; set;} = 1.0f;
 
 	/// <inheritdoc />
 	public override void Render()
 	{
-		DebugDraw.DrawText(Content, Position, OutlineColor, Size, 0.0f, 1.0f);
+		DebugDraw.DrawText(Content, Position, OutlineColor, Size, 0.0f, Scale);
 	}
 }
 

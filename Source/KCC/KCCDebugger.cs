@@ -12,6 +12,8 @@ namespace KCC;
 /// </summary>
 public static class KCCDebugger
 {
+	private const string DEBUGGER_NAME = "KCC Debugger";
+
 	/// <summary>
 	/// Constant for the <seealso cref="Frame" /> property meaning that there are no frames in <seealso cref="Frames" /> list.
 	/// </summary>
@@ -51,6 +53,11 @@ public static class KCCDebugger
 
 	private static bool CanProcess => Enabled && Editor.IsPlayMode;
 	private static bool CanProcessHasFrame => CanProcess && _internalFrame != NO_FRAMES;
+
+	/// <summary>
+	/// KCC Debugger options instance.
+	/// </summary>
+	public static KCCDebuggerOptions Options => Editor.Instance.Options.Options.GetCustomSettings<KCCDebuggerOptions>(DEBUGGER_NAME);
 
 	/// <summary>
 	/// Start a new frame
@@ -479,9 +486,10 @@ public static class KCCDebugger
 	/// <param name="position">Position in world space</param>
 	/// <param name="text"></param>
 	/// <param name="size">Font size to use</param>
+	/// <param name="scale">Font scale to use</param>
 	/// <param name="color"></param>
 	/// <param name="depthTest"></param>
-	public static void DrawText(Vector3 position, string text, int size, Color color, bool depthTest)
+	public static void DrawText(Vector3 position, string text, int size, float scale, Color color, bool depthTest)
 	{
 		if(!CanProcessHasFrame)
 		{
@@ -499,38 +507,21 @@ public static class KCCDebugger
 			Position = position,
 			Content = text,
 			Size = size,
+			Scale = scale,
 			OutlineColor = color,
 			DepthTest = depthTest,
 		});
 	}
 
 	/// <summary>
-	/// Draw some text with font size of 12.
+	/// Draw some text using KCC Debugger font settings.
 	/// </summary>
 	/// <param name="position">Position in world space</param>
 	/// <param name="text"></param>
-	/// <param name="color"></param>
 	/// <param name="depthTest"></param>
-	public static void DrawText(Vector3 position, string text, Color color, bool depthTest)
+	public static void DrawText(Vector3 position, string text, bool depthTest)
 	{
-		if(!CanProcessHasFrame)
-		{
-			return;
-		}
-
-		if(_frameParents.Count == 0)
-		{
-			Debug.LogWarning("KCCDebugger: Can't draw text without an event. Please ensure you are only drawing inside events.");
-			return;
-		}
-
-		_frameParents.Peek().Renderables.Add(new Text()
-		{
-			Position = position,
-			Content = text,
-			OutlineColor = color,
-			DepthTest = depthTest,
-		});
+		DrawText(position, text, Options.TextFontSize, Options.TextScale, Options.TextColor, depthTest);
 	}
 }
 #endif

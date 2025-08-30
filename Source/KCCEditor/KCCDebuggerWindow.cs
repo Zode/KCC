@@ -149,10 +149,27 @@ public class KCCDebuggerWindow : EditorWindow
 	{
 		KCCDebugger.Enabled = Recording;
 		_recordButton.Icon = Recording ? Editor.Icons.Stop64 : Editor.Icons.Play64;
+
+		if(!Recording)
+		{
+			OnFrameChanged();
+		}
 	}
 
 	private void OnFrameChanged()
 	{
+		if(Editor.IsPlayMode && !Time.GamePaused)
+		{
+			if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
+			{
+				_infoLabel.Text = "No frames";
+				return;
+			}
+
+			_infoLabel.Text = $"Frame {KCCDebugger.Frame} / {KCCDebugger.Frames.Count - 1}";
+			return;
+		}
+
 		if(KCCDebugger.Frame != KCCDebugger.NO_FRAMES)
 		{
 			BubbleUpSelections();
@@ -252,6 +269,11 @@ public class KCCDebuggerWindow : EditorWindow
 			return;
 		}
 
+		if(Editor.IsPlayMode && !Time.GamePaused)
+		{
+			return;
+		}
+
 		KCCDebugger.Frames[KCCDebugger.Frame].ResetRenderables();
 		foreach(TreeNode node in _tree.Selection)
 		{
@@ -270,6 +292,11 @@ public class KCCDebuggerWindow : EditorWindow
 	{
 		//TODO: setting for this
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
+		{
+			return;
+		}
+
+		if(Editor.IsPlayMode && !Time.GamePaused)
 		{
 			return;
 		}
@@ -311,6 +338,11 @@ public class KCCDebuggerWindow : EditorWindow
 	{
 		//TODO: setting for this
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
+		{
+			return;
+		}
+
+		if(Editor.IsPlayMode && !Time.GamePaused)
 		{
 			return;
 		}
@@ -376,6 +408,11 @@ public class KCCDebuggerWindow : EditorWindow
 	public void OnSceneEditingSelectionChanged()
 	{
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
+		{
+			return;
+		}
+
+		if(Editor.IsPlayMode && !Time.GamePaused || _tree.Children.Count == 0)
 		{
 			return;
 		}
@@ -517,6 +554,11 @@ public class KCCDebuggerWindow : EditorWindow
 			return;
 		}
 
+		if(Editor.IsPlayMode && !Time.GamePaused)
+		{
+			return;
+		}
+
 		if(_ignoreNextSelectionChange)
 		{
 			_ignoreNextSelectionChange = false;
@@ -600,5 +642,13 @@ public class KCCDebuggerWindow : EditorWindow
 	public void OnPlayModeBeginning()
 	{
 		KCCDebugger.ClearFrames();
+	}
+
+	/// <summary>
+	/// Called after the editor play mode ends
+	/// </summary>
+	public void OnPlayModeEnd()
+	{
+		OnFrameChanged();
 	}
 }

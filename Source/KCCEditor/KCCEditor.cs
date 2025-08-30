@@ -11,6 +11,7 @@ namespace KCC;
 /// </summary>
 public class KCCEditor : EditorPlugin
 {
+    private const string DEBUGGER_NAME = "KCC Debugger";
 	private CustomSettingsProxy _settingsProxy;
     private ContextMenuButton _debuggerButton;
     /// <summary>
@@ -23,12 +24,13 @@ public class KCCEditor : EditorPlugin
     {
         base.InitializeEditor();
 
+        Editor.Instance.Options.AddCustomSettings(DEBUGGER_NAME, () => new KCCDebuggerOptions());
         DebuggerWindow = new KCCDebuggerWindow();
 
-		_settingsProxy = new CustomSettingsProxy(typeof(KCCSettings), "KCC Settings");
+		_settingsProxy = new CustomSettingsProxy(typeof(KCCSettings), DEBUGGER_NAME);
 		Editor.ContentDatabase.AddProxy(_settingsProxy);
 
-        _debuggerButton = Editor.UI.MenuWindow.ContextMenu.AddButton("KCC Debugger");
+        _debuggerButton = Editor.UI.MenuWindow.ContextMenu.AddButton(DEBUGGER_NAME);
         _debuggerButton.Clicked += () => { DebuggerWindow.Show(); };
 
         //hack: swap position of the button and refresh the children
@@ -44,11 +46,13 @@ public class KCCEditor : EditorPlugin
         Scripting.Update += OnUpdate;
         Editor.Instance.SceneEditing.SelectionChanged += OnSceneEditingSelectionChanged;
         Editor.Instance.PlayModeBeginning += OnPlayModeBeginning;
+        Editor.Instance.PlayModeEnd += OnPlayModeEnd;
     }
 
 	/// <inheritdoc />
     public override void DeinitializeEditor()
     {
+        Editor.Instance.PlayModeEnd -= OnPlayModeEnd;
         Editor.Instance.PlayModeBeginning -= OnPlayModeBeginning;
         Editor.Instance.SceneEditing.SelectionChanged -= OnSceneEditingSelectionChanged;
         Scripting.Update -= OnUpdate;
@@ -61,6 +65,7 @@ public class KCCEditor : EditorPlugin
         DebuggerWindow.Close();
         DebuggerWindow.Dispose();
         DebuggerWindow = null;
+        Editor.Instance.Options.RemoveCustomSettings(DEBUGGER_NAME);
 
         base.DeinitializeEditor();
     }
@@ -78,5 +83,10 @@ public class KCCEditor : EditorPlugin
     private void OnPlayModeBeginning()
     {
         DebuggerWindow.OnPlayModeBeginning();
+    }
+
+    private void OnPlayModeEnd()
+    {
+        DebuggerWindow.OnPlayModeEnd();
     }
 }
