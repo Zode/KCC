@@ -8,6 +8,7 @@ namespace KCC.Debugger;
 /// <summary>
 /// Represents a KCC Debugger event.
 /// </summary>
+[HideInEditor]
 public class Event(Guid? id, string name)
 {
 	/// <summary>

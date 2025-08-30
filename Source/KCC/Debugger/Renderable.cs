@@ -6,6 +6,7 @@ namespace KCC.Debugger;
 /// <summary>
 /// Represents a debug renderable.
 /// </summary>
+[HideInEditor]
 public abstract class Renderable
 {
 	/// <summary>

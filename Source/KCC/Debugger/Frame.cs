@@ -1,11 +1,13 @@
 #if FLAX_EDITOR
 using System.Collections.Generic;
+using FlaxEngine;
 
 namespace KCC.Debugger;
 
 /// <summary>
 /// Represents a KCC Debugger frame.
 /// </summary>
+[HideInEditor]
 public class Frame
 {
 	/// <summary>

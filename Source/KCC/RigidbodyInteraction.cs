@@ -5,6 +5,7 @@ namespace KCC;
 /// <summary>
 /// Container for KCC character's RigidBody interactions.
 /// </summary>
+[HideInEditor]
 public struct RigidBodyInteraction
 {
 	/// <summary>
