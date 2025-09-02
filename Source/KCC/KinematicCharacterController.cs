@@ -257,13 +257,7 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// The offset to the character collider's top point from it's center, bottom point is just the inverse of this.
     /// </summary>
-    [NoSerialize, HideInEditor] public Real ColliderTop => ColliderType switch
-    {
-        ColliderType.Box => ColliderHalfHeight,
-        ColliderType.Capsule => ColliderHalfHeight + ColliderRadius,
-        ColliderType.Sphere => ColliderRadius,
-        _ => throw new NotImplementedException(),
-    };
+    [NoSerialize, HideInEditor] public Real ColliderTop {get; private set;} = 0.0f;
     /// <summary>
     /// The offset vector to the character collider's top point (in relation to gravity) from its center, bottom point is just the inverse of this.
     /// </summary>
@@ -425,9 +419,6 @@ public class KinematicCharacterController : KinematicBase
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 TransientPosition += KinematicAttachedVelocity;
             }
-            
-            //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
-            TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
         }
         else
         {
@@ -461,7 +452,8 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Set the collider actor sizes according to the controller's size properties
+    /// Set the collider actor sizes according to the controller's size properties,
+    /// also responsbile for caching some values.
     /// </summary>
     private void SetColliderSize()
     {
@@ -471,8 +463,16 @@ public class KinematicCharacterController : KinematicBase
         _boxExtents.X = ColliderHalfRadius;
         _boxExtents.Z = ColliderHalfRadius;
         _boxExtents.Y = ColliderHalfHeight;
-        
-        if(_collider == null)
+
+		ColliderTop = ColliderType switch
+		{
+			ColliderType.Box => ColliderHalfHeight,
+            ColliderType.Capsule => ColliderHalfHeight + ColliderRadius,
+            ColliderType.Sphere => ColliderRadius,
+            _ => throw new NotImplementedException(),
+		};
+
+		if(_collider == null)
         {
             return;
         }
