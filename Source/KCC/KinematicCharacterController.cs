@@ -1,13 +1,10 @@
 using System;
 using FlaxEngine;
-using System.Collections.Generic;
 using System.Collections;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 #if FLAX_EDITOR
 using FlaxEditor;
-using FlaxEditor.SceneGraph;
 #endif
 
 #if USE_LARGE_WORLDS

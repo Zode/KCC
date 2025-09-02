@@ -1,16 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using FlaxEditor;
-using FlaxEditor.CustomEditors.Elements;
 using FlaxEditor.CustomEditors.GUI;
 using FlaxEditor.GUI;
 using FlaxEditor.GUI.Tree;
 using FlaxEditor.SceneGraph;
-using FlaxEditor.Surface.Archetypes;
 using FlaxEditor.Windows;
 using FlaxEngine;
 using FlaxEngine.GUI;
@@ -366,7 +361,6 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void DrawOnionSkin(int frame, int around)
 	{
-		//TODO: setting for this
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || 
 			_tree.Selection.Count == 0 || !_renderOnion.CheckBox.Checked)
 		{
@@ -413,7 +407,6 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void FocusOnFrame(int frame)
 	{
-		//TODO: setting for this
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES ||
 			_tree.Selection.Count == 0 || !_followEvent.CheckBox.Checked)
 		{
