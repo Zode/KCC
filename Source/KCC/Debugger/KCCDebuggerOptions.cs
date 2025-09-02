@@ -283,21 +283,21 @@ public class KCCDebuggerOptions
 	[EditorOrder(504)]
 	public Color PenetrationFillColor = new(0.5f, 0.0f, 1.0f, 0.15f);
 	/// <summary>
-	/// The outline color to use to mark the other collider during compute penetration triangles pass
+	/// The outline color to use to mark the other collider during compute penetration triangles pass.
 	/// </summary>
 	[DefaultValue(typeof(Color), "0.5,0.0,1.0,1.0")]
 	[EditorDisplay("Unstuck")]
 	[EditorOrder(505)]
 	public Color PenetrationOutlineColor = new(0.5f, 0.0f, 1.0f, 1.0f);
 	/// <summary>
-	/// The color to use to mark the character's linecast during compute penetration triangles pass
+	/// The color to use to mark the character's linecast during compute penetration triangles pass or ground snap pass.
 	/// </summary>
 	[DefaultValue(typeof(Color), "1.0,0.0,0.0,1.0")]
 	[EditorDisplay("Unstuck")]
 	[EditorOrder(506)]
 	public Color PenetrationTraceColor = new(1.0f, 0.0f, 0.0f, 1.0f);
 	/// <summary>
-	/// The color to use to mark the other collider's linecast during compute penetration triangles pass
+	/// The color to use to mark the other collider's linecast during compute penetration triangles pass or ground snap pass.
 	/// </summary>
 	[DefaultValue(typeof(Color), "0.5,0.0,0.0,1.0")]
 	[EditorDisplay("Unstuck")]

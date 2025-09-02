@@ -254,6 +254,20 @@ public class KinematicCharacterController : KinematicBase
     private const int FLAX_PHYSICS_MAX_QUERY = 128;
     //Evil optimization global variable, used to cache collider validity for sorting colliders in OverlapCollider
     private static readonly BitArray _colliderValidities = new(FLAX_PHYSICS_MAX_QUERY, false);
+    /// <summary>
+    /// The offset to the character collider's top point from it's center, bottom point is just the inverse of this.
+    /// </summary>
+    [NoSerialize, HideInEditor] public Real ColliderTop => ColliderType switch
+    {
+        ColliderType.Box => ColliderHalfHeight,
+        ColliderType.Capsule => ColliderHalfHeight + ColliderRadius,
+        ColliderType.Sphere => ColliderRadius,
+        _ => throw new NotImplementedException(),
+    };
+    /// <summary>
+    /// The offset vector to the character collider's top point (in relation to gravity) from its center, bottom point is just the inverse of this.
+    /// </summary>
+    [NoSerialize, HideInEditor] public Vector3 ColliderTopVector => new Vector3(0.0f, ColliderTop, 0.0f) * TransientOrientation;
 
     /// <inheritdoc />
     public override void OnEnable()
@@ -432,7 +446,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3 fromToPosition = TransientPosition - oldPosition;
         KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, KCCDebugger.Options.OnionSkinArrowColor, false);
         KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.OnionSkinFillColor, KCCDebugger.Options.OnionSkinOutlineColor, false);
-       
+
         Profiler.BeginEvent("Controller.KinematicPostUpdate");
         KCCDebugger.BeginEvent("PostUpdate");
         #endif
@@ -510,14 +524,14 @@ public class KinematicCharacterController : KinematicBase
     /// Will filter if collision filtering is enabled for this character.
     /// Array is also sorted in an unordered sequence where all valid colliders are at the beginning of the array, and all invalid colliders are at the end of the array.
     /// </summary>
-    /// <param name="origin">Point in world space to trace at</param>
-    /// <param name="colliders"></param>
-    /// <param name="layerMask"></param>
-    /// <param name="hitTriggers"></param>
+    /// <param name="origin">Point in world space to trace at.</param>
+    /// <param name="colliders">The result array of colliders hit.</param>
+    /// <param name="layerMask">The layer mask used to filter the results.</param>
+    /// <param name="hitTriggers">If set to <c>true</c> triggers will be hit, otherwise will skip them.</param>
     /// <param name="inflate">Extra size added to the collider size</param>
     /// <returns>Last "valid collision" index in the collider array, will be 0 if no collisions happened</returns>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = true, float inflate = 0.0f)
+    public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = false, float inflate = 0.0f)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
@@ -630,15 +644,15 @@ public class KinematicCharacterController : KinematicBase
     /// Return all colliders collided with by the cast.
     /// Will filter if collision filtering is enabled for this character.
     /// </summary>
-    /// <param name="origin">Point in world space to trace from</param>
-    /// <param name="direction"></param>
-    /// <param name="trace"></param>
-    /// <param name="distance"></param>
-    /// <param name="layerMask"></param>
-    /// <param name="hitTriggers"></param>
-    /// <param name="dispatchEvent">If True, will dispatch KinematicCollision event to the controller</param>
+    /// <param name="origin">Point in world space to trace from.</param>
+    /// <param name="direction">Normalized direction in which to cast the collider's shape.</param>
+    /// <param name="trace">The result hit information.</param>
+    /// <param name="distance">Maximum distance the cast should check.</param>
+    /// <param name="layerMask">The layer mask used to filter the results.</param>
+    /// <param name="hitTriggers">If set to <c>true</c> triggers will be hit, otherwise will skip them.</param>
+    /// <param name="dispatchEvent">If <c>true</c>, will dispatch KinematicCollision event to the controller</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = true, bool dispatchEvent = false)
+    public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = false, bool dispatchEvent = false)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.CastCollider");
@@ -785,7 +799,7 @@ public class KinematicCharacterController : KinematicBase
 
         return result;
     }
-    
+
     /// <summary>
     /// Check if the other physics collider should be ignored.
     /// </summary>
@@ -1435,7 +1449,45 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
-        TransientPosition += GravityEulerNormalized * Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+        if(trace.Distance == 0.0f)
+        {
+            //we are inside the ground. FIX IT!!!
+            //this is an absolute disaster case scenario and generally never triggers,
+            //but if it does, this will recover the character instead of leaving them stuck.
+            Vector3 top = ColliderTopVector;
+
+            #if FLAX_EDITOR
+            KCCDebugger.DrawLine(TransientPosition + top, TransientPosition - (top.Normalized * (float)(ColliderTop * 2.0f)),
+                KCCDebugger.Options.PenetrationTraceColor, false);
+            #endif
+            
+            if(trace.Collider != null &&
+                trace.Collider.RayCast(TransientPosition + top, -top.Normalized, out trace, (float)(ColliderTop * 2.0f )))
+            {
+                #if FLAX_EDITOR
+                KCCDebugger.DrawSphere(trace.Point, 1.0f, KCCDebugger.Options.PenetrationTraceColor, KCCDebugger.Options.PenetrationTraceColor, false);
+                #endif
+
+                Real distance = (trace.Point - (TransientPosition - top)).Length;
+                TransientPosition -= GravityEulerNormalized * (distance + KinematicContactOffset);
+
+                #if FLAX_EDITOR
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.UnstuckRescueFillColor, KCCDebugger.Options.UnstuckRescueOutlineColor, false);
+                #endif
+            }
+        }
+        else
+        {
+            Real distance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+            if(trace.Distance < KinematicContactOffset)
+            {
+                //not stuck, but also too close to the surface..
+                //nudge to avoid disasters
+                distance = -(KinematicContactOffset - trace.Distance);
+            }
+
+            TransientPosition += GravityEulerNormalized * distance;
+        }
 
         #if FLAX_EDITOR
         KCCDebugger.EndEvent();
@@ -1642,6 +1694,7 @@ public class KinematicCharacterController : KinematicBase
                 #if FLAX_EDITOR
                 KCCDebugger.DrawLine(TransientPosition - direction * meshCollider.Sphere.Radius, meshCollider.Position, KCCDebugger.Options.PenetrationTraceOtherColor, false);
                 KCCDebugger.DrawLine(meshCollider.Position + direction * meshCollider.Sphere.Radius, meshCollider.Position, KCCDebugger.Options.PenetrationTraceColor, false);
+                KCCDebugger.DrawCollider(meshCollider, KCCDebugger.Options.PenetrationFillColor, KCCDebugger.Options.PenetrationOutlineColor, false);
                 KCCDebugger.EndEvent();
                 #endif
 
