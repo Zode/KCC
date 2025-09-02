@@ -314,16 +314,16 @@ public class KCCDebuggerOptions
 	/// <summary>
 	/// The outline color to use to mark the character onion skinning position.
 	/// </summary>
-	[DefaultValue(typeof(Color), "0.5,0.5,0.5,1.0")]
+	[DefaultValue(typeof(Color), "0.75,0.75,0.75,0.3")]
 	[EditorDisplay("Onion skinning")]
 	[EditorOrder(601)]
-	public Color OnionSkinOutlineColor = new(0.5f, 0.5f, 0.5f, 1.0f);
+	public Color OnionSkinOutlineColor = new(0.75f, 0.75f, 0.75f, 0.3f);
 	/// <summary>
 	/// The color to use to mark the onion skinning motion path arrow.
 	/// </summary>
-	[DefaultValue(typeof(Color), "1.0,1.0,1.0,1.0")]
+	[DefaultValue(typeof(Color), "1.0,1.0,1.0,0.75")]
 	[EditorDisplay("Onion skinning")]
 	[EditorOrder(602)]
-	public Color OnionSkinArrowColor = new(1.0f, 1.0f, 1.0f, 1.0f);
+	public Color OnionSkinArrowColor = new(1.0f, 1.0f, 1.0f, 0.75f);
 }
 #endif

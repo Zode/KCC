@@ -887,7 +887,7 @@ public class KinematicCharacterController : KinematicBase
             if(_internalDelta.IsZero)
             {
                 #if FLAX_EDITOR
-                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndFillColor, false);
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
@@ -899,7 +899,7 @@ public class KinematicCharacterController : KinematicBase
             if(Math.Round(Vector3.Dot(originalDeltaNormalized, _internalDelta.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
-                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndFillColor, false);
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
@@ -920,7 +920,7 @@ public class KinematicCharacterController : KinematicBase
                 #if FLAX_EDITOR
                 fromToPosition = TransientPosition - oldPosition;
                 KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, KCCDebugger.Options.SweepArrowColor, false);
-                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndFillColor, false);
+                KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
@@ -965,7 +965,7 @@ public class KinematicCharacterController : KinematicBase
             #if FLAX_EDITOR
             fromToPosition = TransientPosition - oldPosition;
             KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, KCCDebugger.Options.SweepArrowColor, false);
-            KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndFillColor, false);
+            KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
             KCCDebugger.DrawArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, KCCDebugger.Options.SlidingPlaneArrowColor, false);
             KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 100.0f, KCCDebugger.Options.SlidingPlaneQuadFillColor, KCCDebugger.Options.SlidingPlaneQuadOutlineColor, false);
             #endif

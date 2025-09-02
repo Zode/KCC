@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using FlaxEditor;
+using FlaxEditor.CustomEditors.Elements;
+using FlaxEditor.CustomEditors.GUI;
 using FlaxEditor.GUI;
 using FlaxEditor.GUI.Tree;
 using FlaxEditor.SceneGraph;
@@ -30,8 +33,13 @@ public class KCCDebuggerWindow : EditorWindow
 	private readonly ToolStripButton _nextFrameButton;
 	private readonly Label _infoLabel;
 	private readonly Slider _frameSlider;
-	private readonly Panel _treePanel;
 	private readonly Tree _tree;
+	private readonly CheckablePropertyNameLabel _renderOnion;
+	private readonly CheckablePropertyNameLabel _renderSubevents;
+	private readonly CheckablePropertyNameLabel _followEvent;
+	private readonly Label _onionFrames;
+	private readonly Slider _onionSlider;
+	private readonly Slider _followDistanceSlider;
 	private bool _ignoreNextSelectionChange = false;
 	private List<Guid> _actorRestoreList = [];
 
@@ -122,21 +130,89 @@ public class KCCDebuggerWindow : EditorWindow
 			}
 		};
 
-		_treePanel = new Panel()
+		UniformGridPanel panel = new(0)
 		{
 			Parent = this,
-			IsScrollable = true,
-			ScrollBars = ScrollBars.Both,
 			AnchorPreset = AnchorPresets.StretchAll,
 			Offsets = new Margin(0, 0, _toolStrip.Bottom, 0),
+			SlotsHorizontally = 2,
+			SlotsVertically = 1,
+		};
+
+		Panel treePanel = new()
+		{
+			Parent = panel,
+			IsScrollable = true,
+			ScrollBars = ScrollBars.Both
 		};
 
 		_tree = new Tree(true)
 		{
-			Margin = new Margin(0.0f, 0.0f, -16.0f, _treePanel.ScrollBarsSize), // Hide root node
-			Parent = _treePanel,
+			Margin = new Margin(0.0f, 0.0f, -16.0f, treePanel.ScrollBarsSize), // Hide root node
+			Parent = treePanel,
 			IsScrollable = true,
 			DrawRootTreeLine = false,
+		};
+
+		VerticalPanel controlPanel = new()
+		{
+			Parent = panel,
+			Margin = new Margin(8, 8, 0, 0),
+		};
+
+		_renderOnion = new("Render onion skin")
+		{
+			Parent = controlPanel,
+		};
+
+		_onionFrames = new()
+		{
+			Text = "Onion frames: 10",
+			Parent = controlPanel,
+		};
+
+		_onionSlider = new()
+		{
+			Parent = controlPanel,
+			Maximum = 640,
+			Minimum = 10,
+			Value = 100,
+		};
+
+		_onionSlider.ValueChanged += () => {
+			_onionFrames.Text = $"Onion frames: {(int)Mathf.Floor(_onionSlider.Value / 10)}";
+		};
+		
+		_renderSubevents = new("Render subevents")
+		{
+			Parent = controlPanel,
+		};
+
+		_followEvent = new("Follow event")
+		{
+			Parent = controlPanel,
+		};
+
+		_followEvent.CheckChanged += (property) => {
+			FocusOnFrame(KCCDebugger.Frame);
+		};
+
+		Label followLabel = new()
+		{
+			Parent = controlPanel,
+			Text = "follow camera distance",
+		};
+
+		_followDistanceSlider = new()
+		{
+			Parent = controlPanel,
+			Maximum = 32,
+			Minimum = 1,
+			Value = 5,
+		};
+
+		_followDistanceSlider.ValueChanged += () => {
+			FocusOnFrame(KCCDebugger.Frame);
 		};
 
 		KCCDebugger.FrameChanged += OnFrameChanged;
@@ -282,16 +358,17 @@ public class KCCDebuggerWindow : EditorWindow
 				continue;
 			}
 
-			eventNode.Event.Render();
+			eventNode.Event.Render(!_renderSubevents.CheckBox.Checked);
 		}
 
-		DrawOnionSkin(KCCDebugger.Frame, 10);
+		DrawOnionSkin(KCCDebugger.Frame, (int)Mathf.Floor(_onionSlider.Value / 10));
 	}
 
 	private void DrawOnionSkin(int frame, int around)
 	{
 		//TODO: setting for this
-		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
+		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || 
+			_tree.Selection.Count == 0 || !_renderOnion.CheckBox.Checked)
 		{
 			return;
 		}
@@ -337,7 +414,8 @@ public class KCCDebuggerWindow : EditorWindow
 	private void FocusOnFrame(int frame)
 	{
 		//TODO: setting for this
-		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
+		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES ||
+			_tree.Selection.Count == 0 || !_followEvent.CheckBox.Checked)
 		{
 			return;
 		}
@@ -398,7 +476,7 @@ public class KCCDebuggerWindow : EditorWindow
 		averageCenter /= count;
 		Editor.Instance.Windows.EditWin.Viewport.ViewportCamera.SetArcBallView(
 			Editor.Instance.Windows.EditWin.Viewport.ViewOrientation,
-			averageCenter, averageSphere.Radius * 5
+			averageCenter, averageSphere.Radius * _followDistanceSlider.Value
 		);
 	}
 
