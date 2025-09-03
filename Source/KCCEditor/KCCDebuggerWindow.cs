@@ -372,7 +372,6 @@ public class KCCDebuggerWindow : EditorWindow
 			return;
 		}
 
-		IEnumerable<EventNode> eventNodes = _tree.Selection.Cast<EventNode>();
 		for(int i = frame - around; i <= frame + around; i++)
 		{
 			if(i >= KCCDebugger.Frames.Count)
@@ -387,21 +386,27 @@ public class KCCDebuggerWindow : EditorWindow
 
 			foreach(Event @event in KCCDebugger.Frames[i].Events)
 			{
-				foreach(EventNode eventNode in eventNodes)
+				if(@event.ActorID is null)
 				{
-					if(eventNode.Event.ActorID != @event.ActorID)
+					continue;
+				}
+
+				foreach(TreeNode node in _tree.Selection)
+				{
+					if(node is not EventNode eventNode)
 					{
 						continue;
 					}
 
+					if(eventNode.Event.ActorID != @event.ActorID)
+					{
+						continue;
+					}
+					
 					@event.ResetRenderables(true);
 					@event.Render(true);
-					goto breakToOnionSkinLoop;
 				}	
 			}
-
-			breakToOnionSkinLoop:
-			;
 		}
 	}
 

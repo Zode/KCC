@@ -230,6 +230,7 @@ public class KinematicCharacterController : KinematicBase
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(502)]
     public RigidBodyInteractionMode RigidBodyInteractionMode {get; set;} = RigidBodyInteractionMode.PureKinematic;
+    //maximum allowed rigidbody interactions for a single character during a tick.
     private const int KCC_MAX_RB_INTERACTIONS = 1024;
     //Evil optimization global variables, used to track rigidbody interactions
     private static readonly RigidBodyInteraction[] _rigidBodiesCollided = new RigidBodyInteraction[KCC_MAX_RB_INTERACTIONS];
@@ -431,16 +432,17 @@ public class KinematicCharacterController : KinematicBase
             {
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 _internalDelta = KinematicAttachedVelocity;
+                //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
+                TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
                 SolveSweep();
             }
             else
             {
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 TransientPosition += KinematicAttachedVelocity;
+                //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
+                TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
             }
-
-            //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
-            TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
 
             #if FLAX_EDITOR
             KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(KinematicAttachedVelocity.Normalized), 1.0f, 1.0f, KCCDebugger.Options.SweepArrowColor, false);
@@ -1519,11 +1521,11 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        if(rigidBody is KinematicMover mover)
+        /*if(rigidBody is KinematicMover mover)
         {
             rigidBody.LinearVelocity = mover.KinematicVelocity;
             rigidBody.AngularVelocity = mover.KinematicAngularVelocity;
-        }
+        }*/
 
         Vector3 velocity = rigidBody.LinearVelocity * Time.DeltaTime;
         Vector3 center = rigidBody.Transform.TransformPoint(rigidBody.CenterOfMass);

@@ -59,12 +59,8 @@ public class KinematicMover : KinematicBase
 
 		Controller.KinematicUpdate(out _transientPosition, out _transientOrientation);
 
-		KinematicVelocity = (TransientPosition - InitialPosition) / Time.DeltaTime;
+		LinearVelocity = KinematicVelocity = (TransientPosition - InitialPosition) / Time.DeltaTime;
 		Quaternion fromCurrentToGoal = TransientOrientation * Quaternion.Invert(InitialOrientation);
-		KinematicAngularVelocity = Mathf.DegreesToRadians * fromCurrentToGoal.EulerAngles / Time.DeltaTime;
-
-		//Move these into their final position so that characters are aware of it during sweep.
-		Position = TransientPosition;
-        Orientation = TransientOrientation;
+		AngularVelocity = KinematicAngularVelocity = Mathf.DegreesToRadians * fromCurrentToGoal.EulerAngles / Time.DeltaTime;
 	}
 }
