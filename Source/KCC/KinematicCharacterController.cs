@@ -1054,7 +1054,11 @@ public class KinematicCharacterController : KinematicBase
                 //stop if we are moving _into_ an acute corner rather than adjacent to it, thus avoiding forcibly pushing inside either collider.
                 if(isAcute && movingIntoCorner)
                 {
-                    if(Vector3.Dot(crease.Normalized, _internalDelta.Normalized) > 0.0f)
+                    bool isAcuteFirstPlane = Math.Round(Vector3.Dot(_internalDelta.Normalized, firstPlane), 4, MidpointRounding.ToZero) < 0.0f;
+                    bool isAcuteSecondPlane = Math.Round(Vector3.Dot(_internalDelta.Normalized, trace.Normal), 4, MidpointRounding.ToZero) < 0.0f;
+
+                    if(isAcuteFirstPlane && isAcuteSecondPlane && 
+                        Vector3.Dot(crease.Normalized, _internalDelta.Normalized) > 0.0f)
                     {
                         //this just ensures the slowdown later works
                         trace.Normal = (-crease).Normalized;
