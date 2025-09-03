@@ -434,6 +434,9 @@ public class KinematicCharacterController : KinematicBase
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 TransientPosition += KinematicAttachedVelocity;
             }
+
+            //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
+            TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
         }
         else
         {
