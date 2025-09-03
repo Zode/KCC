@@ -72,7 +72,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(200)]
-    public int MaxUnstuckIterations {get => _maxUnstuckIterations; set => _maxUnstuckIterations = Math.Clamp(value, 0, int.MaxValue);}
+    public int MaxUnstuckIterations {get => _maxUnstuckIterations; set => _maxUnstuckIterations = Math.Max(value, 0);}
     private int _maxUnstuckIterations = 10;
     /// <summary>
     /// Determine behavioral mode which to use solve situations where the physics solve can not solve penetration for non-convex mesh colliders.
@@ -81,37 +81,58 @@ public class KinematicCharacterController : KinematicBase
     [EditorOrder(201)]
     public TriangleMeshUnstuckMode TriangleMeshUnstuckMode = TriangleMeshUnstuckMode.ClosestPoint;
     /// <summary>
+    /// Determine if unstuck rescue mode is enabled, and which pis-aller strategy is used.
+    /// </summary>
+    [EditorDisplay("Physics")]
+    [EditorOrder(202)]
+    public UnstuckRescueMode UnstuckRescueMode {get; set;} = UnstuckRescueMode.RelativeUp;
+    /// <summary>
+    /// The distance to attempt for unstuck rescue, keep this at minimum the same value as kinematic contact offset.
+    /// </summary>
+    [EditorDisplay("Physics")]
+    [EditorOrder(203)]
+    public float UnstuckRescueDistance {get => _unstuckRescueDistance; set => _unstuckRescueDistance = Math.Max(value, (float)KinematicContactOffset);}
+    private float _unstuckRescueDistance = 2.0f;
+    /// <summary>
+    /// Maximum allowed distance used for unstuck rescue pis-aller, player will noticeably pop out of stuck collisions the larger this is.
+    /// Keep this at minimum the same value as kinematic contact offset.
+    /// </summary>
+    [EditorDisplay("Physics")]
+    [EditorOrder(204)]
+    public float MaxUnstuckRescueDistance {get => _maxUnstuckRescueDistance; set => _maxUnstuckRescueDistance = Math.Max(value, (float)KinematicContactOffset);}
+    private float _maxUnstuckRescueDistance = 4.0f;
+    /// <summary>
     /// Should we filter collisions?
     /// If enabled, the controller will be queried for collision filtering, this is expensive.
     /// If disabled, the character will assume everything to be solid, this is less expensive.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(202)]
+    [EditorOrder(205)]
     public bool FilterCollisions {get; set;} = false;
     /// <summary>
     /// Determines how much the character should slide upon coming to contact with a surface.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(204)]
+    [EditorOrder(206)]
     public float SlideMultiplier {get => _slideMultiplier; set => _slideMultiplier = Mathf.Clamp(value, 0.0f, 1.0f);}
     private float _slideMultiplier = 0.75f;
     /// <summary>
     /// If set to true, the character slide will also be affected by the surface's physics material settings.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(205)]
+    [EditorOrder(207)]
     public bool SlideAccountForPhysicsMaterial {get; set;} = true;
     /// <summary>
     /// The layer mask upon which the character collides with.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(203)]
+    [EditorOrder(208)]
     public LayersMask CollisionMask {get; set;} = new();
     /// <summary>
     /// If set to true, the character slide multiplier will be ignored during airborne movement
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(206)]
+    [EditorOrder(209)]
     public bool SlideSkipMultiplierWhileAirborne {get; set;} = true;
     /// <summary>
     /// Tag used to determine if a collision should be considered valid ground or not.
@@ -140,14 +161,14 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(301)]
-    public float GroundingDistance {get => _groundingDistance; set => _groundingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
+    public float GroundingDistance {get => _groundingDistance; set => _groundingDistance = Mathf.Max(value, 0.0f);}
     private float _groundingDistance = 1.0f;
     /// <summary>
     /// Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true.
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(302)]
-    public float GroundSnappingDistance {get => _groundSnappingDistance; set => _groundSnappingDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
+    public float GroundSnappingDistance {get => _groundSnappingDistance; set => _groundSnappingDistance = Mathf.Max(value, 0.0f);}
     private float _groundSnappingDistance = 1024.0f;
     /// <summary>
     /// Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground.
@@ -167,7 +188,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(401)]
-    public float StairStepDistance {get => _stairStepDistance; set => _stairStepDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
+    public float StairStepDistance {get => _stairStepDistance; set => _stairStepDistance = Mathf.Max(value, 0.0f);}
     private float _stairStepDistance = 50.0f;
     /// <summary>
     /// Behavior mode for stair stepping.
@@ -180,14 +201,14 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(403)]
-    public float StairStepMinimumForwardDistance {get => _stairStepMinimumForwardDistance; set => _stairStepMinimumForwardDistance = Mathf.Clamp(value, 0.0f, float.MaxValue);}
+    public float StairStepMinimumForwardDistance {get => _stairStepMinimumForwardDistance; set => _stairStepMinimumForwardDistance = Mathf.Max(value, 0.0f);}
     private float _stairStepMinimumForwardDistance = 0.01f;
     /// <summary>
     /// Maximum amount of stair step iterations per frame.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(404)]
-    public int MaxStairStepIterations {get => _maxStairStepIterations; set => _maxStairStepIterations = Math.Clamp(value, 0, int.MaxValue);} 
+    public int MaxStairStepIterations {get => _maxStairStepIterations; set => _maxStairStepIterations = Math.Max(value, 0);} 
     private int _maxStairStepIterations = 10;
     /// <summary>
     /// Determines if the character should move with RigidBodies it is standing on.
@@ -218,7 +239,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(503)]
-    public float SimulatedMass {get => _simulatedMass; set => _simulatedMass = Mathf.Clamp(value, 0.0f, float.MaxValue);}
+    public float SimulatedMass {get => _simulatedMass; set => _simulatedMass = Mathf.Max(value, 0.0f);}
     private float _simulatedMass = 1000.0f;
 
     private Vector3 _internalDelta = Vector3.Zero;
@@ -278,7 +299,7 @@ public class KinematicCharacterController : KinematicBase
         SetPosition(Position);
         SetOrientation(Orientation);
 
-        _collider = ColliderType switch
+		_collider = ColliderType switch
         {
             ColliderType.Box => AddChild<BoxCollider>(),
             ColliderType.Capsule => AddChild<CapsuleCollider>(),
@@ -491,12 +512,12 @@ public class KinematicCharacterController : KinematicBase
         switch(ColliderType)
         {
             case ColliderType.Box:
-                BoxCollider box = _collider.As<BoxCollider>();
+				BoxCollider box = _collider.As<BoxCollider>();
                 box.Size = new(ColliderRadius + inflate, ColliderHeight + inflate, ColliderRadius + inflate);
                 break;
 
             case ColliderType.Capsule:
-                CapsuleCollider capsule = _collider.As<CapsuleCollider>();
+				CapsuleCollider capsule = _collider.As<CapsuleCollider>();
                 capsule.Radius = ColliderRadius + inflate;
                 capsule.Height = ColliderHeight + inflate;
                 //and for some reason this is wrongly rotated in the Z axis by default..
@@ -504,7 +525,7 @@ public class KinematicCharacterController : KinematicBase
                 break;
 
             case ColliderType.Sphere:
-                SphereCollider sphere = _collider.As<SphereCollider>();
+				SphereCollider sphere = _collider.As<SphereCollider>();
                 sphere.Radius = ColliderRadius + inflate;
                 break;
 
@@ -883,6 +904,7 @@ public class KinematicCharacterController : KinematicBase
 
         Vector3 originalDeltaNormalized = _internalDelta.Normalized;
         int unstuckSolves = 0;
+        bool unstuckRescueNeeded = true;
 
         //we can realistically only collide with 2 planes before we lose all degrees of freedom (intersection of three planes is a point)
         Vector3 firstPlane = Vector3.Zero;
@@ -892,11 +914,9 @@ public class KinematicCharacterController : KinematicBase
             {
                 #if FLAX_EDITOR
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
-                KCCDebugger.EndEvent();
-                Profiler.EndEvent();
                 #endif
 
-                return;
+                break;
             }
 
             //are we about to go backwards? (unwanted direction, fixes issues with jiggling in corners with obtuse angles)
@@ -904,11 +924,9 @@ public class KinematicCharacterController : KinematicBase
             {
                 #if FLAX_EDITOR
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
-                KCCDebugger.EndEvent();
-                Profiler.EndEvent();
                 #endif
 
-                return;
+                break;
             }
             
             #if FLAX_EDITOR
@@ -925,11 +943,15 @@ public class KinematicCharacterController : KinematicBase
                 fromToPosition = TransientPosition - oldPosition;
                 KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, KCCDebugger.Options.SweepArrowColor, false);
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
-                KCCDebugger.EndEvent();
-                Profiler.EndEvent();
                 #endif
 
-                return;
+                break;
+            }
+
+            if(unstuckSolves >= MaxUnstuckIterations && unstuckRescueNeeded)
+            {
+                UnstuckRescue();
+                break;
             }
 
             if(trace.Distance == 0.0f && unstuckSolves < MaxUnstuckIterations)
@@ -939,11 +961,8 @@ public class KinematicCharacterController : KinematicBase
                 //try to solve the issue and re-try sweep.
                 Vector3 push = UnstuckSolve((float)KinematicContactOffset);
                 TransientPosition += push;
-                if(push.IsZero)
-                {
-                    UnstuckRescue(originalDeltaNormalized);
-                }
-
+                unstuckRescueNeeded = push.IsZero;
+                   
                 i--;
                 unstuckSolves++;
                 continue;
@@ -961,6 +980,7 @@ public class KinematicCharacterController : KinematicBase
             KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
             KCCDebugger.DrawArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, KCCDebugger.Options.SlidingPlaneArrowColor, false);
             KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 100.0f, KCCDebugger.Options.SlidingPlaneQuadFillColor, KCCDebugger.Options.SlidingPlaneQuadOutlineColor, false);
+            KCCDebugger.DrawText(trace.Point, i.ToString(), false);
             #endif
 
             if(IsGrounded)
@@ -976,6 +996,14 @@ public class KinematicCharacterController : KinematicBase
             }
             else if(i == 1)
             {
+                //skip crease if two planes are similar enough (super corner (heh) case bug)
+                if(Vector3.Dot(firstPlane, trace.Normal) > 0.9999f)
+                {
+                    _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * Math.Max(_internalDelta.Length - distance, 0.0f);
+                    i--;
+                    continue;
+                }
+
                 //project for next (final) iteration, but only along the crease
                 Vector3 wishDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, firstPlane) * Math.Max(_internalDelta.Length - distance, 0.0f);
                 wishDelta = Vector3.ProjectOnPlane(wishDelta.Normalized, trace.Normal) * Math.Max(wishDelta.Length - distance, 0.0f);
@@ -1006,8 +1034,30 @@ public class KinematicCharacterController : KinematicBase
                     }
                 }
 
+                bool movingIntoCorner = Vector3.Dot(trace.Normal, crease) != 0.0f;
                 //constrain to crease
                 _internalDelta = Vector3.ProjectOnPlane(crease, trace.Normal) * creaseDistance;
+
+                //stop if we are moving _into_ an acute corner rather than adjacent to it, thus avoiding forcibly pushing inside either collider.
+                if(isAcute && movingIntoCorner)
+                {
+                    if(Vector3.Dot(crease.Normalized, _internalDelta.Normalized) > 0.0f)
+                    {
+                        //this just ensures the slowdown later works
+                        trace.Normal = (-crease).Normalized;
+                        _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * _internalDelta.Length;
+
+                        #if FLAX_EDITOR
+                        KCCDebugger.DrawQuad(TransientPosition + crease * 10, Quaternion.FromDirection(trace.Normal), 100.0f, KCCDebugger.Options.SlidingPlaneQuadFillColor, KCCDebugger.Options.SlidingPlaneQuadOutlineColor, false);
+                        KCCDebugger.DrawText(TransientPosition + crease * 10, $"{i} (faux)", false);
+                        #endif
+                    }
+                }
+            }
+            else
+            {
+                //third sliding plane, we have no degrees of freedom left for the movement.
+                _internalDelta = Vector3.Zero; 
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
@@ -1031,8 +1081,13 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Rescue mode during unstuck procedure, for when ComputePenetration fails to deliver results.
     /// </summary>
-    private void UnstuckRescue(Vector3 originalDelta)
+    private void UnstuckRescue()
     {
+        if(UnstuckRescueMode == UnstuckRescueMode.Disabled)
+        {
+            return;
+        }
+
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.UnstuckRescue");
         KCCDebugger.BeginEvent("UnstuckRescue");
@@ -1040,30 +1095,29 @@ public class KinematicCharacterController : KinematicBase
         string[] directionsText = ["forward", "-forward", "up", "-up", "right", "-right"];
         #endif
 
-        //Vector3 forward = originalDelta.Normalized;
-        //Vector3 up = -GravityEulerNormalized;
-        //Vector3 right = Vector3.Cross(forward, up).Normalized;
-
         Vector3 forward = (Vector3.Forward * TransientOrientation).Normalized;
         Vector3 up = (Vector3.Up * TransientOrientation).Normalized;
         Vector3 right = (Vector3.Right * TransientOrientation).Normalized;
         Vector3[] directions = [forward, -forward, up, -up, right, -right];
+
         bool haveSolve = false;
+        Real distance = Math.Min(KinematicContactOffset + UnstuckRescueDistance, MaxUnstuckRescueDistance);
+        Vector3 temporaryPosition = Vector3.Zero;
         for(int i = 0; i < directions.Length; i++)
         {
-            Vector3 temporaryPosition = TransientPosition + (directions[i] * KinematicContactOffset); 
+            temporaryPosition = TransientPosition + (directions[i] * distance); 
             #if FLAX_EDITOR
             KCCDebugger.DrawArrow(temporaryPosition, Quaternion.FromDirection(directions[i]), 1.0f, 1.0f, KCCDebugger.Options.PenetrationTraceOtherColor, false);
             #endif
 
-            if(!CastCollider(temporaryPosition, directions[i], out RayCastHit trace, KinematicContactOffset, CollisionMask, false))
+            if(!CastCollider(temporaryPosition, directions[i], out RayCastHit trace, distance + KinematicContactOffset, CollisionMask, false))
             {
-                TransientPosition = temporaryPosition + directions[i] * KinematicContactOffset;
+                TransientPosition = temporaryPosition + directions[i] * distance;
                 
                 #if FLAX_EDITOR
                 KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), $"Yes: {directionsText[i]} (full)", false);
                 offset++;
-                KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(directions[i]), (float)KinematicContactOffset * 0.01f, 1.0f, KCCDebugger.Options.PenetrationTraceColor, false);
+                KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(directions[i]), (float)distance * 0.01f, 1.0f, KCCDebugger.Options.UnstuckSingularArrowColor, false);
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.UnstuckRescueFillColor, KCCDebugger.Options.UnstuckRescueOutlineColor, false);
                 #endif
 
@@ -1081,12 +1135,12 @@ public class KinematicCharacterController : KinematicBase
                 continue;
             }
 
-            TransientPosition = temporaryPosition + directions[i] * trace.Distance;
+            TransientPosition = temporaryPosition + (directions[i] * Math.Max(trace.Distance - KinematicContactOffset, 0.0f));
 
             #if FLAX_EDITOR
             KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), $"Yes: {directionsText[i]} (partial)", false);
             offset++;
-            KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(directions[i]), trace.Distance * 0.01f, 1.0f, KCCDebugger.Options.PenetrationTraceColor, false);
+            KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(directions[i]), trace.Distance * 0.01f, 1.0f, KCCDebugger.Options.UnstuckSingularArrowColor, false);
             KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.UnstuckRescueFillColor, KCCDebugger.Options.UnstuckRescueOutlineColor, false);
             #endif
 
@@ -1098,6 +1152,126 @@ public class KinematicCharacterController : KinematicBase
         {
             #if FLAX_EDITOR
             KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "!!No rescue possible!!", false);
+            offset++;
+            #endif
+
+            //Sometimes you do wish C# had better metaprogramming.. evil C macros my beloved ;-;
+            switch(UnstuckRescueMode)
+            {
+                case UnstuckRescueMode.Disabled:
+                case UnstuckRescueMode.NoPisAller:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "No pis-aller strategy.", false);
+                    #endif
+
+                    temporaryPosition = Vector3.Zero;
+                    break;
+
+                case UnstuckRescueMode.RelativeForward:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: relative forward", false);
+                    #endif
+                    
+                    temporaryPosition = forward * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.RelativeBackward:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: relative backward", false);
+                    #endif
+                    
+                    temporaryPosition = -forward * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.RelativeUp:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: relative up", false);
+                    #endif
+                    
+                    temporaryPosition = up * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.RelativeDown:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: relative down", false);
+                    #endif
+                    
+                    temporaryPosition = -up * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.RelativeRight:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: relative right", false);
+                    #endif
+                    
+                    temporaryPosition = right * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.RelativeLeft:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: relative left", false);
+                    #endif
+                    
+                    temporaryPosition = -right * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.WorldForward:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: world forward", false);
+                    #endif
+                    
+                    temporaryPosition = Vector3.Forward * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.WorldBackward:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: world backward", false);
+                    #endif
+                    
+                    temporaryPosition = Vector3.Backward * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.WorldUp:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: world up", false);
+                    #endif
+                    
+                    temporaryPosition = Vector3.Up * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.WorldDown:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: world down", false);
+                    #endif
+                    
+                    temporaryPosition = Vector3.Down * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.WorldRight:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: world right", false);
+                    #endif
+                    
+                    temporaryPosition = Vector3.Right * MaxUnstuckRescueDistance;
+                    break;
+
+                case UnstuckRescueMode.WorldLeft:
+                    #if FLAX_EDITOR
+                    KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), "Pis-aller: world left", false);
+                    #endif
+                    
+                    temporaryPosition = Vector3.Left * MaxUnstuckRescueDistance;
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            TransientPosition += temporaryPosition;
+
+            #if FLAX_EDITOR
+            KCCDebugger.DrawLine(TransientPosition - temporaryPosition, TransientPosition, KCCDebugger.Options.UnstuckSingularArrowColor, false);
+            KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.UnstuckRescueFillColor, KCCDebugger.Options.UnstuckRescueOutlineColor, false);
             KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
@@ -1553,8 +1727,12 @@ public class KinematicCharacterController : KinematicBase
             if(trace.Distance < KinematicContactOffset)
             {
                 //not stuck, but also too close to the surface..
-                //nudge to avoid disasters
+                //nudge to avoid disasters, but only when we have space
                 distance = -(KinematicContactOffset - trace.Distance);
+                if(!CastCollider(TransientPosition, -GravityEulerNormalized, out trace, distance, CollisionMask, false))
+                {
+                    distance = 0.0f;
+                }
             }
 
             TransientPosition += GravityEulerNormalized * distance;
@@ -1941,15 +2119,15 @@ public class KinematicCharacterController : KinematicBase
         switch(ColliderType)
         {
             case ColliderType.Box:
-                FlaxDebugDrawBox(position, orientation, color, time, depthTest);
+				FlaxDebugDrawBox(position, orientation, color, time, depthTest);
                 break;
 
             case ColliderType.Capsule:
-                FlaxDebugDrawCapsule(position, orientation, color, time, depthTest);
+				FlaxDebugDrawCapsule(position, orientation, color, time, depthTest);
                 break;
 
             case ColliderType.Sphere:
-                FlaxDebugDrawSphere(position, color, time, depthTest);
+				FlaxDebugDrawSphere(position, color, time, depthTest);
                 break;
 
             default:
@@ -2000,15 +2178,15 @@ public class KinematicCharacterController : KinematicBase
         switch(ColliderType)
         {
             case ColliderType.Box:
-                KCCDebugDrawBox(position, orientation, fillColor, outlineColor, depthTest);
+				KCCDebugDrawBox(position, orientation, fillColor, outlineColor, depthTest);
                 break;
 
             case ColliderType.Capsule:
-                KCCDebugDrawCapsule(position, orientation, fillColor, outlineColor, depthTest);
+				KCCDebugDrawCapsule(position, orientation, fillColor, outlineColor, depthTest);
                 break;
 
             case ColliderType.Sphere:
-                KCCDebugDrawSphere(position, fillColor, outlineColor, depthTest);
+				KCCDebugDrawSphere(position, fillColor, outlineColor, depthTest);
                 break;
 
             default:
