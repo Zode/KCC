@@ -16,7 +16,7 @@ public interface IKinematicCharacter
 	/// You may transfer root motion to the system by extracting it from the animation and applying it here.
 	/// You may also need to multiply this value by deltaTime depending on your situation.
 	/// </summary>
-	/// <param name="movement">The desired movement for this tick</param>
+	/// <param name="movement">The desired movement for this tick (in local space as KCC will rotate this vector with the orientation)</param>
 	public void KinematicMoveUpdate(out Vector3 movement);
 	/// <summary>
 	/// Called the character movement needs to be projected alongside the current ground plane during the sweep,
