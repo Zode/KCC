@@ -378,7 +378,7 @@ public class KinematicCharacterController : KinematicBase
         SolveRigidBodyInteractions();
         KinematicVelocity = TransientPosition - InitialPosition;
 
-        RayCastHit? groundTrace = SolveGround();
+        GroundCheckResult groundCheckResult = SolveGround(out RayCastHit groundTrace);
 
         #if FLAX_EDITOR
         KCCDebugger.DrawText(TransientPosition, $"IsGrounded: {IsGrounded}  ForceUnground: {_forceUnground}", false);
@@ -388,12 +388,12 @@ public class KinematicCharacterController : KinematicBase
         if(!_wasPreviouslyGrounded && IsGrounded)
         {
             _wasPreviouslyGrounded = true;
-            Controller.KinematicGroundingEvent(GroundState.Grounded, groundTrace);
+            Controller.KinematicGroundingEvent(GroundState.Grounded, groundCheckResult, groundTrace);
         }
         else if(_wasPreviouslyGrounded && !IsGrounded)
         {
             _wasPreviouslyGrounded = false;
-            Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundTrace);
+            Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundCheckResult, groundTrace);
         }
 
         #if FLAX_EDITOR
@@ -728,9 +728,7 @@ public class KinematicCharacterController : KinematicBase
             return result;
         }
 
-        #pragma warning disable IDE0018
-        RayCastHit[] traces;
-        #pragma warning restore IDE0018 
+        RayCastHit[] traces; 
         result = ColliderType switch
         {
             ColliderType.Box => Physics.BoxCastAll(origin, BoxExtents, direction, out traces, TransientOrientation, (float)distance, layerMask, hitTriggers),
@@ -1359,8 +1357,9 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Trace to the ground and snap to it if necessary.
     /// </summary>
-    /// <returns>Result for the ground standing upon, null if not touching any valid ground or ground at all</returns>
-    private RayCastHit? SolveGround()
+    /// <param name="trace">Trace result (if any).</param>
+    /// <returns><seealso cref="GroundCheckResult" /></returns>
+    private GroundCheckResult SolveGround(out RayCastHit trace)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SolveGround");
@@ -1371,12 +1370,13 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+            trace = new();
 
             #if FLAX_EDITOR
             Profiler.EndEvent();
             #endif
 
-            return null;
+            return GroundCheckResult.NoGround;
         }
 
         if(!CanGround)
@@ -1384,32 +1384,35 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+            trace = new();
 
             #if FLAX_EDITOR
             Profiler.EndEvent();
             #endif
 
-            return null;
+            return GroundCheckResult.NoGround;
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
         if(!IsGrounded && _internalGravityDelta > 0)
         {
+            trace = new();
+
             #if FLAX_EDITOR
             Profiler.EndEvent();
             #endif
 
-            return null;
+            return GroundCheckResult.NoGround;
         }
 
-        RayCastHit? groundTrace;
+        GroundCheckResult groundTraceResult;
         if(!IsGrounded)
         {
-            groundTrace = GroundCheck(GroundingDistance);
+            groundTraceResult = GroundCheck(GroundingDistance, out trace);
         }
         else
         {
-            groundTrace = GroundCheck(GroundingDistance + StairStepDistance);
+            groundTraceResult = GroundCheck(GroundingDistance + StairStepDistance, out trace);
         }
 
         SnapToGround();
@@ -1418,23 +1421,24 @@ public class KinematicCharacterController : KinematicBase
         Profiler.EndEvent();
         #endif
 
-        return groundTrace;
+        return groundTraceResult;
     }
 
     /// <summary>
     /// Do a ground trace check, considering if the ground is stable.
     /// Will also attempt to attach the character to a rigidbody if standing on one.
     /// </summary>
-    /// <param name="distance"></param>
-    /// <returns>Result if stable ground, null otherwise</returns>
-    private RayCastHit? GroundCheck(float distance)
+    /// <param name="distance">Distance to check.</param>
+    /// <param name="trace">Trace result (if any).</param>
+    /// <returns><seealso cref="GroundCheckResult" /></returns>
+    private GroundCheckResult GroundCheck(float distance, out RayCastHit trace)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.GroundCheck");
         KCCDebugger.BeginEvent("GroundCheck");
         #endif
 
-        IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, distance + KinematicContactOffset, CollisionMask, false);
+        IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out trace, distance + KinematicContactOffset, CollisionMask, false);
         if(!IsGrounded)
         {
             AttachToRigidBody(null);
@@ -1445,7 +1449,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return null;
+            return GroundCheckResult.NoGround;
         }
 
         if(!IsNormalStableGround(trace.Normal))
@@ -1459,7 +1463,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return null;
+            return GroundCheckResult.NotStable;
         }
 
         if(GroundTag.Index != 0 && !trace.Collider.HasTag(GroundTag))
@@ -1473,7 +1477,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return null;
+            return GroundCheckResult.NotStable;
         }
 
         GroundNormal = trace.Normal;
@@ -1484,7 +1488,7 @@ public class KinematicCharacterController : KinematicBase
         Profiler.EndEvent();
         #endif
 
-        return trace;
+        return GroundCheckResult.Stable;
     }
 
     /// <summary>

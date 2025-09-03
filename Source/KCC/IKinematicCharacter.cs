@@ -16,7 +16,7 @@ public interface IKinematicCharacter
 	/// You may transfer root motion to the system by extracting it from the animation and applying it here.
 	/// You may also need to multiply this value by deltaTime depending on your situation.
 	/// </summary>
-	/// <param name="movement">The desired movement for this tick (in local space as KCC will rotate this vector with the orientation)</param>
+	/// <param name="movement">The desired movement for this tick (in local space as KCC will rotate this vector with the orientation).</param>
 	public void KinematicMoveUpdate(out Vector3 movement);
 	/// <summary>
 	/// Called the character movement needs to be projected alongside the current ground plane during the sweep,
@@ -25,15 +25,15 @@ public interface IKinematicCharacter
 	/// Vector3’s ProjectOnPlane will suffice for modern use.
 	/// Tip: the KinematicCharacterController supplies the function “GroundTangent” to help with retro style projection where the ground normal does not affect any lateral speed.
 	/// </summary>
-	/// <param name="movement">Current movement delta</param>
-	/// <param name="gravityEulerNormalized">Current normalized gravity as euler angles</param>
+	/// <param name="movement">Current movement delta.</param>
+	/// <param name="gravityEulerNormalized">Current normalized gravity as euler angles.</param>
 	/// <returns>New movement</returns>
 	public Vector3 KinematicGroundProjection(Vector3 movement, Vector3 gravityEulerNormalized);
 	/// <summary>
 	/// Called when the character collides with something during a sweep, this can be used to precisely filter out collisions (e.g. teammates).
 	/// </summary>
 	/// <param name="other"></param>
-	/// <returns>True if should collide, False if should pass through</returns>
+	/// <returns><c>true</c> if should collide, <c>false</c> if should pass through.</returns>
 	public bool KinematicCollisionValid(PhysicsColliderActor other);
 	/// <summary>
 	/// Called when the character collides with something during a sweep.
@@ -54,20 +54,21 @@ public interface IKinematicCharacter
 	/// Called when the character’s ground state changes during a sweep,
 	/// this may be useful if you wish to implement particle effects upon landing on ground for example.
 	/// </summary>
-	/// <param name="groundingState">The new state</param>
-	/// <param name="hit">Hit from grounding check, null if ungrounding</param>
-	public void KinematicGroundingEvent(GroundState groundingState, RayCastHit? hit);
+	/// <param name="groundState">The new state.</param>
+	/// <param name="checkResult">The ground check result <seealso cref="GroundCheckResult" />.</param>
+	/// <param name="hit">Hit from grounding check (if any).</param>
+	public void KinematicGroundingEvent(GroundState groundState, GroundCheckResult checkResult, RayCastHit hit);
 	/// <summary>
 	/// Called during the sweep to check if the character can attach to a rigidbody to move with it.
 	/// </summary>
 	/// <param name="rigidBody"></param>
-	/// <returns>True if can attach, False if not</returns>
+	/// <returns><c>true</c> if can attach, <c>false</c> if not.</returns>
 	public bool KinematicCanAttachToRigidBody(RigidBody rigidBody);
 	/// <summary>
 	/// Called when the character attaches or detaches itself from a rigidbody.
 	/// </summary>
-	/// <param name="attached">True if attaching, False if detaching</param>
-	/// <param name="rigidBody">Rigidbody being attached to, or being detached from</param>
+	/// <param name="attached"><c>true</c> if attaching, <c>false</c> if detaching.</param>
+	/// <param name="rigidBody">Rigidbody being attached to, or being detached from.</param>
 	public void KinematicAttachedRigidBodyEvent(bool attached, RigidBody? rigidBody);
 	/// <summary>
 	/// Called for every tick the character is attached to a rigidbody to move with, 
