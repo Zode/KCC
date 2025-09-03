@@ -4,3 +4,5 @@
   href: getting-started.md
 - name: KCC Update loop
   href: kccloop.md
+- name: KCC Debugger
+  href: debugger.md

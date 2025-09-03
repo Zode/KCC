@@ -9,7 +9,7 @@ This is required for the plugin to function, and contains some overall settings 
 After making your kinematic character, you need to make a script that implements the [IkinematicCharacterController](/api/KCC.IKinematicCharacter.html) interface and assign the script to the controller’s `Controller` property (this can be simply done by just assigning it on the script’s OnEnable, check the [KCCExample repository](https://github.com/Zode/KCCExample).
 
 > [!TIP]
-> This method of assigning interfaces means you can hotswap what script is controlling the controller, which may be useful in case you need to swap a character between AI control and Player control.
+> This method of assigning interfaces means you can hotswap which script is controlling the controller, which may be useful in case you need to swap a character between AI control and Player control.
 
 This interface will provide you with the necessary callbacks to alter the behavior during runtime.
 **The controller MUST have an uniform scale of 1**, if you wish to to resize the character please update the relevant properties in the `KinematicCharacterController`.
@@ -32,4 +32,4 @@ While the system does execute during a `FixedUpdate` tick and as such it usually
 >
 > `ForceUnground `for jumping and other purposes, `IsNormalStableGround` for querying if a normal is considered stable with the controller’s settings, and `GroundTangent` which works similarly to Vector3’s `ProjectOnPlane` without any of the lateral movement.
 >
-> Additionally for debugging purposes `DebugDrawCollider` is exposed for quickly drawing a wire shape that matches the controller’s shape. **If you use this function you need to wrap it in `FLAX_EDITOR` define guards.**
+> Additionally for debugging purposes `FlaxDebugDrawCollider` is exposed for quickly drawing a wire shape that matches the controller’s shape. **If you use this function you need to wrap it in `FLAX_EDITOR` define guards.** This will use Flax's debug draw calls, if you wish to use the KCC Debugger, please have a look [in this article](debugger.md)
