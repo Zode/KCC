@@ -402,7 +402,7 @@ public class KCCDebuggerWindow : EditorWindow
 					{
 						continue;
 					}
-					
+
 					@event.ResetRenderables(true);
 					@event.Render(true);
 				}	
@@ -423,14 +423,16 @@ public class KCCDebuggerWindow : EditorWindow
 			return;
 		}
 
-		IEnumerable<EventNode> eventNodes = _tree.Selection.Cast<EventNode>();
 		//hack: calculate center from the events first renderable, since we know that to always exist.
 		BoundingSphere averageSphere = BoundingSphere.Empty;
-		Vector3 averageCenter = Vector3.Zero;
-		int count = 0;
-		foreach(EventNode eventNode in eventNodes)
+		foreach(TreeNode node in _tree.Selection)
 		{
-			if(eventNode.Event.ActorID is null)
+			if(node is not EventNode eventNode)
+			{
+				continue;
+			}
+
+			if(eventNode.Event.ActorID is null || eventNode.Event.Renderables.Count == 0)
 			{
 				continue;
 			}
@@ -440,24 +442,31 @@ public class KCCDebuggerWindow : EditorWindow
 				case Box box:
 				{
 					averageSphere = BoundingSphere.Merge(averageSphere, BoundingSphere.FromBox(box.OrientedBoundingBox.GetBoundingBox()));
-					averageCenter = box.OrientedBoundingBox.Center;
-					count++;
 					break;
 				}
 
 				case Sphere sphere:
 				{
 					averageSphere = BoundingSphere.Merge(averageSphere, new BoundingSphere(sphere.Position, sphere.Radius));
-					averageCenter = sphere.Position;
-					count++;
 					break;
 				}
 
 				case Capsule capsule:
 				{
 					averageSphere = BoundingSphere.Merge(averageSphere, new BoundingSphere(capsule.Position, capsule.Radius));
-					averageCenter = capsule.Position;
-					count++;
+					break;
+				}
+
+				case Debugger.Renderables.Mesh mesh:
+				{
+					Vector3[] points = new Vector3[mesh.Vertices.Length];
+					for(int i = 0; i < points.Length; i++)
+					{
+						points[i] = mesh.Vertices[i];
+					}
+
+					BoundingSphere sphere = BoundingSphere.FromPoints(points);
+					averageSphere = BoundingSphere.Merge(averageSphere, sphere); 
 					break;
 				}
 
@@ -466,15 +475,14 @@ public class KCCDebuggerWindow : EditorWindow
 			}
 		}
 
-		if(count == 0 || averageSphere == BoundingSphere.Empty)
+		if(averageSphere == BoundingSphere.Empty)
 		{
 			return;
 		}
 
-		averageCenter /= count;
 		Editor.Instance.Windows.EditWin.Viewport.ViewportCamera.SetArcBallView(
 			Editor.Instance.Windows.EditWin.Viewport.ViewOrientation,
-			averageCenter, averageSphere.Radius * _followDistanceSlider.Value
+			averageSphere.Center, averageSphere.Radius * _followDistanceSlider.Value
 		);
 	}
 
