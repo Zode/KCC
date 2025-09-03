@@ -423,6 +423,10 @@ public class KinematicCharacterController : KinematicBase
 
         if(AttachedRigidBody is not null && RigidBodyMoveMode != RigidBodyMoveMode.None)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.BeginEvent("RigidBodyMove");
+            #endif
+
             if(SolveRigidBodyMovements)
             {
                 KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
@@ -437,6 +441,12 @@ public class KinematicCharacterController : KinematicBase
 
             //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
             TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
+
+            #if FLAX_EDITOR
+            KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(KinematicAttachedVelocity.Normalized), 1.0f, 1.0f, KCCDebugger.Options.SweepArrowColor, false);
+            KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 40), $"Attached to: {AttachedRigidBody.Name}", false);
+            KCCDebugger.EndEvent();
+            #endif
         }
         else
         {
