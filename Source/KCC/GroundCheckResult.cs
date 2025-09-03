@@ -3,18 +3,22 @@ namespace KCC;
 /// <summary>
 /// Ground check result for KCC characters.
 /// </summary>
-public enum GroundCheckResult
+public enum GroundCheckResult : byte
 {
 	/// <summary>
-	/// Character is not grounded (trace did not hit anything).
+	/// Character is not on anything solid (trace did not hit anything).
 	/// </summary>
-	NoGround,
+	NoSolid,
 	/// <summary>
-	/// Character is grounded, but is not stable (trace hit something).
+	/// Character is on something solid, but is not stable (trace did hit something).
 	/// </summary>
-	NotStable,
+	SolidNotStable,
 	/// <summary>
-	/// Character is grounded, and it is stable (trace hit something).
+	/// Character is on something solid and it is stable, but it does not have the ground tag (trace did hit something).
 	/// </summary>
-	Stable,
+	SolidStableNotGround,
+	/// <summary>
+	/// Character is on something solid and it is stable and had the ground tag (trace did hit something).
+	/// </summary>
+	SolidStableGround,
 }

@@ -1376,7 +1376,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoGround;
+            return GroundCheckResult.NoSolid;
         }
 
         if(!CanGround)
@@ -1390,7 +1390,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoGround;
+            return GroundCheckResult.NoSolid;
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
@@ -1402,7 +1402,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoGround;
+            return GroundCheckResult.NoSolid;
         }
 
         GroundCheckResult groundTraceResult;
@@ -1449,7 +1449,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoGround;
+            return GroundCheckResult.NoSolid;
         }
 
         if(!IsNormalStableGround(trace.Normal))
@@ -1463,7 +1463,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NotStable;
+            return GroundCheckResult.SolidNotStable;
         }
 
         if(GroundTag.Index != 0 && !trace.Collider.HasTag(GroundTag))
@@ -1477,7 +1477,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NotStable;
+            return GroundCheckResult.SolidStableNotGround;
         }
 
         GroundNormal = trace.Normal;
@@ -1488,7 +1488,7 @@ public class KinematicCharacterController : KinematicBase
         Profiler.EndEvent();
         #endif
 
-        return GroundCheckResult.Stable;
+        return GroundCheckResult.SolidStableGround;
     }
 
     /// <summary>
