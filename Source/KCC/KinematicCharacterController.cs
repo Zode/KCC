@@ -1002,7 +1002,7 @@ public class KinematicCharacterController : KinematicBase
             KCCDebugger.DrawText(trace.Point, i.ToString(), false);
             #endif
 
-            if(IsGrounded)
+            if(IsGrounded && i < 2)
             {
                 SolveStairSteps(ref _transientPosition, ref _internalDelta, ref distance, ref trace.Normal);
             }
