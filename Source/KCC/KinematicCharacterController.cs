@@ -271,7 +271,7 @@ public class KinematicCharacterController : KinematicBase
     //Evil optimization global variable, used to cache collider validity for sorting colliders in OverlapCollider
     private static readonly BitArray _colliderValidities = new(FLAX_PHYSICS_MAX_QUERY, false);
     /// <summary>
-    /// The offset to the character collider's top point from it's center, bottom point is just the inverse of this.
+    /// The offset to the character collider's top point from its center, bottom point is just the inverse of this.
     /// </summary>
     [NoSerialize, HideInEditor] public Real ColliderTop {get; private set;} = 0.0f;
     /// <summary>
@@ -487,7 +487,7 @@ public class KinematicCharacterController : KinematicBase
 
     /// <summary>
     /// Set the collider actor sizes according to the controller's size properties,
-    /// also responsbile for caching some values.
+    /// also responsible for caching some values.
     /// </summary>
     private void SetColliderSize()
     {
@@ -1418,7 +1418,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3 remainingDeltaNormalized = remainingDelta.Normalized;
 
         //can we clear forwards with the remaining delta (by any amount)?
-        bool HitForward = CastCollider(temporaryPosition, remainingDeltaNormalized, out trace, temporaryDistance + KinematicContactOffset, CollisionMask, false);
+        bool hitForward = CastCollider(temporaryPosition, remainingDeltaNormalized, out trace, temporaryDistance + KinematicContactOffset, CollisionMask, false);
         Vector3 newNormal = trace.Normal;
         temporaryDistance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
         if(temporaryDistance == 0.0f || temporaryDistance < StairStepMinimumForwardDistance)
@@ -1430,7 +1430,7 @@ public class KinematicCharacterController : KinematicBase
             return false;
         }
 
-        if(HitForward)
+        if(hitForward)
         {
             RigidBody rb = trace.Collider.AttachedRigidBody;
             if(rb != null && !rb.IsKinematic)
@@ -1494,7 +1494,7 @@ public class KinematicCharacterController : KinematicBase
         distance = temporaryDistance;
 
         //update potential wall for next sweep solve iteration also
-        if(HitForward)
+        if(hitForward)
         {
             sweepNormal = newNormal;
         }
