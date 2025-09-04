@@ -389,7 +389,11 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve((float)KinematicContactOffset);
+        Vector3 push = UnstuckSolve((float)KinematicContactOffset);
+        if(!push.IsZero)
+        {
+            TransientPosition += push;
+        }
 
         #if FLAX_EDITOR
         KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, KCCDebugger.Options.ForwardArrowColor, false);
@@ -596,7 +600,7 @@ public class KinematicCharacterController : KinematicBase
 
         result = ColliderType switch
         {
-            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + inflate, out colliders, TransientOrientation, layerMask, hitTriggers),
+            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + (inflate * 0.5f), out colliders, TransientOrientation, layerMask, hitTriggers),
             ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
             ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
@@ -1674,7 +1678,12 @@ public class KinematicCharacterController : KinematicBase
         }
 
         GroundNormal = trace.Normal;
-        AttachToRigidBody(trace.Collider.AttachedRigidBody);
+        
+        //fix the character standing for 1 frame on movers that push it sideways
+        if(trace.Distance > 0.0f)
+        {
+            AttachToRigidBody(trace.Collider.AttachedRigidBody);
+        }
 
         #if FLAX_EDITOR
         KCCDebugger.EndEvent();
@@ -1823,7 +1832,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        SetColliderSizeWithInflation((float)KinematicContactOffset);
+        SetColliderSizeWithInflation(inflate);
         for(int i = 0; i < overlaps; i++)
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
@@ -1832,7 +1841,7 @@ public class KinematicCharacterController : KinematicBase
                 {
                     if(!ComputePenetrationTriangles(meshCollider, ref penetrationDirection, ref penetrationDistance))
                     {
-                        #if FLAX_EDITOR
+                        #if (FLAX_EDITOR && KCC_DEV)
                         Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                         #endif
 
@@ -1845,7 +1854,7 @@ public class KinematicCharacterController : KinematicBase
                 }
                 else
                 {
-                    #if FLAX_EDITOR
+                    #if (FLAX_EDITOR && KCC_DEV)
                     Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                     #endif
 
@@ -1860,7 +1869,7 @@ public class KinematicCharacterController : KinematicBase
             //TODO: this is suspicious, investigate later.
             if(penetrationDistance == 0.0f)
             {
-                #if FLAX_EDITOR
+                #if (FLAX_EDITOR && KCC_DEV)
                 Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name}, {colliders[i].Name}");
                 #endif
 
