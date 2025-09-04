@@ -1560,6 +1560,7 @@ public class KinematicCharacterController : KinematicBase
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SolveGround");
+        KCCDebugger.BeginEvent("SolveGround");
         #endif
 
         if(_forceUnground)
@@ -1570,6 +1571,7 @@ public class KinematicCharacterController : KinematicBase
             trace = new();
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1584,6 +1586,7 @@ public class KinematicCharacterController : KinematicBase
             trace = new();
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1596,6 +1599,7 @@ public class KinematicCharacterController : KinematicBase
             trace = new();
 
             #if FLAX_EDITOR
+            KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
 
@@ -1612,9 +1616,13 @@ public class KinematicCharacterController : KinematicBase
             groundTraceResult = GroundCheck(GroundingDistance + StairStepDistance, out trace);
         }
 
-        SnapToGround();
+        if(groundTraceResult != GroundCheckResult.NoSolid)
+        {
+            SnapToGround(trace);
+        }
 
         #if FLAX_EDITOR
+        KCCDebugger.EndEvent();
         Profiler.EndEvent();
         #endif
 
@@ -1635,9 +1643,11 @@ public class KinematicCharacterController : KinematicBase
         KCCDebugger.BeginEvent("GroundCheck");
         #endif
 
-        IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out trace, distance + KinematicContactOffset, CollisionMask, false);
-        if(!IsGrounded)
+        Real maxDistance = Math.Max(distance, GroundSnappingDistance + KinematicContactOffset);
+        IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out trace, maxDistance, CollisionMask, false);
+        if(!IsGrounded || trace.Distance > distance)
         {
+            IsGrounded = false;
             AttachToRigidBody(null);
             GroundNormal = -GravityEulerNormalized;
 
@@ -1696,7 +1706,7 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Forcibly move the character to ground level, ignoring if its standable or not.
     /// </summary>
-    private void SnapToGround()
+    private void SnapToGround(RayCastHit trace)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SnapToGround");
@@ -1704,16 +1714,6 @@ public class KinematicCharacterController : KinematicBase
         #endif
 
         if(!IsGrounded)
-        {
-            #if FLAX_EDITOR
-            KCCDebugger.EndEvent();
-            Profiler.EndEvent();
-            #endif
-
-            return;
-        }
-
-        if(!CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, GroundSnappingDistance + KinematicContactOffset, CollisionMask, false))
         {
             #if FLAX_EDITOR
             KCCDebugger.EndEvent();
