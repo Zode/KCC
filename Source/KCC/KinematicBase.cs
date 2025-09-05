@@ -33,10 +33,6 @@ public class KinematicBase : RigidBody
 	/// The current orientation in simulation.
 	/// </summary>
 	protected Quaternion _transientOrientation = Quaternion.Identity;
-	/// <summary>
-	/// Reference to KCC plugin.
-	/// </summary>
-	protected KCC _kccPlugin;
 
 	/// <summary>
 	/// Initializes a new instance of KinematicBase.
@@ -44,7 +40,6 @@ public class KinematicBase : RigidBody
 	public KinematicBase()
 		: base()
 	{
-		_kccPlugin = PluginManager.GetPlugin<KCC>();
 	}
 
 	/// <summary>

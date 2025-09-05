@@ -12,6 +12,9 @@ public class KCCEditor : GameEditorModule
         // Reference game source module to access game code types
         options.PublicDependencies.Add("KCC");
 
+        //uncomment to enable extra KCC output
+        //options.ScriptingAPI.Defines.Add("KCC_DEV");
+
         // Here you can modify the build options for your game editor module
         // To reference another module use: options.PublicDependencies.Add("Audio");
         // To add C++ define use: options.PublicDefinitions.Add("COMPILE_WITH_FLAX");

@@ -291,7 +291,7 @@ public class KinematicCharacterController : KinematicBase
         }
         #endif
 
-		_kccPlugin.Register(this);
+		KCCGlobal.Plugin.Register(this);
 
         MaxAngularVelocity = float.MaxValue;
 		MaxDepenetrationVelocity = float.MaxValue;
@@ -317,7 +317,7 @@ public class KinematicCharacterController : KinematicBase
 	/// <inheritdoc />
     public override void OnDisable()
     {
-		_kccPlugin.Unregister(this);
+		KCCGlobal.Plugin.Unregister(this);
 
         base.OnDisable();
     }
@@ -923,7 +923,7 @@ public class KinematicCharacterController : KinematicBase
 
         Vector3 originalDeltaNormalized = _internalDelta.Normalized;
         int unstuckSolves = 0;
-        bool unstuckRescueNeeded = true;
+        bool unstuckRescueNeeded = false;
 
         //we can realistically only collide with 2 planes before we lose all degrees of freedom (intersection of three planes is a point)
         Vector3 firstPlane = Vector3.Zero;
@@ -967,7 +967,7 @@ public class KinematicCharacterController : KinematicBase
                 break;
             }
 
-            if(unstuckSolves >= MaxUnstuckIterations && unstuckRescueNeeded)
+            if(unstuckRescueNeeded)
             {
                 UnstuckRescue();
                 break;
@@ -1842,27 +1842,23 @@ public class KinematicCharacterController : KinematicBase
                     if(!ComputePenetrationTriangles(meshCollider, ref penetrationDirection, ref penetrationDistance))
                     {
                         #if (FLAX_EDITOR && KCC_DEV)
-                        Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
+                        Debug.Log($"No ComputePenetrationTriangles penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                         #endif
 
-                        #pragma warning disable IDE0035
-                        #pragma warning disable CS0162
+                        #pragma warning disable IDE0035, CS0162
                         continue;
-                        #pragma warning restore CS0162
-                        #pragma warning restore IDE0035
+                        #pragma warning restore IDE0035, CS0162
                     }
                 }
                 else
                 {
                     #if (FLAX_EDITOR && KCC_DEV)
-                    Debug.Log($"No penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
+                    Debug.Log($"No ComputePenetration penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                     #endif
 
-                    #pragma warning disable IDE0035
-                    #pragma warning disable CS0162
+                    #pragma warning disable IDE0035,CS0162
                     continue;
-                    #pragma warning restore CS0162
-                    #pragma warning restore IDE0035
+                    #pragma warning restore IDE0035, CS0162
                 }
             }
 
@@ -1870,14 +1866,12 @@ public class KinematicCharacterController : KinematicBase
             if(penetrationDistance == 0.0f)
             {
                 #if (FLAX_EDITOR && KCC_DEV)
-                Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name}, {colliders[i].Name}");
+                Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
                 #endif
 
-                #pragma warning disable IDE0035
-                #pragma warning disable CS0162
+                #pragma warning disable IDE0035,CS0162
                 continue;
-                #pragma warning restore CS0162
-                #pragma warning restore IDE0035
+                #pragma warning restore IDE0035, CS0162
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);

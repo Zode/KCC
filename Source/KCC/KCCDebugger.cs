@@ -1,6 +1,7 @@
 #if FLAX_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using FlaxEditor;
 using FlaxEngine;
 using KCC.Debugger;
@@ -27,7 +28,7 @@ public static class KCCDebugger
 	/// List of the debugger frames
 	/// </summary>
 	public static List<Frame> Frames {get; private set;} = [];
-	private static Stack<Event> _frameParents = [];
+	private static readonly Stack<Event> _frameParents = [];
 	private static int _frame = NO_FRAMES;
 	private static int _internalFrame = NO_FRAMES;
 	/// <summary>
@@ -86,8 +87,11 @@ public static class KCCDebugger
 
 		if(_frameParents.Count > 0)
 		{
-			Debug.LogWarning("KCCDebugger: Ended frame with event parents in stack. Please ensure you are ending events properly.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Ended frame with event parents in stack. Please ensure you are ending events properly.");
+			_frameParents.Clear();
 		}
+
+		Frames[Frame].CalculateTime();
 	}
 
 	/// <summary>
@@ -96,6 +100,7 @@ public static class KCCDebugger
 	public static void ClearFrames()
 	{
 		Frames.Clear();
+		_frameParents.Clear();
 		_internalFrame = -1;
 		Frame = -1;
 	}
@@ -114,7 +119,7 @@ public static class KCCDebugger
 
 		if(actor is null)
 		{
-			Debug.LogWarning("KCCDebugger: Can't begin actor event without non null actor. Please ensure you are starting events properly.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't begin actor event without non null actor. Please ensure you are starting events properly.");
 			return;
 		}
 
@@ -123,11 +128,13 @@ public static class KCCDebugger
 		{
 			Frames[_internalFrame].Events.Add(@event);
 			_frameParents.Push(@event);
+			@event.Timer.Start();
 			return;
 		}
 
 		_frameParents.Peek().Events.Add(@event);
 		_frameParents.Push(@event);
+		@event.Timer.Start();
 	}
 
 	/// <summary>
@@ -143,13 +150,14 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't begin actorless event without parent event. Please ensure you are starting events properly.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't begin actorless event without parent event. Please ensure you are starting events properly.");
 			return;
 		}
 
 		Event @event = new(null, name);
 		_frameParents.Peek().Events.Add(@event);
 		_frameParents.Push(@event);
+		@event.Timer.Start();
 	}
 
 	/// <summary>
@@ -164,7 +172,12 @@ public static class KCCDebugger
 
 		if(_frameParents.Count > 0)
 		{
+			_frameParents.Peek().Timer.Stop();
 			_frameParents.Pop();
+		}
+		else
+		{
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't stop event without ever starting an event. Please ensure you are starting events properly.");
 		}
 	}
 
@@ -184,7 +197,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw line without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw line without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -213,7 +226,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw box without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw box without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -245,7 +258,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw capsule without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw capsule without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -278,7 +291,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw sphere without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw sphere without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -310,7 +323,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw arrow without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw arrow without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -343,7 +356,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 		
@@ -389,7 +402,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw quad without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -426,7 +439,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw collider without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw collider without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 
@@ -465,7 +478,7 @@ public static class KCCDebugger
 				Int2 patchCoord = new((int)(relativePosition.X / size), (int)(relativePosition.Z / size));
 				if(!terrain.HasPatch(ref patchCoord))
 				{
-					Debug.LogWarning($"KCCDebugger: Can't draw terrain. Somehow have a position ({relativePosition} -> {patchCoord}) that is not inside any patch.");
+					FlaxEngine.Debug.LogWarning($"KCCDebugger: Can't draw terrain. Somehow have a position ({relativePosition} -> {patchCoord}) that is not inside any patch.");
 					break;
 				}
 
@@ -498,7 +511,7 @@ public static class KCCDebugger
 
 		if(_frameParents.Count == 0)
 		{
-			Debug.LogWarning("KCCDebugger: Can't draw text without an event. Please ensure you are only drawing inside events.");
+			FlaxEngine.Debug.LogWarning("KCCDebugger: Can't draw text without an event. Please ensure you are only drawing inside events.");
 			return;
 		}
 

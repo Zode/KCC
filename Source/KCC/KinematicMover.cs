@@ -29,7 +29,7 @@ public class KinematicMover : KinematicBase
     {
         base.OnEnable();
 
-		_kccPlugin.Register(this);
+		KCCGlobal.Plugin.Register(this);
 
 		MaxAngularVelocity = float.MaxValue;
 		MaxDepenetrationVelocity = float.MaxValue;
@@ -42,7 +42,7 @@ public class KinematicMover : KinematicBase
 	/// <inheritdoc />
     public override void OnDisable()
     {
-		_kccPlugin.Unregister(this);
+		KCCGlobal.Plugin.Unregister(this);
 
         base.OnDisable();
     }

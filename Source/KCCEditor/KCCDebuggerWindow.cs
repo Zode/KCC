@@ -35,6 +35,7 @@ public class KCCDebuggerWindow : EditorWindow
 	private readonly Label _onionFrames;
 	private readonly Slider _onionSlider;
 	private readonly Slider _followDistanceSlider;
+	private readonly Label _frameTimes;
 	private bool _ignoreNextSelectionChange = false;
 	private List<Guid> _actorRestoreList = [];
 
@@ -72,7 +73,11 @@ public class KCCDebuggerWindow : EditorWindow
 
 		_clearButton = _toolStrip.AddButton(Editor.Icons.Rotate64);
 		_clearButton.LinkTooltip("Clear all captured KCC events");
-		_clearButton.Clicked += KCCDebugger.ClearFrames;
+		_clearButton.Clicked += () =>
+		{
+			KCCDebugger.ClearFrames();
+			UpdateFrameTime();
+		};
 
 		_toolStrip.AddSeparator();
 
@@ -210,10 +215,18 @@ public class KCCDebuggerWindow : EditorWindow
 			FocusOnFrame(KCCDebugger.Frame);
 		};
 
+		_frameTimes = new()
+		{
+			Parent = controlPanel,
+			AutoWidth = true,
+			AutoHeight = true,
+		};
+
 		KCCDebugger.FrameChanged += OnFrameChanged;
 		_tree.SelectedChanged += OnTreeSelectionChanged;
 
 		UpdateButtons();
+		UpdateFrameTime();
 	}
 
 	private void OnRecordingChanged()
@@ -633,6 +646,8 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	private void OnTreeSelectionChanged(List<TreeNode> before, List<TreeNode> after)
 	{
+		UpdateFrameTime();
+
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
 		{
 			return;
@@ -684,7 +699,11 @@ public class KCCDebuggerWindow : EditorWindow
 			}
 
 			_ignoreNextSelectionChange = true;
-			Editor.Instance.SceneEditing.Select(Editor.Instance.Scene.GetActorNode((Guid)node.Event.ActorID), true);
+			ActorNode actorNode = Editor.Instance.Scene.GetActorNode((Guid)node.Event.ActorID);
+			if(actorNode != null)
+			{
+				Editor.Instance.SceneEditing.Select(actorNode, true);
+			}
 		} 
 	}
 
@@ -734,5 +753,71 @@ public class KCCDebuggerWindow : EditorWindow
 	public void OnPlayModeEnd()
 	{
 		OnFrameChanged();
+	}
+
+	private void UpdateFrameTime()
+	{
+		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
+		{
+			_frameTimes.Text = "No frames";
+			return;
+		}
+
+		if(Editor.IsPlayMode && !Time.GamePaused)
+		{
+			_frameTimes.Text = "Capturing..";
+			return;
+		}
+
+		if(_tree.Selection.Count == 0)
+		{
+			_frameTimes.Text = $"Total frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}";
+			return;
+		}
+
+		if(_tree.Selection.Count == 1)
+		{
+			if(_tree.Selection[0] is not EventNode eventNode)
+			{
+				return;
+			}
+
+			_frameTimes.Text = $"Total frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal event time: {NiceTime(eventNode.Event.Timer.Elapsed)}\nOf which subevents took: {NiceTime(eventNode.Event.CalculateSubeventTime())}";
+
+			return;
+		}
+
+		TimeSpan selectedEventsTotal = TimeSpan.Zero;
+		foreach(TreeNode node in _tree.Selection)
+		{
+			if(node is not EventNode eventNode)
+			{
+				continue;
+			}
+
+			selectedEventsTotal += eventNode.Event.Timer.Elapsed;
+		}
+
+		_frameTimes.Text = $"Total frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal selected events time: {NiceTime(selectedEventsTotal)}";
+	}
+
+	private string NiceTime(TimeSpan time)
+	{
+		if(time.TotalMilliseconds > 100)
+		{
+			return $"{time.TotalMilliseconds} s";
+		}
+
+		if(time.TotalMicroseconds > 1000)
+		{
+			return $"{time.TotalMilliseconds} ms";
+		}
+
+		if(time.TotalNanoseconds > 1000)
+		{
+			return $"{time.TotalMicroseconds} μs";
+		}
+
+		return $"{time.TotalNanoseconds} ns";
 	}
 }

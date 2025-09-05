@@ -1,6 +1,7 @@
 #if FLAX_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using FlaxEngine;
 
 namespace KCC.Debugger;
@@ -32,6 +33,10 @@ public class Event(Guid? id, string name)
 	/// Was this already rendered during this pass?
 	/// </summary>
 	public bool AlreadyRendered {get; set;} = false;
+	/// <summary>
+	/// Timer for this event
+	/// </summary>
+	public Stopwatch Timer {get; set;} = new();
 
 	/// <summary>
 	/// Render all the renderables from this event and its sub events.
@@ -76,6 +81,21 @@ public class Event(Guid? id, string name)
 		{
 			@event.ResetRenderables();
 		}
+	}
+
+	/// <summary>
+	/// Calculate the total time from subevents only
+	/// </summary>
+	/// <returns></returns>
+	public TimeSpan CalculateSubeventTime()
+	{
+		TimeSpan result = TimeSpan.Zero;
+		foreach(Event @event in Events)
+		{
+			result += @event.Timer.Elapsed;
+		}
+
+		return result;
 	}
 }
 #endif
