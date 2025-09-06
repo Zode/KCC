@@ -107,33 +107,41 @@ public class KinematicCharacterController : KinematicBase
     /// If disabled, the character will assume everything to be solid, this is less expensive.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(205)]
+    [EditorOrder(209)]
     public bool FilterCollisions {get; set;} = false;
     /// <summary>
     /// Determines how much the character should slide upon coming to contact with a surface.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(206)]
+    [EditorOrder(205)]
     public float SlideMultiplier {get => _slideMultiplier; set => _slideMultiplier = Mathf.Clamp(value, 0.0f, 1.0f);}
     private float _slideMultiplier = 0.75f;
     /// <summary>
     /// If set to true, the character slide will also be affected by the surface's physics material settings.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(207)]
+    [EditorOrder(206)]
     public bool SlideAccountForPhysicsMaterial {get; set;} = true;
     /// <summary>
     /// The layer mask upon which the character collides with.
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(208)]
+    [EditorOrder(210)]
     public LayersMask CollisionMask {get; set;} = new();
     /// <summary>
     /// If set to true, the character slide multiplier will be ignored during airborne movement
     /// </summary>
     [EditorDisplay("Physics")]
-    [EditorOrder(209)]
+    [EditorOrder(207)]
     public bool SlideSkipMultiplierWhileAirborne {get; set;} = true;
+    /// <summary>
+    /// Minimum (dot) angle required for crease handling, increasing this may help with various miniscule issues (eg. moving in ungrounded state upwards a terrain.)
+    /// at the cost of potentially introducing crease related issues.
+    /// </summary>
+    [EditorDisplay("Physics")]
+    [EditorOrder(208)]
+    [Range(0.0f, 1.0f)]
+    public float MinimumCreaseAngle {get; set;} = 0.0075f;
     /// <summary>
     /// Tag used to determine if a collision should be considered valid ground or not.
     /// If left empty, all surfaces determined by MaxSlopeAngle are considered valid ground.
@@ -423,7 +431,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         #if FLAX_EDITOR
-        KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"WasPreviouslyUngrounded: {_wasPreviouslyGrounded}", false);
+        KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"WasPreviouslyUngrounded: {_wasPreviouslyGrounded}  CanGround: {CanGround}", false);
         #endif
 
         if(AttachedRigidBody is not null && RigidBodyMoveMode != RigidBodyMoveMode.None)
@@ -1015,8 +1023,8 @@ public class KinematicCharacterController : KinematicBase
             }
             else if(i == 1)
             {
-                //skip crease if two planes are similar enough (super corner (heh) case bug)
-                if(Vector3.Dot(firstPlane, trace.Normal) > 0.9999f)
+                Real slidingPlaneDifference = Vector3.Dot(firstPlane, trace.Normal);
+                if(slidingPlaneDifference > 0.9999f || slidingPlaneDifference > 1.0f - MinimumCreaseAngle)
                 {
                     _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * Math.Max(_internalDelta.Length - distance, 0.0f);
                     i--;
@@ -1035,7 +1043,7 @@ public class KinematicCharacterController : KinematicBase
                 #endif
 
                 //consider anything less than 90 deg to be acute, and anything above to be obtuse.
-                bool isAcute = Math.Round(Vector3.Dot(firstPlane, trace.Normal), 4, MidpointRounding.ToZero) < 0.0f;
+                bool isAcute = Math.Round(slidingPlaneDifference, 4, MidpointRounding.ToZero) < 0.0f;
 
                 //obtuse corners need extra handling, least we want the controller to get snagged in them.
                 if(!isAcute)
