@@ -113,7 +113,7 @@ public class KCCDebuggerWindow : EditorWindow
 		_infoLabel = new Label()
 		{
 			Parent = _toolStrip,
-			Text = "No frames.",
+			Text = "No frames",
 		};
 
 		_frameSlider = new Slider()
@@ -250,6 +250,7 @@ public class KCCDebuggerWindow : EditorWindow
 				return;
 			}
 
+			UpdateFrameTime();
 			_infoLabel.Text = $"Frame {KCCDebugger.Frame} / {KCCDebugger.Frames.Count - 1}";
 			return;
 		}
@@ -265,6 +266,7 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 		
 		UpdateButtons();
+		UpdateFrameTime();
 		_tree.Selection.Clear();
 		_tree.RemoveChildren();
 
@@ -745,6 +747,7 @@ public class KCCDebuggerWindow : EditorWindow
 	public void OnPlayModeBeginning()
 	{
 		KCCDebugger.ClearFrames();
+		UpdateFrameTime();
 	}
 
 	/// <summary>

@@ -397,11 +397,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        Vector3 push = UnstuckSolve((float)KinematicContactOffset);
-        if(!push.IsZero)
-        {
-            TransientPosition += push;
-        }
+        TransientPosition += UnstuckSolve();
 
         #if FLAX_EDITOR
         KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, KCCDebugger.Options.ForwardArrowColor, false);
@@ -502,14 +498,14 @@ public class KinematicCharacterController : KinematicBase
         ColliderHalfHeight = ColliderHeight / 2.0f;
         ColliderHalfRadius = ColliderRadius / 2.0f;
 
-        _boxExtents.X = ColliderHalfRadius;
-        _boxExtents.Z = ColliderHalfRadius;
+        _boxExtents.X = ColliderRadius;
+        _boxExtents.Z = ColliderRadius;
         _boxExtents.Y = ColliderHalfHeight;
 
 		ColliderTop = ColliderType switch
 		{
 			ColliderType.Box => ColliderHalfHeight,
-            ColliderType.Capsule => ColliderHalfHeight + ColliderRadius,
+            ColliderType.Capsule => ColliderHalfHeight,
             ColliderType.Sphere => ColliderRadius,
             _ => throw new NotImplementedException(),
 		};
@@ -526,7 +522,7 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Set the size of the collider actor with possible extra inflation value
     /// </summary>
-    /// <param name="inflate">Extra size added to the collider size</param>
+    /// <param name="inflate">Extra size added to the collider width (radius in cases of capsule/sphere)</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SetColliderSizeWithInflation(float inflate)
@@ -540,13 +536,13 @@ public class KinematicCharacterController : KinematicBase
         {
             case ColliderType.Box:
 				BoxCollider box = _collider.As<BoxCollider>();
-                box.Size = new(ColliderRadius + inflate, ColliderHeight + inflate, ColliderRadius + inflate);
+                box.Size = new((ColliderRadius * 2.0f) + inflate, ColliderHeight + inflate, (ColliderRadius * 2.0f) + inflate);
                 break;
 
             case ColliderType.Capsule:
 				CapsuleCollider capsule = _collider.As<CapsuleCollider>();
                 capsule.Radius = ColliderRadius + inflate;
-                capsule.Height = ColliderHeight + inflate;
+                capsule.Height = ColliderHeight - (ColliderRadius * 2.0f) + inflate;
                 //and for some reason this is wrongly rotated in the Z axis by default..
                 capsule.LocalOrientation = Quaternion.RotationZ(1.57079633f);
                 break;
@@ -570,10 +566,9 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="colliders">The result array of colliders hit.</param>
     /// <param name="layerMask">The layer mask used to filter the results.</param>
     /// <param name="hitTriggers">If set to <c>true</c> triggers will be hit, otherwise will skip them.</param>
-    /// <param name="inflate">Extra size added to the collider size</param>
     /// <returns>Last "valid collision" index in the collider array, will be 0 if no collisions happened</returns>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = false, float inflate = 0.0f)
+    public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = uint.MaxValue, bool hitTriggers = false)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.OverlapCollider");
@@ -585,9 +580,9 @@ public class KinematicCharacterController : KinematicBase
         {
             result = ColliderType switch
             {
-                ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + (inflate * 0.5f), out colliders, TransientOrientation, layerMask, hitTriggers),
-                ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
-                ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
+                ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + (KinematicContactOffset * 0.5f), out colliders, TransientOrientation, layerMask, hitTriggers),
+                ColliderType.Capsule => Physics.OverlapCapsule(origin, ColliderRadius + (float)KinematicContactOffset, ColliderHeight - (ColliderRadius * 2.0f) + (float)KinematicContactOffset, out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+                ColliderType.Sphere => Physics.OverlapSphere(origin, ColliderRadius + (float)KinematicContactOffset, out colliders, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
             };
 
@@ -608,9 +603,9 @@ public class KinematicCharacterController : KinematicBase
 
         result = ColliderType switch
         {
-            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + (inflate * 0.5f), out colliders, TransientOrientation, layerMask, hitTriggers),
-            ColliderType.Capsule => Physics.OverlapCapsule(origin, (float)(ColliderRadius + inflate), (float)(ColliderHeight + inflate), out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
-            ColliderType.Sphere => Physics.OverlapSphere(origin, (float)(ColliderRadius + inflate), out colliders, layerMask, hitTriggers),
+            ColliderType.Box => Physics.OverlapBox(origin, BoxExtents + (KinematicContactOffset * 0.5f), out colliders, TransientOrientation, layerMask, hitTriggers),
+            ColliderType.Capsule => Physics.OverlapCapsule(origin, ColliderRadius + (float)KinematicContactOffset, ColliderHeight - (ColliderRadius * 2.0f) + (float)KinematicContactOffset, out colliders, TransientOrientation * Quaternion.RotationZ(1.57079633f), layerMask, hitTriggers),
+            ColliderType.Sphere => Physics.OverlapSphere(origin, ColliderRadius + (float)KinematicContactOffset, out colliders, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
         };
 
@@ -694,7 +689,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="hitTriggers">If set to <c>true</c> triggers will be hit, otherwise will skip them.</param>
     /// <param name="dispatchEvent">If <c>true</c>, will dispatch KinematicCollision event to the controller</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    /// <returns>true if we collided with anything</returns>
+    /// <returns><c>true</c> if we collided with anything</returns>
     public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, bool hitTriggers = false, bool dispatchEvent = false)
     {
         #if FLAX_EDITOR
@@ -736,9 +731,9 @@ public class KinematicCharacterController : KinematicBase
         {
             result = ColliderType switch
             {
-                ColliderType.Box => Physics.BoxCast(origin, BoxExtents, direction, out trace, TransientOrientation, (float)distance, layerMask, hitTriggers),
-                ColliderType.Capsule => Physics.CapsuleCast(origin, ColliderRadius, ColliderHeight, direction, out trace, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
-                ColliderType.Sphere => Physics.SphereCast(origin, ColliderRadius, direction, out trace, (float)distance, layerMask, hitTriggers),
+                ColliderType.Box => Physics.BoxCast(origin, BoxExtents + (KinematicContactOffset * 0.5f), direction, out trace, TransientOrientation, (float)distance, layerMask, hitTriggers),
+                ColliderType.Capsule => Physics.CapsuleCast(origin, ColliderRadius + (float)KinematicContactOffset, ColliderHeight - (ColliderRadius * 2.0f) + (float)KinematicContactOffset, direction, out trace, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
+                ColliderType.Sphere => Physics.SphereCast(origin, ColliderRadius + (float)KinematicContactOffset, direction, out trace, (float)distance, layerMask, hitTriggers),
                 _ => throw new NotImplementedException(),
             };
 
@@ -779,9 +774,9 @@ public class KinematicCharacterController : KinematicBase
         RayCastHit[] traces; 
         result = ColliderType switch
         {
-            ColliderType.Box => Physics.BoxCastAll(origin, BoxExtents, direction, out traces, TransientOrientation, (float)distance, layerMask, hitTriggers),
-            ColliderType.Capsule => Physics.CapsuleCastAll(origin, ColliderRadius, ColliderHeight, direction, out traces, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
-            ColliderType.Sphere => Physics.SphereCastAll(origin, ColliderRadius, direction, out traces, (float)distance, layerMask, hitTriggers),
+            ColliderType.Box => Physics.BoxCastAll(origin, BoxExtents + (KinematicContactOffset * 0.5f), direction, out traces, TransientOrientation, (float)distance, layerMask, hitTriggers),
+            ColliderType.Capsule => Physics.CapsuleCastAll(origin, ColliderRadius + (float)KinematicContactOffset, ColliderHeight - (ColliderRadius * 2.0f) + (float)KinematicContactOffset, direction, out traces, TransientOrientation * Quaternion.RotationZ(1.57079633f), (float)distance, layerMask, hitTriggers),
+            ColliderType.Sphere => Physics.SphereCastAll(origin, ColliderRadius + (float)KinematicContactOffset, direction, out traces, (float)distance, layerMask, hitTriggers),
             _ => throw new NotImplementedException(),
         };
 
@@ -986,7 +981,7 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve the issue and re-try sweep.
-                Vector3 push = UnstuckSolve((float)KinematicContactOffset);
+                Vector3 push = UnstuckSolve();
                 TransientPosition += push;
                 unstuckRescueNeeded = push.IsZero;
                    
@@ -1765,9 +1760,9 @@ public class KinematicCharacterController : KinematicBase
                 //not stuck, but also too close to the surface..
                 //nudge to avoid disasters, but only when we have space
                 distance = -(KinematicContactOffset - trace.Distance);
-                if(!CastCollider(TransientPosition, -GravityEulerNormalized, out trace, distance, CollisionMask, false))
+                if(CastCollider(TransientPosition, -GravityEulerNormalized, out trace, -distance, CollisionMask, false))
                 {
-                    distance = 0.0f;
+                    distance = -Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
                 }
             }
 
@@ -1794,9 +1789,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Calculates the necessary vector3 to move out of collisions
     /// </summary>
-    /// <param name="inflate">Extra size added to the collider size</param>
-    /// <returns>Amount to push out by so that the character is no longer colliding with anything</returns>
-    public Vector3 UnstuckSolve(float inflate)
+    /// <returns>Amount to push out by so that the character is no longer colliding with anything.</returns>
+    public Vector3 UnstuckSolve()
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.UnstuckSolve");
@@ -1826,7 +1820,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         int overlaps = 0;
-        if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false, 0.0f)) == 0)
+        if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false)) == 0)
         {
             #if FLAX_EDITOR
             KCCDebugger.EndEvent();
@@ -1840,7 +1834,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        SetColliderSizeWithInflation(inflate);
+        SetColliderSizeWithInflation((float)KinematicContactOffset);
         for(int i = 0; i < overlaps; i++)
         {
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
@@ -1853,9 +1847,7 @@ public class KinematicCharacterController : KinematicBase
                         Debug.Log($"No ComputePenetrationTriangles penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                         #endif
 
-                        #pragma warning disable IDE0035, CS0162
                         continue;
-                        #pragma warning restore IDE0035, CS0162
                     }
                 }
                 else
@@ -1864,25 +1856,34 @@ public class KinematicCharacterController : KinematicBase
                     Debug.Log($"No ComputePenetration penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                     #endif
 
-                    #pragma warning disable IDE0035,CS0162
                     continue;
-                    #pragma warning restore IDE0035, CS0162
                 }
             }
 
             //TODO: this is suspicious, investigate later.
             if(penetrationDistance == 0.0f)
             {
+                if(!penetrationDirection.IsZero)
+                {
+                    #if (FLAX_EDITOR && KCC_DEV)
+                    Debug.Log($"Zero penetration distance rescue. {i} no distance on overlaps {overlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
+                    #endif
+
+                    Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
+                    requiredPush += penetrationDirection * KinematicContactOffset;
+                }
+
                 #if (FLAX_EDITOR && KCC_DEV)
                 Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
                 #endif
 
-                #pragma warning disable IDE0035,CS0162
                 continue;
-                #pragma warning restore IDE0035, CS0162
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
+            //todo: this pushes too much!
+            //todo: check all shapes on this shit
+            //todo: figure out why unstuck rescue triggers on pushables lmao
             requiredPush += penetrationDirection * penetrationDistance;
 
             #if FLAX_EDITOR
@@ -1965,6 +1966,12 @@ public class KinematicCharacterController : KinematicBase
                     penetrationDirection = penetration.Normalized;
                     penetrationDistance = (float)penetration.Length;
 
+                    //must always move away
+                    if(Vector3.Dot(penetrationDirection, (meshCollider.Position - TransientPosition).Normalized) > 0.0f)
+                    {
+                        result = result2 = false;
+                    }
+
                     #if FLAX_EDITOR
                     KCCDebugger.DrawSphere(trace2.Point, 1.0f, KCCDebugger.Options.PenetrationTraceOtherColor, KCCDebugger.Options.PenetrationTraceOtherColor, false);
                     KCCDebugger.DrawSphere(trace.Point, 1.0f, KCCDebugger.Options.PenetrationTraceColor, KCCDebugger.Options.PenetrationTraceColor, false);
@@ -1972,14 +1979,14 @@ public class KinematicCharacterController : KinematicBase
                 }
                 
                 #if FLAX_EDITOR
-                KCCDebugger.DrawLine(TransientPosition - direction * meshCollider.Sphere.Radius, TransientPosition, KCCDebugger.Options.PenetrationTraceOtherColor, false);
-                KCCDebugger.DrawLine(meshCollider.Position + direction * meshCollider.Sphere.Radius, meshCollider.Position, KCCDebugger.Options.PenetrationTraceColor, false);
+                KCCDebugger.DrawArrow(meshCollider.Position + direction * meshCollider.Sphere.Radius, Quaternion.FromDirection(-direction), (float)meshCollider.Sphere.Radius * 0.01f, 0.1f, KCCDebugger.Options.PenetrationTraceColor, false);
+                KCCDebugger.DrawArrow(TransientPosition - direction * meshCollider.Sphere.Radius, Quaternion.FromDirection(direction), (float)meshCollider.Sphere.Radius * 0.01f, 0.1f, KCCDebugger.Options.PenetrationTraceOtherColor, false);
                 KCCDebugger.DrawCollider(meshCollider, KCCDebugger.Options.PenetrationFillColor, KCCDebugger.Options.PenetrationOutlineColor, false);
                 KCCDebugger.EndEvent();
                 Profiler.EndEvent();
                 #endif
 
-                return result;
+                return result && result2;
             }
 
             default:
@@ -2170,7 +2177,7 @@ public class KinematicCharacterController : KinematicBase
     {
         Matrix matrix = Matrix.CreateWorld(position, Vector3.Forward * orientation, Vector3.Up * orientation);
         DebugDraw.DrawWireBox(new OrientedBoundingBox(
-            new Vector3(ColliderHalfRadius, -ColliderHalfHeight, -ColliderHalfRadius), matrix),
+            new Vector3(ColliderRadius, ColliderHalfHeight, ColliderRadius), matrix),
             color, time, depthTest);
     }
 
@@ -2179,7 +2186,7 @@ public class KinematicCharacterController : KinematicBase
     {
         //for some reason, this is rotated by 90 degrees unlike other debug draws..
         Quaternion fixedOrientation = orientation * Quaternion.RotationX(1.57079633f);
-        DebugDraw.DrawWireCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight, color, time, depthTest);
+        DebugDraw.DrawWireCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight - (ColliderRadius * 2.0f), color, time, depthTest);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2228,7 +2235,7 @@ public class KinematicCharacterController : KinematicBase
     private void KCCDebugDrawBox(Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)
     {
         Matrix matrix = Matrix.CreateWorld(position, Vector3.Forward * orientation, Vector3.Up * orientation);
-        OrientedBoundingBox obb = new(new Vector3(ColliderHalfRadius, -ColliderHalfHeight, -ColliderHalfRadius), matrix);
+        OrientedBoundingBox obb = new(new Vector3(ColliderRadius, ColliderHalfHeight, ColliderRadius), matrix);
         KCCDebugger.DrawBox(obb, fillColor, outlineColor, depthTest);
     }
 
@@ -2237,7 +2244,7 @@ public class KinematicCharacterController : KinematicBase
     {
         //for some reason, this is rotated by 90 degrees unlike other debug draws..
         Quaternion fixedOrientation = orientation * Quaternion.RotationX(1.57079633f);
-        KCCDebugger.DrawCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight, fillColor, outlineColor, depthTest);
+        KCCDebugger.DrawCapsule(position, fixedOrientation, ColliderRadius, ColliderHeight - (ColliderRadius * 2.0f), fillColor, outlineColor, depthTest);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

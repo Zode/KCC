@@ -273,6 +273,7 @@ public class KCC : GamePlugin
             PostSimulationUpdateEvent?.Invoke();
 
             #if FLAX_EDITOR
+            KCCDebugger.EndFrame();
             Profiler.EndEvent();
             #endif
             
