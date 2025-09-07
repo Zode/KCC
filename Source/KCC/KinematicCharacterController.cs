@@ -985,30 +985,24 @@ public class KinematicCharacterController : KinematicBase
 
                 TransientPosition += push;
                 unstuckSolves++;
-                   
-                //if we have zero overlaps and trace distance is zero we must be perfectly flush with the sliding plane,
-                //it is safe to continue without attempting unstuck routines again. otherwise lets try again to see if it fixed the issue.
-                if(totalOverlaps > 0)
+                i--;
+
+                if(solvedOverlaps > 0 && push.IsZero)
                 {
-                    i--;
-
-                    if(solvedOverlaps > 0 && push.IsZero)
-                    {
-                        UnstuckRescue();
-                        
-                        #if FLAX_EDITOR
-                        Profiler.EndEvent();
-                        #endif
-                        
-                        break;
-                    }
-
+                    UnstuckRescue();
+                    
                     #if FLAX_EDITOR
                     Profiler.EndEvent();
                     #endif
-
-                    continue;
+                    
+                    break;
                 }
+
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+
+                continue;
             }
 
             //pull back a bit, otherwise we would be constantly intersecting with the plane

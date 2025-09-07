@@ -1,7 +1,6 @@
 #if FLAX_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using FlaxEditor;
 using FlaxEngine;
 using KCC.Debugger;

@@ -774,7 +774,7 @@ public class KCCDebuggerWindow : EditorWindow
 
 		if(_tree.Selection.Count == 0)
 		{
-			_frameTimes.Text = $"Total frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}";
+			_frameTimes.Text = $"Total events frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}";
 			return;
 		}
 
@@ -785,7 +785,7 @@ public class KCCDebuggerWindow : EditorWindow
 				return;
 			}
 
-			_frameTimes.Text = $"Total frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal event time: {NiceTime(eventNode.Event.Timer.Elapsed)}\nOf which subevents took: {NiceTime(eventNode.Event.CalculateSubeventTime())}";
+			_frameTimes.Text = $"Total events frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal event time: {NiceTime(eventNode.Event.Timer.Elapsed)}\nOf which subevents took: {NiceTime(eventNode.Event.CalculateSubeventTime())}";
 
 			return;
 		}
@@ -801,7 +801,7 @@ public class KCCDebuggerWindow : EditorWindow
 			selectedEventsTotal += eventNode.Event.Timer.Elapsed;
 		}
 
-		_frameTimes.Text = $"Total frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal selected events time: {NiceTime(selectedEventsTotal)}";
+		_frameTimes.Text = $"Total events frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal selected events time: {NiceTime(selectedEventsTotal)}";
 	}
 
 	private string NiceTime(TimeSpan time)
