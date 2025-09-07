@@ -430,7 +430,7 @@ public class KinematicCharacterController : KinematicBase
         KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"WasPreviouslyUngrounded: {_wasPreviouslyGrounded}  CanGround: {CanGround}", false);
         #endif
 
-        if(AttachedRigidBody is not null && RigidBodyMoveMode != RigidBodyMoveMode.None)
+        if(AttachedRigidBody != null && RigidBodyMoveMode != RigidBodyMoveMode.None)
         {
             #if FLAX_EDITOR
             KCCDebugger.BeginEvent("RigidBodyMove");
@@ -748,7 +748,7 @@ public class KinematicCharacterController : KinematicBase
                 }
 
                 RigidBody? otherRb = trace.Collider.AttachedRigidBody;
-                if(otherRb is not null)
+                if(otherRb != null)
                 {
                     TryAddRigidBodyInteraction(trace, otherRb);
                 }
@@ -813,7 +813,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             RigidBody? otherRb = trace.Collider.AttachedRigidBody;
-            if(otherRb is not null)
+            if(otherRb != null)
             {
                 TryAddRigidBodyInteraction(trace, otherRb);
             }
@@ -1118,7 +1118,7 @@ public class KinematicCharacterController : KinematicBase
             if(!SlideSkipMultiplierWhileAirborne || (SlideSkipMultiplierWhileAirborne && IsGrounded))
             {
                 _internalDelta *= SlideMultiplier;
-                if(SlideAccountForPhysicsMaterial && trace.Material is not null)
+                if(SlideAccountForPhysicsMaterial && trace.Material != null)
                 {
                     _internalDelta *= 1.0f - trace.Material.Friction;
                 }
@@ -1352,7 +1352,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="sweepNormal"></param>
     private void SolveStairSteps(ref Vector3 position, ref Vector3 delta, ref Real distance, ref Vector3 sweepNormal)
     {
-        if(!AllowStairStepping || AttachedRigidBody is not null)
+        if(!AllowStairStepping || AttachedRigidBody != null)
         {
             return;
         }
@@ -2124,9 +2124,9 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
-        if(rigidBody is null)
+        if(rigidBody == null)
         {
-            if(_attachedRigidBody is not null)
+            if(_attachedRigidBody != null)
             {
                 Controller.KinematicAttachedRigidBodyEvent(false, _attachedRigidBody);
                 _attachedRigidBody = null;
