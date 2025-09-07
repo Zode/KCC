@@ -19,6 +19,7 @@ namespace KCC;
 /// </summary>
 public class KCCDebuggerWindow : EditorWindow
 {
+	private const string COMPILE_NAG = "Need to compile with: KCC_DEBUGGER";
 	private readonly ToolStrip _toolStrip;
 	private readonly ToolStripButton _recordButton;
 	private readonly ToolStripButton _clearButton;
@@ -66,6 +67,7 @@ public class KCCDebuggerWindow : EditorWindow
 			Parent = this,
 		};
 
+		#if KCC_DEBUGGER
 		_recordButton = _toolStrip.AddButton(Editor.Icons.Play64);
 		_recordButton.AutoCheck = true;
 		_recordButton.LinkTooltip("Start capturing KCC events");
@@ -75,7 +77,10 @@ public class KCCDebuggerWindow : EditorWindow
 		_clearButton.LinkTooltip("Clear all captured KCC events");
 		_clearButton.Clicked += () =>
 		{
+			#if KCC_DEBUGGER
 			KCCDebugger.ClearFrames();
+			#endif
+
 			UpdateFrameTime();
 		};
 
@@ -110,12 +115,19 @@ public class KCCDebuggerWindow : EditorWindow
 		_toEndButton.Clicked += () => { KCCDebugger.Frame = KCCDebugger.Frames.Count - 1; };
 
 		_toolStrip.AddSeparator();
+		#endif
+
 		_infoLabel = new Label()
 		{
 			Parent = _toolStrip,
-			Text = "No frames",
+			Text = COMPILE_NAG,
+			AutoWidth = true,
+			#if KCC_DEBUGGER
+			HorizontalAlignment = HorizontalAlignment.Left,
+			#endif
 		};
 
+		#if KCC_DEBUGGER
 		_frameSlider = new Slider()
 		{
 			Parent = _toolStrip,
@@ -224,6 +236,7 @@ public class KCCDebuggerWindow : EditorWindow
 
 		KCCDebugger.FrameChanged += OnFrameChanged;
 		_tree.SelectedChanged += OnTreeSelectionChanged;
+		#endif
 
 		UpdateButtons();
 		UpdateFrameTime();
@@ -242,6 +255,11 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void OnFrameChanged()
 	{
+		#if !KCC_DEBUGGER
+		_infoLabel.Text = COMPILE_NAG;
+		return;
+		#endif
+
 		if(Editor.IsPlayMode && !Time.GamePaused)
 		{
 			if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
@@ -323,17 +341,21 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void UpdateButtons()
 	{
+		#if KCC_DEBUGGER
 		_previousFrameButton.Enabled = KCCDebugger.Frame > 0;
 		_nextFrameButton.Enabled = KCCDebugger.Frame < KCCDebugger.Frames.Count - 1;
 		_toBeginningButton.Enabled = KCCDebugger.Frame != KCCDebugger.NO_FRAMES;
 		_toEndButton.Enabled = KCCDebugger.Frame != KCCDebugger.NO_FRAMES;
 		_frameSlider.Enabled = KCCDebugger.Frame != KCCDebugger.NO_FRAMES;
+		#endif
 	}
 
 	/// <inheritdoc />
 	public override void OnParentResized()
 	{
 		base.OnParentResized();
+
+		#if KCC_DEBUGGER
 
 		float totalWidth = 32.0f; //arbitrary amount, just to pervent the slider being cut off.
 		for(int i = 0; i < _toolStrip.ChildrenCount - 1; i++)
@@ -343,6 +365,7 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 
 		_frameSlider.Width = _toolStrip.Width - totalWidth;
+		#endif
 	}
 
 	/// <summary>
@@ -746,7 +769,10 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	public void OnPlayModeBeginning()
 	{
+		#if KCC_DEBUGGER
 		KCCDebugger.ClearFrames();
+		#endif
+		
 		UpdateFrameTime();
 	}
 
@@ -760,6 +786,7 @@ public class KCCDebuggerWindow : EditorWindow
 
 	private void UpdateFrameTime()
 	{
+		#if KCC_DEBUGGER
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
 		{
 			_frameTimes.Text = "No frames";
@@ -802,6 +829,7 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 
 		_frameTimes.Text = $"Total events frame time: {NiceTime(KCCDebugger.Frames[KCCDebugger.Frame].Time)}\nTotal selected events time: {NiceTime(selectedEventsTotal)}";
+		#endif
 	}
 
 	private string NiceTime(TimeSpan time)

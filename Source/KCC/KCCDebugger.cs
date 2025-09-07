@@ -59,6 +59,7 @@ public static class KCCDebugger
 	/// </summary>
 	public static KCCDebuggerOptions Options => Editor.Instance.Options.Options.GetCustomSettings<KCCDebuggerOptions>(DEBUGGER_NAME);
 
+	#if KCC_DEBUGGER
 	/// <summary>
 	/// Start a new frame
 	/// </summary>
@@ -535,5 +536,6 @@ public static class KCCDebugger
 	{
 		DrawText(position, text, Options.TextFontSize, Options.TextScale, Options.TextColor, depthTest);
 	}
+	#endif
 }
 #endif

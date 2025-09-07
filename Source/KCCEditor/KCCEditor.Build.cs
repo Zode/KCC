@@ -14,6 +14,8 @@ public class KCCEditor : GameEditorModule
 
         //uncomment to enable extra KCC output
         //options.ScriptingAPI.Defines.Add("KCC_DEV");
+        //uncomment to enable KCC Debugger
+        //options.ScriptingAPI.Defines.Add("KCC_DEBUGGER");
 
         // Here you can modify the build options for your game editor module
         // To reference another module use: options.PublicDependencies.Add("Audio");
