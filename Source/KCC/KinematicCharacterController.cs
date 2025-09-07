@@ -397,7 +397,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve();
+        TransientPosition += UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
 
         #if FLAX_EDITOR
         KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, KCCDebugger.Options.ForwardArrowColor, false);
@@ -976,7 +976,7 @@ public class KinematicCharacterController : KinematicBase
                 break;
             }
 
-            if(unstuckRescueNeeded)
+            if(trace.Distance == 0.0f && unstuckRescueNeeded)
             {
                 UnstuckRescue();
 
@@ -992,18 +992,24 @@ public class KinematicCharacterController : KinematicBase
                 //trace collided with zero distance?
                 //trace must have started inside something, so we're most likely stuck.
                 //try to solve the issue and re-try sweep.
-                Vector3 push = UnstuckSolve();
+                Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
+
                 TransientPosition += push;
-                unstuckRescueNeeded = push.IsZero;
-                   
-                i--;
+                unstuckRescueNeeded = solvedOverlaps > 0 && push.IsZero;
                 unstuckSolves++;
+                   
+                //if we have zero overlaps and trace distance is zero we must be perfectly flush with the sliding plane,
+                //it is safe to continue without attempting unstuck routines again. otherwise lets try again to see if it fixed the issue.
+                if(solvedOverlaps > 0)
+                {
+                    i--;
 
-                #if FLAX_EDITOR
-                Profiler.EndEvent();
-                #endif
+                    #if FLAX_EDITOR
+                    Profiler.EndEvent();
+                    #endif
 
-                continue;
+                    continue;
+                }
             }
 
             //pull back a bit, otherwise we would be constantly intersecting with the plane
@@ -1797,8 +1803,8 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Is the normal vector considered stable ground?
     /// </summary>
-    /// <param name="normal"></param>
-    /// <returns>True if stable</returns>
+    /// <param name="normal">Normal of the ground.</param>
+    /// <returns><c>true</c> if stable, <c>false</c> if not.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsNormalStableGround(Vector3 normal)
     {
@@ -1808,14 +1814,18 @@ public class KinematicCharacterController : KinematicBase
     /// <summary>
     /// Calculates the necessary vector3 to move out of collisions
     /// </summary>
+    /// <param name="solvedOverlaps">The number of total overlaps in the solve.</param>
+    /// <param name="totalOverlaps">The number of solved overlaps in the solve.</param>
     /// <returns>Amount to push out by so that the character is no longer colliding with anything.</returns>
-    public Vector3 UnstuckSolve()
+    public Vector3 UnstuckSolve(out int solvedOverlaps, out int totalOverlaps)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.UnstuckSolve");
         KCCDebugger.BeginEvent("UnstuckSolve");
         #endif
 
+        totalOverlaps = 0;
+        solvedOverlaps = 0;
         if(Controller is null)
         {
             #if FLAX_EDITOR
@@ -1838,10 +1848,10 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        int overlaps = 0;
-        if((overlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false)) == 0)
+        if((totalOverlaps = OverlapCollider(TransientPosition, out Collider[] colliders, CollisionMask, false)) == 0)
         {
             #if FLAX_EDITOR
+            KCCDebugger.DrawText(TransientPosition, $"No unstuck overlaps", false);
             KCCDebugger.EndEvent();
             Profiler.EndEvent();
             #endif
@@ -1854,8 +1864,12 @@ public class KinematicCharacterController : KinematicBase
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
         SetColliderSizeWithInflation((float)KinematicContactOffset);
-        for(int i = 0; i < overlaps; i++)
+        for(int i = 0; i < totalOverlaps; i++)
         {
+            #if FLAX_EDITOR
+            KCCDebugger.DrawText(colliders[i].Position, $"Unstuck #{i}", false);
+            #endif
+
             if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
                 if(colliders[i] is MeshCollider meshCollider)
@@ -1863,7 +1877,7 @@ public class KinematicCharacterController : KinematicBase
                     if(!ComputePenetrationTriangles(meshCollider, ref penetrationDirection, ref penetrationDistance))
                     {
                         #if (FLAX_EDITOR && KCC_DEV)
-                        Debug.Log($"No ComputePenetrationTriangles penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
+                        Debug.Log($"No ComputePenetrationTriangles penetration but overlap? {i} no overlap on overlaps {totalOverlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                         #endif
 
                         continue;
@@ -1872,7 +1886,7 @@ public class KinematicCharacterController : KinematicBase
                 else
                 {
                     #if (FLAX_EDITOR && KCC_DEV)
-                    Debug.Log($"No ComputePenetration penetration but overlap? {i} no overlap on overlaps {overlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
+                    Debug.Log($"No ComputePenetration penetration but overlap? {i} no overlap on overlaps {totalOverlaps}, {_collider.Parent.Name}, {colliders[i].Parent.Name}. validity: {_colliderValidities[i]}");
                     #endif
 
                     continue;
@@ -1885,23 +1899,25 @@ public class KinematicCharacterController : KinematicBase
                 if(!penetrationDirection.IsZero)
                 {
                     #if (FLAX_EDITOR && KCC_DEV)
-                    Debug.Log($"Zero penetration distance rescue. {i} no distance on overlaps {overlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
+                    Debug.Log($"Zero penetration distance rescue. {i} no distance on overlaps {totalOverlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
+                    KCCDebugger.DrawArrow(colliders[i].Position, Quaternion.FromDirection(penetrationDirection), (float)KinematicContactOffset * 0.01f, 1.0f, KCCDebugger.Options.UnstuckSingularArrowColor, false);
                     #endif
 
+                    solvedOverlaps++;
                     Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
                     requiredPush += penetrationDirection * KinematicContactOffset;
+                    continue;
                 }
 
                 #if (FLAX_EDITOR && KCC_DEV)
-                Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {overlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
+                Debug.Log($"Zero penetration distance but penetration and overlap? {i} no distance on overlaps {totalOverlaps}, {_collider.Name} ({_collider is MeshCollider}), {colliders[i].Name}");
                 #endif
 
                 continue;
             }
-
+            
+            solvedOverlaps++;
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
-            //todo: check all shapes on this shit
-            //todo: figure out why unstuck rescue triggers on pushables lmao
             requiredPush += (penetrationDirection * penetrationDistance) - requiredPush;
 
             #if FLAX_EDITOR
