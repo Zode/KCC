@@ -932,12 +932,17 @@ public class KinematicCharacterController : KinematicBase
         Vector3 firstPlane = Vector3.Zero;
         for(int i = 0; i < 3; i++)
         {
+            #if FLAX_EDITOR
+            Profiler.BeginEvent($"Iteration {i}");
+            #endif
+            
             if(_internalDelta.IsZero)
             {
                 #if FLAX_EDITOR
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
+                Profiler.EndEvent();
                 #endif
-
+                
                 break;
             }
 
@@ -946,6 +951,7 @@ public class KinematicCharacterController : KinematicBase
             {
                 #if FLAX_EDITOR
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
+                Profiler.EndEvent();
                 #endif
 
                 break;
@@ -965,6 +971,7 @@ public class KinematicCharacterController : KinematicBase
                 fromToPosition = TransientPosition - oldPosition;
                 KCCDebugger.DrawArrow(oldPosition, Quaternion.FromDirection(fromToPosition.Normalized), (float)fromToPosition.Length * 0.01f, 1.0f, KCCDebugger.Options.SweepArrowColor, false);
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.SweepEndFillColor, KCCDebugger.Options.SweepEndOutlineColor, false);
+                Profiler.EndEvent();
                 #endif
 
                 break;
@@ -973,6 +980,11 @@ public class KinematicCharacterController : KinematicBase
             if(unstuckRescueNeeded)
             {
                 UnstuckRescue();
+
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+                
                 break;
             }
 
@@ -987,6 +999,11 @@ public class KinematicCharacterController : KinematicBase
                    
                 i--;
                 unstuckSolves++;
+
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+
                 continue;
             }
 
@@ -1023,6 +1040,11 @@ public class KinematicCharacterController : KinematicBase
                 {
                     _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * Math.Max(_internalDelta.Length - distance, 0.0f);
                     i--;
+
+                    #if FLAX_EDITOR
+                    Profiler.EndEvent();
+                    #endif
+
                     continue;
                 }
 
@@ -1096,6 +1118,10 @@ public class KinematicCharacterController : KinematicBase
                     _internalDelta *= 1.0f - trace.Material.Friction;
                 }
             }
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
         }
 
         #if FLAX_EDITOR
@@ -1612,11 +1638,11 @@ public class KinematicCharacterController : KinematicBase
         GroundCheckResult groundTraceResult;
         if(!IsGrounded)
         {
-            groundTraceResult = GroundCheck(GroundingDistance, out trace);
+            groundTraceResult = GroundCheck(GroundingDistance + (float)KinematicContactOffset, out trace);
         }
         else
         {
-            groundTraceResult = GroundCheck(GroundingDistance + StairStepDistance, out trace);
+            groundTraceResult = GroundCheck(GroundingDistance + StairStepDistance + (float)KinematicContactOffset, out trace);
         }
 
         if(groundTraceResult != GroundCheckResult.NoSolid)
