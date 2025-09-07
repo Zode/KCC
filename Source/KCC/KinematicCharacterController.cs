@@ -436,9 +436,9 @@ public class KinematicCharacterController : KinematicBase
             KCCDebugger.BeginEvent("RigidBodyMove");
             #endif
 
+            KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
             if(SolveRigidBodyMovements)
             {
-                KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 _internalDelta = KinematicAttachedVelocity;
                 //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
                 TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
@@ -446,7 +446,6 @@ public class KinematicCharacterController : KinematicBase
             }
             else
             {
-                KinematicAttachedVelocity = MovementFromRigidBody(AttachedRigidBody, TransientPosition);
                 TransientPosition += KinematicAttachedVelocity;
                 //hack: move upwards by contact offset so that we don't clip into the rigidbody if its swinging wildly
                 TransientPosition += -GravityEulerNormalized * KinematicContactOffset;
@@ -1554,12 +1553,6 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        /*if(rigidBody is KinematicMover mover)
-        {
-            rigidBody.LinearVelocity = mover.KinematicVelocity;
-            rigidBody.AngularVelocity = mover.KinematicAngularVelocity;
-        }*/
-
         Vector3 velocity = rigidBody.LinearVelocity * Time.DeltaTime;
         Vector3 center = rigidBody.Transform.TransformPoint(rigidBody.CenterOfMass);
         Vector3 offset = position - center;
@@ -1907,10 +1900,9 @@ public class KinematicCharacterController : KinematicBase
             }
 
             Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, penetrationDistance);
-            //todo: this pushes too much!
             //todo: check all shapes on this shit
             //todo: figure out why unstuck rescue triggers on pushables lmao
-            requiredPush += penetrationDirection * penetrationDistance;
+            requiredPush += (penetrationDirection * penetrationDistance) - requiredPush;
 
             #if FLAX_EDITOR
             KCCDebugger.DrawArrow(colliders[i].Position, Quaternion.FromDirection(penetrationDirection), penetrationDistance * 0.01f, 1.0f, KCCDebugger.Options.UnstuckSingularArrowColor, false);
