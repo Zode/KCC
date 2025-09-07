@@ -21,13 +21,14 @@ public class KCCDebuggerWindow : EditorWindow
 {
 	private const string COMPILE_NAG = "Need to compile with: KCC_DEBUGGER";
 	private readonly ToolStrip _toolStrip;
+	private readonly Label _infoLabel;
 	private readonly ToolStripButton _recordButton;
+	#if KCC_DEBUGGER
 	private readonly ToolStripButton _clearButton;
 	private readonly ToolStripButton _toBeginningButton;
 	private readonly ToolStripButton _previousFrameButton;
 	private readonly ToolStripButton _toEndButton;
 	private readonly ToolStripButton _nextFrameButton;
-	private readonly Label _infoLabel;
 	private readonly Slider _frameSlider;
 	private readonly Tree _tree;
 	private readonly CheckablePropertyNameLabel _renderOnion;
@@ -39,6 +40,7 @@ public class KCCDebuggerWindow : EditorWindow
 	private readonly Label _frameTimes;
 	private bool _ignoreNextSelectionChange = false;
 	private List<Guid> _actorRestoreList = [];
+	#endif
 
 	/// <summary>
 	/// Value indicating if KCC event recording is enabled.
@@ -56,6 +58,7 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 	}
 
+
 	/// <inheritdoc />
 	public KCCDebuggerWindow()
 	 : base(Editor.Instance, true, ScrollBars.None)
@@ -67,8 +70,8 @@ public class KCCDebuggerWindow : EditorWindow
 			Parent = this,
 		};
 
-		#if KCC_DEBUGGER
 		_recordButton = _toolStrip.AddButton(Editor.Icons.Play64);
+		#if KCC_DEBUGGER
 		_recordButton.AutoCheck = true;
 		_recordButton.LinkTooltip("Start capturing KCC events");
 		_recordButton.Clicked += OnRecordingChanged;
@@ -260,6 +263,7 @@ public class KCCDebuggerWindow : EditorWindow
 		return;
 		#endif
 
+		#if KCC_DEBUGGER
 		if(Editor.IsPlayMode && !Time.GamePaused)
 		{
 			if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
@@ -337,6 +341,7 @@ public class KCCDebuggerWindow : EditorWindow
 		OnSceneEditingSelectionChanged(); 
 
 		FocusOnFrame(KCCDebugger.Frame);
+		#endif
 	}
 
 	private void UpdateButtons()
@@ -373,6 +378,7 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	public void DrawRenderables()
 	{
+		#if KCC_DEBUGGER
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || _tree.Selection.Count == 0)
 		{
 			return;
@@ -395,10 +401,12 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 
 		DrawOnionSkin(KCCDebugger.Frame, (int)Mathf.Floor(_onionSlider.Value / 10));
+		#endif
 	}
 
 	private void DrawOnionSkin(int frame, int around)
 	{
+		#if KCC_DEBUGGER
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES || 
 			_tree.Selection.Count == 0 || !_renderOnion.CheckBox.Checked)
 		{
@@ -446,10 +454,12 @@ public class KCCDebuggerWindow : EditorWindow
 				}	
 			}
 		}
+		#endif
 	}
 
 	private void FocusOnFrame(int frame)
 	{
+		#if KCC_DEBUGGER
 		if(!Visible || KCCDebugger.Frame == KCCDebugger.NO_FRAMES ||
 			_tree.Selection.Count == 0 || !_followEvent.CheckBox.Checked)
 		{
@@ -522,6 +532,7 @@ public class KCCDebuggerWindow : EditorWindow
 			Editor.Instance.Windows.EditWin.Viewport.ViewOrientation,
 			averageSphere.Center, averageSphere.Radius * _followDistanceSlider.Value
 		);
+		#endif
 	}
 
 	/// <summary>
@@ -529,6 +540,7 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	public void OnSceneEditingSelectionChanged()
 	{
+		#if KCC_DEBUGGER
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
 		{
 			return;
@@ -580,6 +592,7 @@ public class KCCDebuggerWindow : EditorWindow
 				topmostNode.ExpandAllParents();
 			}
 		}
+		#endif
 	}
 
 	/// <summary>
@@ -671,6 +684,7 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	private void OnTreeSelectionChanged(List<TreeNode> before, List<TreeNode> after)
 	{
+		#if KCC_DEBUGGER
 		UpdateFrameTime();
 
 		if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
@@ -730,6 +744,7 @@ public class KCCDebuggerWindow : EditorWindow
 				Editor.Instance.SceneEditing.Select(actorNode, true);
 			}
 		} 
+		#endif
 	}
 
 	/// <summary>
@@ -737,6 +752,7 @@ public class KCCDebuggerWindow : EditorWindow
 	/// </summary>
 	public void BubbleUpSelections()
 	{
+		#if KCC_DEBUGGER
 		for(int i = _tree.Selection.Count - 1; i >= 0; i--)
 		{
 			if(_tree.Selection[i] is not EventNode eventNode)
@@ -762,6 +778,7 @@ public class KCCDebuggerWindow : EditorWindow
 				topmostNode.ExpandAllParents();
 			}
 		}
+		#endif
 	}
 
 	/// <summary>

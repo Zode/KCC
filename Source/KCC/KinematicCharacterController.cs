@@ -1052,7 +1052,7 @@ public class KinematicCharacterController : KinematicBase
                 {
                     i--;
 
-                    if(totalOverlaps > 0 || push.IsZero)
+                    if(push.IsZero)
                     {
                         UnstuckRescue();
                         
