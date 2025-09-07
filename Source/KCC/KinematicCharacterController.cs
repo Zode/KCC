@@ -509,12 +509,6 @@ public class KinematicCharacterController : KinematicBase
             _ => throw new NotImplementedException(),
 		};
 
-		if(_collider == null)
-        {
-            return;
-        }
-
-        _collider.ContactOffset = (float)_kinematicContactOffset;
         SetColliderSizeWithInflation(0.0f);
     }
 
@@ -554,6 +548,8 @@ public class KinematicCharacterController : KinematicBase
             default:
                 throw new NotImplementedException();
         }
+
+        _collider.ContactOffset = (float)_kinematicContactOffset;
     }
 
     /// <summary>
@@ -1000,7 +996,7 @@ public class KinematicCharacterController : KinematicBase
                    
                 //if we have zero overlaps and trace distance is zero we must be perfectly flush with the sliding plane,
                 //it is safe to continue without attempting unstuck routines again. otherwise lets try again to see if it fixed the issue.
-                if(solvedOverlaps > 0)
+                if(totalOverlaps > 0)
                 {
                     i--;
 
