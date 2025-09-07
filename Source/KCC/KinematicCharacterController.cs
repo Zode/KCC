@@ -397,7 +397,12 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        TransientPosition += UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
+        Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
+        TransientPosition += push;
+        if(solvedOverlaps > 0 && push.IsZero)
+        {
+            UnstuckRescue();
+        }
 
         #if FLAX_EDITOR
         KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, KCCDebugger.Options.ForwardArrowColor, false);
@@ -921,7 +926,6 @@ public class KinematicCharacterController : KinematicBase
 
         Vector3 originalDeltaNormalized = _internalDelta.Normalized;
         int unstuckSolves = 0;
-        bool unstuckRescueNeeded = false;
 
         //we can realistically only collide with 2 planes before we lose all degrees of freedom (intersection of three planes is a point)
         Vector3 firstPlane = Vector3.Zero;
@@ -972,17 +976,6 @@ public class KinematicCharacterController : KinematicBase
                 break;
             }
 
-            if(trace.Distance == 0.0f && unstuckRescueNeeded)
-            {
-                UnstuckRescue();
-
-                #if FLAX_EDITOR
-                Profiler.EndEvent();
-                #endif
-                
-                break;
-            }
-
             if(trace.Distance == 0.0f && unstuckSolves < MaxUnstuckIterations)
             {
                 //trace collided with zero distance?
@@ -991,7 +984,6 @@ public class KinematicCharacterController : KinematicBase
                 Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
 
                 TransientPosition += push;
-                unstuckRescueNeeded = solvedOverlaps > 0 && push.IsZero;
                 unstuckSolves++;
                    
                 //if we have zero overlaps and trace distance is zero we must be perfectly flush with the sliding plane,
@@ -999,6 +991,17 @@ public class KinematicCharacterController : KinematicBase
                 if(totalOverlaps > 0)
                 {
                     i--;
+
+                    if(solvedOverlaps > 0 && push.IsZero)
+                    {
+                        UnstuckRescue();
+                        
+                        #if FLAX_EDITOR
+                        Profiler.EndEvent();
+                        #endif
+                        
+                        break;
+                    }
 
                     #if FLAX_EDITOR
                     Profiler.EndEvent();
