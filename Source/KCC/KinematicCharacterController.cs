@@ -1039,36 +1039,53 @@ public class KinematicCharacterController : KinematicBase
                 break;
             }
 
-            if(trace.Distance == 0.0f && unstuckSolves < MaxUnstuckIterations)
+            if(trace.Distance == 0.0f)
             {
-                //trace collided with zero distance?
-                //trace must have started inside something, so we're most likely stuck.
-                //try to solve the issue and re-try sweep.
-                Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
-                TransientPosition += push;
-                unstuckSolves++;
-                
-                if(totalOverlaps > 0)
+                if(unstuckSolves < MaxUnstuckIterations)
                 {
+                    //trace collided with zero distance?
+                    //trace must have started inside something, so we're most likely stuck.
+                    //try to solve the issue and re-try sweep.
+                    Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
+                    TransientPosition += push;
+                    unstuckSolves++;
                     i--;
-
-                    if(push.IsZero)
+                    if(totalOverlaps > 0)
                     {
-                        UnstuckRescue();
-                        
-                        #if FLAX_EDITOR
-                        Profiler.EndEvent();
-                        #endif
-                        
-                        break;
+                        if(push.IsZero)
+                        {
+                            UnstuckRescue();
+                            
+                            #if FLAX_EDITOR
+                            Profiler.EndEvent();
+                            #endif
+                            
+                            break;
+                        }
                     }
+                    else
+                    {
+                        //rare situation where we are _perfectly_ flush with the surface, and the trace is perfectly aligned to the surface.
+                        TransientPosition += trace.Normal * 0.1f;
+                    }
+
+                    #if FLAX_EDITOR
+                    Profiler.EndEvent();
+                    #endif
+
+                    continue;
                 }
-
-                #if FLAX_EDITOR
-                Profiler.EndEvent();
-                #endif
-
-                continue;
+                else
+                {
+                    //hopelessly stuck
+                    UnstuckRescue();
+                            
+                    #if FLAX_EDITOR
+                    Profiler.EndEvent();
+                    #endif
+                    
+                    break;
+                }
             }
 
             //pull back a bit, otherwise we would be constantly intersecting with the plane

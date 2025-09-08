@@ -123,10 +123,11 @@ public class KCCDebuggerWindow : EditorWindow
 		_infoLabel = new Label()
 		{
 			Parent = _toolStrip,
+			#if !KCC_DEBUGGER
 			Text = COMPILE_NAG,
 			AutoWidth = true,
-			#if KCC_DEBUGGER
-			HorizontalAlignment = HorizontalAlignment.Left,
+			#else
+			Text = "No frames",
 			#endif
 		};
 
@@ -261,9 +262,7 @@ public class KCCDebuggerWindow : EditorWindow
 		#if !KCC_DEBUGGER
 		_infoLabel.Text = COMPILE_NAG;
 		return;
-		#endif
-
-		#if KCC_DEBUGGER
+		#else
 		if(Editor.IsPlayMode && !Time.GamePaused)
 		{
 			if(KCCDebugger.Frame == KCCDebugger.NO_FRAMES)
@@ -362,7 +361,7 @@ public class KCCDebuggerWindow : EditorWindow
 
 		#if KCC_DEBUGGER
 
-		float totalWidth = 32.0f; //arbitrary amount, just to pervent the slider being cut off.
+		float totalWidth = 64.0f; //arbitrary amount, just to pervent the slider being cut off.
 		for(int i = 0; i < _toolStrip.ChildrenCount - 1; i++)
 		{
 			Control child = _toolStrip.Children[i];
