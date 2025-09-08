@@ -150,10 +150,15 @@ public class KinematicCharacterController : KinematicBase
     [EditorOrder(300)]
     public Tag GroundTag {get; set;} = new();
     /// <summary>
-    /// Does the character have anything solid below?
+    /// Does the character have _anything_ solid below?
     /// </summary>
-    [NoSerialize, HideInEditor] public bool IsGrounded {get; private set;} = false;
+    [NoSerialize, HideInEditor] public bool HasSolidBelow {get; private set;} = false;
+    /// <summary>
+    /// Does the character have walkable solid below?
+    /// </summary>
+    [NoSerialize, HideInEditor] public bool IsGrounded => HasSolidBelow && ((int)_previousGroundFlags & (int)GroundFlag.Stable) == (int)GroundFlag.Stable && ((int)_previousGroundFlags & (int)GroundFlag.GroundTag) == (int)GroundFlag.GroundTag;
     private GroundState _previousGroundState = GroundState.Ungrounded;
+    private GroundFlag _previousGroundFlags = GroundFlag.None;
     /// <summary>
     /// Determines if grounding is allowed at all.
     /// </summary>
@@ -172,7 +177,7 @@ public class KinematicCharacterController : KinematicBase
     public float GroundingDistance {get => _groundingDistance; set => _groundingDistance = Mathf.Max(value, 0.0f);}
     private float _groundingDistance = 1.0f;
     /// <summary>
-    /// Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true.
+    /// Maximum allowed ground snap distance to keep the character grounded while HasSolidBelow is true.
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(302)]
@@ -1717,7 +1722,7 @@ public class KinematicCharacterController : KinematicBase
             KCCDebugger.DrawText(trace.Point, i.ToString(), false);
             #endif
 
-            if(IsGrounded && i < 2)
+            if(HasSolidBelow && i < 2)
             {
                 SolveStairSteps(ref _transientPosition, ref _internalDelta, ref distance, ref trace.Normal);
             }
@@ -1805,7 +1810,7 @@ public class KinematicCharacterController : KinematicBase
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
             _internalDelta *= 1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal));
-            if(!SlideSkipMultiplierWhileAirborne || (SlideSkipMultiplierWhileAirborne && IsGrounded))
+            if(!SlideSkipMultiplierWhileAirborne || (SlideSkipMultiplierWhileAirborne && HasSolidBelow))
             {
                 _internalDelta *= SlideMultiplier;
                 if(SlideAccountForPhysicsMaterial && trace.Material != null)
@@ -2269,7 +2274,7 @@ public class KinematicCharacterController : KinematicBase
 
     /// <summary>
     /// The full ground solver, trace to ground and snap to it if necessary.
-    /// Updates the IsGrounded and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).
+    /// Updates the HasSolidBelow and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).
     /// </summary>
     public void SolveGround()
     {
@@ -2290,29 +2295,30 @@ public class KinematicCharacterController : KinematicBase
         #endif
 
         GroundFlag groundFlags = GroundCheck(out RayCastHit groundTrace);
-        if((groundFlags & GroundFlag.Solid) == GroundFlag.Solid)
+        if(HasSolidBelow)
         {
             SnapToGround(groundTrace);
         }
 
         #if KCC_DEBUGGER
-        KCCDebugger.DrawText(TransientPosition, $"IsGrounded: {IsGrounded}  ForceUnground: {_forceUnground}", false);
+        KCCDebugger.DrawText(TransientPosition, $"HasSolidBelow: {HasSolidBelow}  ForceUnground: {_forceUnground}", false);
         #endif
 
         _forceUnground = false;
-        if(IsGrounded)
+        GroundState groundState = SolvePartialGround(groundFlags);
+
+        if(!HasSolidBelow)
         {
-            GroundState groundState = SolvePartialGround();
-            if(_previousGroundState != groundState)
-            {
-                _previousGroundState = groundState;
-                Controller.KinematicGroundingEvent(groundState, groundFlags, groundTrace);
-            }
+            groundState = GroundState.Ungrounded;
+            groundFlags = GroundFlag.None;
         }
-        else if(_previousGroundState != GroundState.Ungrounded && !IsGrounded)
+
+        if(_previousGroundState != groundState || _previousGroundFlags != groundFlags)
         {
-            _previousGroundState = GroundState.Ungrounded;
-            Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundFlags, groundTrace);
+            _previousGroundState = groundState;
+            _previousGroundFlags = groundFlags;
+
+            Controller.KinematicGroundingEvent(groundState, groundFlags, groundTrace);
         }
 
         #if FLAX_EDITOR
@@ -2328,8 +2334,14 @@ public class KinematicCharacterController : KinematicBase
     /// Partial ground solver
     /// </summary>
     /// <returns></returns>
-    private GroundState SolvePartialGround()
+    private GroundState SolvePartialGround(GroundFlag groundFlags)
     {
+        if(!HasSolidBelow || ((int)groundFlags & (int)GroundFlag.Stable) == 0x00 || ((int)groundFlags & (int)GroundFlag.GroundTag) == 0x00)
+        {
+            PartialGroundNormal = GroundNormal;
+            return GroundState.Ungrounded;
+        }
+
         if(!ReportPartialGrounds)
         {
             PartialGroundNormal = GroundNormal;
@@ -2397,7 +2409,7 @@ public class KinematicCharacterController : KinematicBase
 
     /// <summary>
     /// Trace to the ground and do checks.
-    /// Updates the IsGrounded and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).
+    /// Updates the HasSolidBelow and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).
     /// </summary>
     /// <param name="trace">Trace result (if any).</param>
     /// <returns><seealso cref="GroundFlag" /></returns>
@@ -2413,9 +2425,8 @@ public class KinematicCharacterController : KinematicBase
         if(_forceUnground)
         {
             AttachToRigidBody(null);
-            IsGrounded = false;
+            HasSolidBelow = false;
             GroundNormal = -GravityEulerNormalized;
-            PartialGroundNormal = GroundNormal;
             trace = new();
 
             #if FLAX_EDITOR
@@ -2431,9 +2442,8 @@ public class KinematicCharacterController : KinematicBase
         if(!CanGround)
         {
             AttachToRigidBody(null);
-            IsGrounded = false;
+            HasSolidBelow = false;
             GroundNormal = -GravityEulerNormalized;
-            PartialGroundNormal = GroundNormal;
             trace = new();
 
             #if FLAX_EDITOR
@@ -2447,8 +2457,9 @@ public class KinematicCharacterController : KinematicBase
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
-        if(!IsGrounded && _internalGravityDelta > 0)
+        if(!HasSolidBelow && _internalGravityDelta > 0)
         {
+            GroundNormal = -GravityEulerNormalized;
             trace = new();
 
             #if FLAX_EDITOR
@@ -2462,7 +2473,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         Real distance;
-        if(!IsGrounded)
+        if(!HasSolidBelow)
         {
             distance = GroundingDistance + KinematicContactOffset;
         }
@@ -2472,13 +2483,12 @@ public class KinematicCharacterController : KinematicBase
         }
        
         Real maxDistance = Math.Max(distance, GroundSnappingDistance + KinematicContactOffset);
-        IsGrounded = TraceGround(maxDistance, out trace, out GroundFlag groundFlags);
-        if(!IsGrounded || trace.Distance > distance)
+        bool traceResult = TraceGround(maxDistance, out trace, out GroundFlag groundFlags);
+        if(!traceResult || trace.Distance > distance)
         {
-            IsGrounded = false;
+            HasSolidBelow = false;
             AttachToRigidBody(null);
             GroundNormal -= GravityEulerNormalized;
-            PartialGroundNormal = GroundNormal;
             #if FLAX_EDITOR
             #if KCC_DEBUGGER
             KCCDebugger.EndEvent();
@@ -2488,14 +2498,13 @@ public class KinematicCharacterController : KinematicBase
 
             return groundFlags;
         }
+
+        HasSolidBelow = true;
+        GroundNormal = trace.Normal;
 
         if((groundFlags & GroundFlag.Stable) == 0x00 || (groundFlags & GroundFlag.GroundTag) == 0x00)
         {
-            IsGrounded = false;
             AttachToRigidBody(null);
-            GroundNormal = -GravityEulerNormalized;
-            PartialGroundNormal = GroundNormal;
-
             #if FLAX_EDITOR
             #if KCC_DEBUGGER
             KCCDebugger.EndEvent();
@@ -2505,8 +2514,6 @@ public class KinematicCharacterController : KinematicBase
 
             return groundFlags;
         }
-
-        GroundNormal = trace.Normal;
 
         //fix the character standing for 1 frame on movers that push it sideways
         if(trace.Distance > 0.0f)
@@ -2535,7 +2542,7 @@ public class KinematicCharacterController : KinematicBase
     public bool TraceGround(out RayCastHit trace, out GroundFlag groundFlags)
     {
         Real distance;
-        if(!IsGrounded)
+        if(!HasSolidBelow)
         {
             distance = GroundingDistance + KinematicContactOffset;
         }
@@ -2544,7 +2551,7 @@ public class KinematicCharacterController : KinematicBase
             distance = GroundingDistance + StairStepDistance + KinematicContactOffset;
         }
 
-        return TraceGround(out trace, out groundFlags);
+        return TraceGround(distance, out trace, out groundFlags);
     }
 
     /// <summary>
@@ -2629,18 +2636,6 @@ public class KinematicCharacterController : KinematicBase
         KCCDebugger.BeginEvent("SnapToGround");
         #endif
         #endif
-
-        if(!IsGrounded)
-        {
-            #if FLAX_EDITOR
-            #if KCC_DEBUGGER
-            KCCDebugger.EndEvent();
-            #endif
-            Profiler.EndEvent();
-            #endif
-
-            return;
-        }
 
         if(trace.Distance == 0.0f)
         {
