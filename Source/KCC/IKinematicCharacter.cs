@@ -30,18 +30,23 @@ public interface IKinematicCharacter
 	/// <returns>New movement</returns>
 	public Vector3 KinematicGroundProjection(Vector3 movement, Vector3 gravityEulerNormalized);
 	/// <summary>
-	/// Called when the character collides with something during a sweep, this can be used to precisely filter out collisions (e.g. teammates).
+	/// Called when the character collides or overlaps with something during CastCollider or OverlapCollider, this can be used to precisely filter out collisions (e.g. teammates).
 	/// </summary>
 	/// <param name="other"></param>
 	/// <returns><c>true</c> if should collide, <c>false</c> if should pass through.</returns>
 	public bool KinematicCollisionValid(PhysicsColliderActor other);
 	/// <summary>
-	/// Called when the character collides with something during a sweep.
+	/// Called when the character collides with something during CastCollider with the <seealso cref="PhysicsFlag" />.DispatchEvent set.
 	/// This may be useful if you need to have something external react to the collision as the final position of the controller’s collider may not actually end up colliding with whatever it hit at the end of the sweep,
 	/// or you need to adjust the hit itself.
 	/// </summary>
 	/// <param name="trace"></param>
 	public void KinematicCollision(ref RayCastHit trace);
+	/// <summary>
+	/// Called when the character overlaps with something during OverlapCollider with the <seealso cref="PhysicsFlag" />.DispatchEvent set.
+	/// </summary>
+	/// <param name="collider"></param>
+	public void KinematicCollision(Collider collider);
 	/// <summary>
 	/// Called when the character unstucks itself during a sweep,
 	/// this may be useful if you want to implement crushers for example.

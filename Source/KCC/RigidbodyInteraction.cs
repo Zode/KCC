@@ -21,11 +21,11 @@ public struct RigidBodyInteraction
 	/// </summary>
 	public Vector3 Normal;
 	/// <summary>
-	/// The speed upon which we collided with.
+	/// The speed upon which the controller collided with.
 	/// </summary>
 	public Vector3 CharacterVelocity;
 	/// <summary>
-	/// The speed that the rigidbody had when we collided with it.
+	/// The speed that the rigidbody had when the controller collided with it.
 	/// </summary>
 	public Vector3 BodyVelocity;
 }
