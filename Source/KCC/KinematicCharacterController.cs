@@ -103,8 +103,8 @@ public class KinematicCharacterController : KinematicBase
     private float _maxUnstuckRescueDistance = 4.0f;
     /// <summary>
     /// Should we filter collisions?
-    /// If enabled, the controller will be queried for collision filtering, this is expensive.
-    /// If disabled, the character will assume everything to be solid, this is less expensive.
+    /// If enabled, the controller will be queried for collision filtering, this is more performance expensive.
+    /// If disabled, the character will assume everything to be solid, this is less performance expensive.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(209)]
@@ -193,7 +193,13 @@ public class KinematicCharacterController : KinematicBase
     [EditorOrder(304)]
     public bool ReportPartialGrounds = true;
     /// <summary>
-    /// Determines if stair stepping is allowed at all.
+    /// Partial ground normal upon which the character is currently standing on.
+    /// If not using partial ground reporting, this will be the same as <seealso cref="GroundNormal" />
+    /// If not touching ground this will be the opposite of the gravity orientation.
+    /// </summary>
+    [NoSerialize, HideInEditor] public Vector3 PartialGroundNormal {get; private set;} = Vector3.Up;
+    /// <summary>
+    /// Determines if stair stepping is allowed at all. Disabling this increase performance.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(400)]
@@ -233,8 +239,8 @@ public class KinematicCharacterController : KinematicBase
     public RigidBodyMoveMode RigidBodyMoveMode {get; set;} = RigidBodyMoveMode.KinematicMoversOnly;
     /// <summary>
     /// Determines if the character should solve the movements caused by rigidbodies stood upon.
-    /// If enabled, the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
-    /// If disabled, the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.
+    /// If enabled, the character will sweep the movements, this is more performance expensive and more unstable but will cause less potential collision issues.
+    /// If disabled, the character will not sweep the movements, this is less performance expensive and more stable but will cause potential collision issues.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(501)]
@@ -1102,6 +1108,380 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
+    /// Returns collider collided with by the cast, if any.
+    /// Will filter if collision filtering is enabled for this character.
+    /// </summary>
+    /// <param name="origin">Point in world space to trace from.</param>
+    /// <param name="direction">Normalized direction in which to cast the collider's shape.</param>
+    /// <param name="trace">The result hit information.</param>
+    /// <param name="distance">Maximum distance the cast should check.</param>
+    /// <param name="layerMask">The layer mask used to filter the results.</param>
+    /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
+    /// <returns><c>true</c> if we collided with anything</returns>
+    public bool CastLine(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
+    {
+        #if FLAX_EDITOR
+        if(!direction.IsNormalized)
+        {
+            Debug.LogError($"CastLine direction is not normalized! {direction}", this);
+        }
+        #endif
+
+        return CastLine(origin, origin + (direction * distance), out trace, layerMask, flags);
+    }
+
+    /// <summary>
+    /// Returns collider collided with by the cast, if any.
+    /// Will filter if collision filtering is enabled for this character.
+    /// </summary>
+    /// <param name="start">Point in world space to start the trace from.</param>
+    /// <param name="end">Point in world space to end the trace to.</param>
+    /// <param name="trace">The result hit information.</param>
+    /// <param name="layerMask">The layer mask used to filter the results.</param>
+    /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
+    /// <returns><c>true</c> if we collided with anything</returns>
+    public bool CastLine(Vector3 start, Vector3 end, out RayCastHit trace, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
+    {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.CastLine");
+        #endif
+
+        if(Controller is null)
+        {
+            #if FLAX_EDITOR
+            Debug.LogError("IKinematicCharacter controller is missing", this);
+            #endif
+
+            trace = new()
+            {
+                Point = end,
+            };
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
+            return false;
+        }
+
+        #if FLAX_EDITOR
+        #if KCC_DEBUGGER
+        KCCDebugger.BeginEvent("CastLine");
+        KCCDebugger.DrawLine(start, end, KCCDebugger.Options.CastLineColor, false);
+        #endif
+        #endif
+
+        bool hitTriggers = ((int)flags & (int)PhysicsFlag.HitTriggers) == (int)PhysicsFlag.HitTriggers;
+        bool result;
+        if(!FilterCollisions)
+        {
+            #if FLAX_EDITOR
+            Profiler.BeginEvent("KCC.Cast");
+            #endif
+
+            result = Physics.LineCast(start, end, out trace, layerMask, hitTriggers);
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
+            if(result)
+            {
+                if(((int)flags & (int)PhysicsFlag.DispatchEvent) == (int)PhysicsFlag.DispatchEvent)
+                {
+                    Controller.KinematicCollision(ref trace);
+                }
+
+                if(((int)flags & (int)PhysicsFlag.RigidBodyInteractions) == (int)PhysicsFlag.RigidBodyInteractions)
+                {
+                    RigidBody? otherRb = trace.Collider.AttachedRigidBody;
+                    if(otherRb != null)
+                    {
+                        TryAddRigidBodyInteraction(trace, otherRb);
+                    }
+                }
+                
+                #if KCC_DEBUGGER
+                KCCDebugger.DrawArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, KCCDebugger.Options.ContactArrowColor, false);
+                KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 25.0f, KCCDebugger.Options.ContactQuadFillColor, KCCDebugger.Options.ContactQuadOutlineColor, false);
+                #endif
+            }
+
+            #if FLAX_EDITOR
+            #if KCC_DEBUGGER
+            KCCDebugger.DrawLine(start, trace.Point, KCCDebugger.Options.CastResultLineColor, false);
+            KCCDebugger.DrawSphere(trace.Point, 1.0f, KCCDebugger.Options.CastResultFillColor, KCCDebugger.Options.CastResultOutlineColor, false);
+            
+            KCCDebugger.EndEvent();
+            #endif
+            Profiler.EndEvent();
+            #endif
+
+            return result;
+        }
+
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.CastAll");
+        #endif
+
+        result = Physics.LineCastAll(start, end, out RayCastHit[] traces, layerMask, hitTriggers);
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+
+        int i = 0;
+        if(result)
+        {
+            result = false;
+
+            Array.Sort(traces, (lValue, rValue) => lValue.Distance.CompareTo(rValue.Distance));
+            for(; i < traces.Length; i++)
+            {
+                if(IsColliderValid(traces[i].Collider))
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        if(!result)
+        {
+            trace = new()
+            {
+                Point = end,
+            };
+        }
+        else
+        {
+            trace = traces[i];
+
+            if(((int)flags & (int)PhysicsFlag.DispatchEvent) == (int)PhysicsFlag.DispatchEvent)
+            {
+                Controller.KinematicCollision(ref trace);
+            }
+
+            if(((int)flags & (int)PhysicsFlag.RigidBodyInteractions) == (int)PhysicsFlag.RigidBodyInteractions)
+            {
+                RigidBody? otherRb = trace.Collider.AttachedRigidBody;
+                if(otherRb != null)
+                {
+                    TryAddRigidBodyInteraction(trace, otherRb);
+                }
+            }
+
+            #if KCC_DEBUGGER
+            KCCDebugger.DrawArrow(trace.Point, Quaternion.FromDirection(trace.Normal), 1.0f, 1.0f, KCCDebugger.Options.ContactArrowColor, false);
+            KCCDebugger.DrawQuad(trace.Point, Quaternion.FromDirection(trace.Normal), 25.0f, KCCDebugger.Options.ContactQuadFillColor, KCCDebugger.Options.ContactQuadOutlineColor, false);
+            #endif
+        }
+
+        #if FLAX_EDITOR
+        #if KCC_DEBUGGER
+        KCCDebugger.DrawLine(start, trace.Point, KCCDebugger.Options.CastResultLineColor, false);
+        KCCDebugger.DrawSphere(trace.Point, 1.0f, KCCDebugger.Options.CastResultFillColor, KCCDebugger.Options.CastResultOutlineColor, false);
+
+        KCCDebugger.EndEvent();
+        #endif
+        Profiler.EndEvent();
+        #endif
+
+        return result;
+    }
+
+    /// <summary>
+    /// Returns colliders collided with by the cast, if any.
+    /// Will filter if collision filtering is enabled for this character.
+    /// </summary>
+    /// <param name="origin">Point in world space to trace from.</param>
+    /// <param name="direction">Normalized direction in which to cast the collider's shape.</param>
+    /// <param name="traces">The results.</param>
+    /// <param name="distance">Maximum distance the cast should check.</param>
+    /// <param name="layerMask">The layer mask used to filter the results.</param>
+    /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
+    /// <returns>Last "valid collision" index in the collider array, will be 0 if no collisions happened</returns>
+    public int CastLine(Vector3 origin, Vector3 direction, out RayCastHit[] traces, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
+    {
+        #if FLAX_EDITOR
+        if(!direction.IsNormalized)
+        {
+            Debug.LogError($"CastLine direction is not normalized! {direction}", this);
+        }
+        #endif
+
+        return CastLine(origin, origin + (direction * distance), out traces, layerMask, flags);
+    }
+
+    /// <summary>
+    /// Returns colliders collided with by the cast, if any.
+    /// Will filter if collision filtering is enabled for this character.
+    /// </summary>
+    /// <param name="start">Point in world space to start the trace from.</param>
+    /// <param name="end">Point in world space to end the trace to.</param>
+    /// <param name="traces">The results.</param>
+    /// <param name="layerMask">The layer mask used to filter the results.</param>
+    /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
+    /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
+    /// <returns>Last "valid collision" index in the collider array, will be 0 if no collisions happened</returns>
+    public int CastLine(Vector3 start, Vector3 end, out RayCastHit[] traces, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
+    {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.CastLine");
+        #endif
+
+        if(Controller is null)
+        {
+            #if FLAX_EDITOR
+            Debug.LogError("IKinematicCharacter controller is missing", this);
+            #endif
+
+            traces = [];
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            #endif
+
+            return 0;
+        }
+
+        #if FLAX_EDITOR
+        #if KCC_DEBUGGER
+        KCCDebugger.BeginEvent("CastLine");
+        KCCDebugger.DrawLine(start, end, KCCDebugger.Options.CastLineColor, false);
+        #endif
+        #endif
+
+        bool hitTriggers = ((int)flags & (int)PhysicsFlag.HitTriggers) == (int)PhysicsFlag.HitTriggers;
+        bool dispatchEvents = ((int)flags & (int)PhysicsFlag.DispatchEvent) == (int)PhysicsFlag.DispatchEvent;
+        bool rigidbodyInteractions = ((int)flags & (int)PhysicsFlag.RigidBodyInteractions) == (int)PhysicsFlag.RigidBodyInteractions;
+
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.CastAll");
+        #endif
+
+        bool result = Physics.LineCastAll(start, end, out traces, layerMask, hitTriggers);
+        
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #endif
+
+        if(!FilterCollisions)
+        {
+            if(dispatchEvents || rigidbodyInteractions)
+            {
+                for(int i = 0; i < traces.Length; i++)
+                {
+                    if(dispatchEvents)
+                    {
+                        Controller.KinematicCollision(ref traces[i]);
+                    }
+
+                    if(rigidbodyInteractions)
+                    {
+                        RigidBody? otherRb = traces[i].Collider.AttachedRigidBody;
+                        if(otherRb != null)
+                        {
+                            TryAddRigidBodyInteraction(traces[i], otherRb);
+                        }
+                    }
+                }
+            }
+
+            #if KCC_DEBUGGER
+            for(int i = 0; i < traces.Length; i++)
+            {
+                KCCDebugger.DrawArrow(traces[i].Point, Quaternion.FromDirection(traces[i].Normal), 1.0f, 1.0f, KCCDebugger.Options.ContactArrowColor, false);
+                KCCDebugger.DrawQuad(traces[i].Point, Quaternion.FromDirection(traces[i].Normal), 25.0f, KCCDebugger.Options.ContactQuadFillColor, KCCDebugger.Options.ContactQuadOutlineColor, false);
+                KCCDebugger.DrawLine(start, traces[i].Point, KCCDebugger.Options.CastResultLineColor, false);
+                KCCDebugger.DrawSphere(traces[i].Point, 1.0f, KCCDebugger.Options.CastResultFillColor, KCCDebugger.Options.CastResultOutlineColor, false);
+            }
+            #endif
+
+            #if FLAX_EDITOR
+            #if KCC_DEBUGGER
+            KCCDebugger.EndEvent();
+            #endif
+            Profiler.EndEvent();
+            #endif
+
+            return traces.Length;
+        }
+
+        //first check the collider validity and cache it so we don't cause overhead from function calls
+        for(int i = 0; i < traces.Length; i++)
+        {
+            _colliderValidities[i] = IsColliderValid(traces[i].Collider);
+
+            if(_colliderValidities[i])
+            {
+                if(dispatchEvents)
+                {
+                    Controller.KinematicCollision(ref traces[i]);
+                }
+
+                if(rigidbodyInteractions)
+                {
+                    RigidBody? otherRb = traces[i].Collider.AttachedRigidBody;
+                    if(otherRb != null)
+                    {
+                        TryAddRigidBodyInteraction(traces[i], otherRb);
+                    }
+                }
+
+                #if KCC_DEBUGGER
+                KCCDebugger.DrawArrow(traces[i].Point, Quaternion.FromDirection(traces[i].Normal), 1.0f, 1.0f, KCCDebugger.Options.ContactArrowColor, false);
+                KCCDebugger.DrawQuad(traces[i].Point, Quaternion.FromDirection(traces[i].Normal), 25.0f, KCCDebugger.Options.ContactQuadFillColor, KCCDebugger.Options.ContactQuadOutlineColor, false);
+                KCCDebugger.DrawLine(start, traces[i].Point, KCCDebugger.Options.CastResultLineColor, false);
+                KCCDebugger.DrawSphere(traces[i].Point, 1.0f, KCCDebugger.Options.CastResultFillColor, KCCDebugger.Options.CastResultOutlineColor, false);
+                #endif
+            }
+        }
+
+        //sort collider array so that all valid colliders are in unordered sequence
+        int lastValidIndex = 0;
+        for(int a = 0; a < traces.Length; a++)
+        {
+            //what we have is already ok, continue on
+            if(_colliderValidities[a])
+            {
+                lastValidIndex++;
+                continue;
+            }
+
+            //this is not valid, see if we have anything valid ahead of us that we can swap with.
+            for(int b = a + 1; b < traces.Length; b++)
+            {
+                if(!_colliderValidities[b])
+                {
+                    //early exit the sort in case we have boatloads of invalids at the end, no point trying to sort them when there is nothing to sort.
+                    if(b + 1 == traces.Length)
+                    {
+                        goto earlyExitFromSort;
+                    }
+
+                    continue;
+                }
+
+				(traces[b], traces[a]) = (traces[a], traces[b]);
+				(_colliderValidities[b], _colliderValidities[a]) = (_colliderValidities[a], _colliderValidities[b]);
+				lastValidIndex++;
+                break;
+			}
+		}
+
+        earlyExitFromSort:
+        #if FLAX_EDITOR
+        #if KCC_DEBUGGER
+        KCCDebugger.EndEvent();
+        #endif
+        Profiler.EndEvent();
+        #endif
+
+        return lastValidIndex;
+    }
+
+    /// <summary>
     /// Check if the other physics collider should be ignored.
     /// </summary>
     /// <param name="physicsCollider"></param>
@@ -1902,8 +2282,11 @@ public class KinematicCharacterController : KinematicBase
             return;
         }
 
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SolveGround");
         #if KCC_DEBUGGER
         KCCDebugger.BeginEvent("SolveGround");
+        #endif
         #endif
 
         GroundFlag groundFlags = GroundCheck(out RayCastHit groundTrace);
@@ -1932,9 +2315,12 @@ public class KinematicCharacterController : KinematicBase
             Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundFlags, groundTrace);
         }
 
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
         #if KCC_DEBUGGER
         KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"PreviousGroundState: {_previousGroundState}  CanGround: {CanGround}", false);
         KCCDebugger.EndEvent();
+        #endif
         #endif
     }
 
@@ -1946,10 +2332,65 @@ public class KinematicCharacterController : KinematicBase
     {
         if(!ReportPartialGrounds)
         {
+            PartialGroundNormal = GroundNormal;
             return GroundState.Grounded;
         }
 
-        Vector3 colliderBottom = -ColliderTopVector;
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.SolvePartialGround");
+        #if KCC_DEBUGGER
+        KCCDebugger.BeginEvent("SolvePartialGround");
+        #endif
+        #endif
+
+        //since grounding is done by casting the shape against the ground,
+        //we are going to borrow a page from valve's half-life and cast on the four corners of the shape to determine if we are fully grounded or not.
+        Vector3 bottom = new (0.0f, -ColliderTop, 0.0f);
+        Vector3 extents = BoxExtents;
+        if(ColliderType != ColliderType.Box)
+        {
+            //shrink extents a bit for capsule/sphere, so it estimates their "corners"
+            extents *= 0.7f;
+        }
+
+        Vector3 bottomCorner1 = (bottom + new Vector3(extents.X, 0.0f, extents.Z)) * TransientOrientation;
+        Vector3 bottomCorner2 = (bottom + new Vector3(extents.X, 0.0f, -extents.Z)) * TransientOrientation;
+        Vector3 bottomCorner3 = (bottom + new Vector3(-extents.X, 0.0f, extents.Z)) * TransientOrientation;
+        Vector3 bottomCorner4 = (bottom + new Vector3(-extents.X, 0.0f, -extents.Z)) * TransientOrientation;
+
+        Real distance = GroundingDistance + StairStepDistance + KinematicContactOffset;
+        bool corner1 = CastLine(TransientPosition + bottomCorner1, GravityEulerNormalized, out RayCastHit trace1, distance, CollisionMask);
+        bool corner2 = CastLine(TransientPosition + bottomCorner2, GravityEulerNormalized, out RayCastHit trace2, distance, CollisionMask);
+        bool corner3 = CastLine(TransientPosition + bottomCorner3, GravityEulerNormalized, out RayCastHit trace3, distance, CollisionMask);
+        bool corner4 = CastLine(TransientPosition + bottomCorner4, GravityEulerNormalized, out RayCastHit trace4, distance, CollisionMask);
+
+        //calculate a faux normal for the partial ground by splitting it into two "triangles" and averaging their normal.
+        Vector3 edge12 = trace2.Point - trace1.Point;
+        Vector3 edge13 = trace3.Point - trace1.Point;
+        Vector3 normal1 = Vector3.Cross(edge12, edge13).Normalized;
+        Vector3 edge42 = trace2.Point - trace4.Point;
+        Vector3 edge43 = trace3.Point - trace4.Point;
+        Vector3 normal2 = Vector3.Cross(edge43, edge42).Normalized;
+        PartialGroundNormal = (normal1 + normal2).Normalized;
+
+        #if KCC_DEBUGGER
+            Vector3 positionAverage = (trace1.Point + trace2.Point + trace3.Point + trace4.Point) / 4.0f;
+            KCCDebugger.DrawArrow(positionAverage, Quaternion.FromDirection(PartialGroundNormal), 1.0f, 1.0f, KCCDebugger.Options.SlidingPlaneQuadOutlineColor, false);
+            KCCDebugger.DrawQuad(positionAverage, Quaternion.FromDirection(PartialGroundNormal), 100.0f, KCCDebugger.Options.SlidingPlaneQuadFillColor, KCCDebugger.Options.SlidingPlaneQuadOutlineColor, false);
+            KCCDebugger.DrawText(positionAverage, "(partial ground normal)", false);
+        #endif
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        #if KCC_DEBUGGER
+        KCCDebugger.EndEvent();
+        #endif
+        #endif
+
+        if(corner1 && corner2 && corner3 && corner4)
+        {
+            return GroundState.Grounded;
+        }
 
         return GroundState.PartiallyGrounded;
     }
@@ -1974,6 +2415,7 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+            PartialGroundNormal = GroundNormal;
             trace = new();
 
             #if FLAX_EDITOR
@@ -1991,6 +2433,7 @@ public class KinematicCharacterController : KinematicBase
             AttachToRigidBody(null);
             IsGrounded = false;
             GroundNormal = -GravityEulerNormalized;
+            PartialGroundNormal = GroundNormal;
             trace = new();
 
             #if FLAX_EDITOR
@@ -2021,11 +2464,11 @@ public class KinematicCharacterController : KinematicBase
         Real distance;
         if(!IsGrounded)
         {
-            distance = GroundingDistance + (float)KinematicContactOffset;
+            distance = GroundingDistance + KinematicContactOffset;
         }
         else
         {
-            distance = GroundingDistance + StairStepDistance + (float)KinematicContactOffset;
+            distance = GroundingDistance + StairStepDistance + KinematicContactOffset;
         }
        
         Real maxDistance = Math.Max(distance, GroundSnappingDistance + KinematicContactOffset);
@@ -2035,6 +2478,7 @@ public class KinematicCharacterController : KinematicBase
             IsGrounded = false;
             AttachToRigidBody(null);
             GroundNormal -= GravityEulerNormalized;
+            PartialGroundNormal = GroundNormal;
             #if FLAX_EDITOR
             #if KCC_DEBUGGER
             KCCDebugger.EndEvent();
@@ -2050,6 +2494,7 @@ public class KinematicCharacterController : KinematicBase
             IsGrounded = false;
             AttachToRigidBody(null);
             GroundNormal = -GravityEulerNormalized;
+            PartialGroundNormal = GroundNormal;
 
             #if FLAX_EDITOR
             #if KCC_DEBUGGER
@@ -2092,11 +2537,11 @@ public class KinematicCharacterController : KinematicBase
         Real distance;
         if(!IsGrounded)
         {
-            distance = GroundingDistance + (float)KinematicContactOffset;
+            distance = GroundingDistance + KinematicContactOffset;
         }
         else
         {
-            distance = GroundingDistance + StairStepDistance + (float)KinematicContactOffset;
+            distance = GroundingDistance + StairStepDistance + KinematicContactOffset;
         }
 
         return TraceGround(out trace, out groundFlags);
@@ -2513,6 +2958,18 @@ public class KinematicCharacterController : KinematicBase
     {
         Vector3 right = Vector3.Cross(direction, -GravityEulerNormalized) ;
         return Vector3.Cross(GroundNormal, right).Normalized;
+    }
+
+    /// <summary>
+    /// Utility function to project a direction along the partial ground normal without any lateral movement (accounts for gravity direction)
+    /// </summary>
+    /// <param name="direction">Normalized direction</param>
+    /// <returns>Projected normalized direction</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector3 PartialGroundTangent(Vector3 direction)
+    {
+        Vector3 right = Vector3.Cross(direction, -GravityEulerNormalized) ;
+        return Vector3.Cross(PartialGroundNormal, right).Normalized;
     }
 
     /// <summary>
