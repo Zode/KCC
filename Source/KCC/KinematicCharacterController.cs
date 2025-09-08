@@ -150,10 +150,10 @@ public class KinematicCharacterController : KinematicBase
     [EditorOrder(300)]
     public Tag GroundTag {get; set;} = new();
     /// <summary>
-    /// Is the character currently grounded.
+    /// Does the character have anything solid below?
     /// </summary>
     [NoSerialize, HideInEditor] public bool IsGrounded {get; private set;} = false;
-    private bool _wasPreviouslyGrounded = false;
+    private GroundState _previousGroundState = GroundState.Ungrounded;
     /// <summary>
     /// Determines if grounding is allowed at all.
     /// </summary>
@@ -185,6 +185,13 @@ public class KinematicCharacterController : KinematicBase
     [EditorOrder(303)]
     public float MaxSlopeAngle {get => _maxSlopeAngle; set => _maxSlopeAngle = Mathf.Clamp(value, 0.0f, 180.0f);}
     private float _maxSlopeAngle = 66.0f;
+    /// <summary>
+    /// Should the grounding check test for partial grounding (eg. edges)?
+    /// Disabling this improves performance, but makes it always report partial grounding as full grounding.
+    /// </summary>
+    [EditorDisplay("Grounding")]
+    [EditorOrder(304)]
+    public bool ReportPartialGrounds = true;
     /// <summary>
     /// Determines if stair stepping is allowed at all.
     /// </summary>
@@ -404,10 +411,6 @@ public class KinematicCharacterController : KinematicBase
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
         Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
         TransientPosition += push;
-        if(totalOverlaps > 0 && push.IsZero)
-        {
-            UnstuckRescue();
-        }
 
         #if KCC_DEBUGGER
         KCCDebugger.DrawArrow(TransientPosition, TransientOrientation, 1.0f, 1.0f, KCCDebugger.Options.ForwardArrowColor, false);
@@ -418,27 +421,7 @@ public class KinematicCharacterController : KinematicBase
         SolveRigidBodyInteractions();
         KinematicVelocity = TransientPosition - InitialPosition;
 
-        GroundCheckResult groundCheckResult = SolveGround(out RayCastHit groundTrace);
-
-        #if KCC_DEBUGGER
-        KCCDebugger.DrawText(TransientPosition, $"IsGrounded: {IsGrounded}  ForceUnground: {_forceUnground}", false);
-        #endif
-
-        _forceUnground = false;
-        if(!_wasPreviouslyGrounded && IsGrounded)
-        {
-            _wasPreviouslyGrounded = true;
-            Controller.KinematicGroundingEvent(GroundState.Grounded, groundCheckResult, groundTrace);
-        }
-        else if(_wasPreviouslyGrounded && !IsGrounded)
-        {
-            _wasPreviouslyGrounded = false;
-            Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundCheckResult, groundTrace);
-        }
-
-        #if KCC_DEBUGGER
-        KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"WasPreviouslyUngrounded: {_wasPreviouslyGrounded}  CanGround: {CanGround}", false);
-        #endif
+        SolveGround();
 
         if(AttachedRigidBody != null && RigidBodyMoveMode != RigidBodyMoveMode.None)
         {
@@ -1238,7 +1221,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3[] directions = [forward, -forward, up, -up, right, -right];
 
         bool haveSolve = false;
-        Real distance = Math.Min(KinematicContactOffset + UnstuckRescueDistance, MaxUnstuckRescueDistance);
+        Real distance = Math.Min(UnstuckRescueDistance, MaxUnstuckRescueDistance);
         Vector3 temporaryPosition = Vector3.Zero;
         for(int i = 0; i < directions.Length; i++)
         {
@@ -1570,7 +1553,7 @@ public class KinematicCharacterController : KinematicBase
         //can we stand on this? if so, then also snap to the floor.
         bool hasSolidBelow = CastCollider(temporaryPosition, GravityEulerNormalized, out trace, StairStepDistance + KinematicContactOffset, CollisionMask, false);
         //all modes need some sort of solid.
-        if(!hasSolidBelow && StairStepGroundMode != StairStepGroundMode.None)
+        if(!hasSolidBelow && ((int)StairStepGroundMode & (int)GroundFlag.Solid) == 0x00)
         {
             #if KCC_DEBUGGER
             KCCDebugger.EndEvent();
@@ -1579,36 +1562,22 @@ public class KinematicCharacterController : KinematicBase
             return false;
         }
 
-        switch(StairStepGroundMode)
+        if(((int)StairStepGroundMode & (int)GroundFlag.Stable) == (int)GroundFlag.Stable && !IsNormalStableGround(trace.Normal))
         {
-            case StairStepGroundMode.RequireStableSolid:
-            case StairStepGroundMode.RequireStableGround:
-                if(!IsNormalStableGround(trace.Normal))
-                {
-                    #if KCC_DEBUGGER
-                    KCCDebugger.EndEvent();
-                    #endif
+            #if KCC_DEBUGGER
+            KCCDebugger.EndEvent();
+            #endif
 
-                    return false;
-                }
-
-                break;
+            return false;
         }
 
-        switch(StairStepGroundMode)
+        if(((int)StairStepGroundMode & (int)GroundFlag.GroundTag) == (int)GroundFlag.GroundTag && GroundTag.Index != 0 && !trace.Collider.HasTag(GroundTag))
         {
-            case StairStepGroundMode.RequireGround:
-            case StairStepGroundMode.RequireStableGround:
-                if(GroundTag.Index != 0 && !trace.Collider.HasTag(GroundTag))
-                {
-                    #if KCC_DEBUGGER
-                    KCCDebugger.EndEvent();
-                    #endif
+            #if KCC_DEBUGGER
+            KCCDebugger.EndEvent();
+            #endif
 
-                    return false;
-                }
-
-                break;
+            return false;
         }
 
         position = temporaryPosition + (GravityEulerNormalized * Math.Max(trace.Distance - KinematicContactOffset, 0.0f));
@@ -1668,16 +1637,84 @@ public class KinematicCharacterController : KinematicBase
     }
 
     /// <summary>
-    /// Trace to the ground and snap to it if necessary.
+    /// The full ground solver, trace to ground and snap to it if necessary.
+    /// Updates the IsGrounded and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).
     /// </summary>
-    /// <param name="trace">Trace result (if any).</param>
-    /// <returns><seealso cref="GroundCheckResult" /></returns>
-    private GroundCheckResult SolveGround(out RayCastHit trace)
+    public void SolveGround()
     {
-        #if FLAX_EDITOR
-        Profiler.BeginEvent("KCC.SolveGround");
+        if(Controller is null)
+        {
+            #if FLAX_EDITOR
+            Debug.LogError("IKinematicCharacter controller is missing", this);
+            #endif
+
+            return;
+        }
+
         #if KCC_DEBUGGER
         KCCDebugger.BeginEvent("SolveGround");
+        #endif
+
+        GroundFlag groundFlags = GroundCheck(out RayCastHit groundTrace);
+        if((groundFlags & GroundFlag.Solid) == GroundFlag.Solid)
+        {
+            SnapToGround(groundTrace);
+        }
+
+        #if KCC_DEBUGGER
+        KCCDebugger.DrawText(TransientPosition, $"IsGrounded: {IsGrounded}  ForceUnground: {_forceUnground}", false);
+        #endif
+
+        _forceUnground = false;
+        if(IsGrounded)
+        {
+            GroundState groundState = SolvePartialGround();
+            if(_previousGroundState != groundState)
+            {
+                _previousGroundState = groundState;
+                Controller.KinematicGroundingEvent(groundState, groundFlags, groundTrace);
+            }
+        }
+        else if(_previousGroundState != GroundState.Ungrounded && !IsGrounded)
+        {
+            _previousGroundState = GroundState.Ungrounded;
+            Controller.KinematicGroundingEvent(GroundState.Ungrounded, groundFlags, groundTrace);
+        }
+
+        #if KCC_DEBUGGER
+        KCCDebugger.DrawText(TransientPosition + (Vector3.Down * 16), $"WasPreviouslyUngrounded: {_wasPreviouslyGrounded}  CanGround: {CanGround}", false);
+        KCCDebugger.EndEvent();
+        #endif
+    }
+
+    /// <summary>
+    /// Partial ground solver
+    /// </summary>
+    /// <returns></returns>
+    private GroundState SolvePartialGround()
+    {
+        if(!ReportPartialGrounds)
+        {
+            return GroundState.Grounded;
+        }
+
+        Vector3 colliderBottom = -ColliderTopVector;
+
+        return GroundState.PartiallyGrounded;
+    }
+
+    /// <summary>
+    /// Trace to the ground and do checks.
+    /// Updates the IsGrounded and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).
+    /// </summary>
+    /// <param name="trace">Trace result (if any).</param>
+    /// <returns><seealso cref="GroundFlag" /></returns>
+    public GroundFlag GroundCheck(out RayCastHit trace)
+    {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.GroundCheck");
+        #if KCC_DEBUGGER
+        KCCDebugger.BeginEvent("GroundCheck");
         #endif
         #endif
 
@@ -1695,7 +1732,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoSolid;
+            return GroundFlag.None;
         }
 
         if(!CanGround)
@@ -1712,7 +1749,7 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoSolid;
+            return GroundFlag.None;
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
@@ -1727,58 +1764,26 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoSolid;
+            return GroundFlag.None;
         }
 
-        GroundCheckResult groundTraceResult;
+        Real distance;
         if(!IsGrounded)
         {
-            groundTraceResult = GroundCheck(GroundingDistance + (float)KinematicContactOffset, out trace);
+            distance = GroundingDistance + (float)KinematicContactOffset;
         }
         else
         {
-            groundTraceResult = GroundCheck(GroundingDistance + StairStepDistance + (float)KinematicContactOffset, out trace);
+            distance = GroundingDistance + StairStepDistance + (float)KinematicContactOffset;
         }
-
-        if(groundTraceResult != GroundCheckResult.NoSolid)
-        {
-            SnapToGround(trace);
-        }
-
-        #if FLAX_EDITOR
-        #if KCC_DEBUGGER
-        KCCDebugger.EndEvent();
-        #endif
-        Profiler.EndEvent();
-        #endif
-
-        return groundTraceResult;
-    }
-
-    /// <summary>
-    /// Do a ground trace check, considering if the ground is stable.
-    /// Will also attempt to attach the character to a rigidbody if standing on one.
-    /// </summary>
-    /// <param name="distance">Distance to check.</param>
-    /// <param name="trace">Trace result (if any).</param>
-    /// <returns><seealso cref="GroundCheckResult" /></returns>
-    private GroundCheckResult GroundCheck(float distance, out RayCastHit trace)
-    {
-        #if FLAX_EDITOR
-        Profiler.BeginEvent("KCC.GroundCheck");
-        #if KCC_DEBUGGER
-        KCCDebugger.BeginEvent("GroundCheck");
-        #endif
-        #endif
-
+       
         Real maxDistance = Math.Max(distance, GroundSnappingDistance + KinematicContactOffset);
-        IsGrounded = CastCollider(TransientPosition, GravityEulerNormalized, out trace, maxDistance, CollisionMask, false);
+        IsGrounded = TraceGround(maxDistance, out trace, out GroundFlag groundFlags);
         if(!IsGrounded || trace.Distance > distance)
         {
             IsGrounded = false;
             AttachToRigidBody(null);
-            GroundNormal = -GravityEulerNormalized;
-
+            GroundNormal -= GravityEulerNormalized;
             #if FLAX_EDITOR
             #if KCC_DEBUGGER
             KCCDebugger.EndEvent();
@@ -1786,13 +1791,13 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.NoSolid;
+            return groundFlags;
         }
 
-        if(!IsNormalStableGround(trace.Normal))
+        if((groundFlags & GroundFlag.Stable) == 0x00 || (groundFlags & GroundFlag.GroundTag) == 0x00)
         {
-            AttachToRigidBody(null);
             IsGrounded = false;
+            AttachToRigidBody(null);
             GroundNormal = -GravityEulerNormalized;
 
             #if FLAX_EDITOR
@@ -1802,27 +1807,11 @@ public class KinematicCharacterController : KinematicBase
             Profiler.EndEvent();
             #endif
 
-            return GroundCheckResult.SolidNotStable;
-        }
-
-        if(GroundTag.Index != 0 && !trace.Collider.HasTag(GroundTag))
-        {
-            AttachToRigidBody(null);
-            IsGrounded = false;
-            GroundNormal = -GravityEulerNormalized;
-
-            #if FLAX_EDITOR
-            #if KCC_DEBUGGER
-            KCCDebugger.EndEvent();
-            #endif
-            Profiler.EndEvent();
-            #endif
-
-            return GroundCheckResult.SolidStableNotGround;
+            return groundFlags;
         }
 
         GroundNormal = trace.Normal;
-        
+
         //fix the character standing for 1 frame on movers that push it sideways
         if(trace.Distance > 0.0f)
         {
@@ -1836,13 +1825,107 @@ public class KinematicCharacterController : KinematicBase
         Profiler.EndEvent();
         #endif
 
-        return GroundCheckResult.SolidStableGround;
+        return groundFlags;
+    }
+
+    /// <summary>
+    /// Do a ground trace cast, considering if the ground is stable.
+    /// Automatically makes a cast with the distance of <seealso cref="GroundingDistance" /> + <seealso cref="KinematicContactOffset" /> if not <seealso cref="IsGrounded" />,
+    /// or with the distance of <seealso cref="GroundingDistance" /> + <seealso cref="StairStepDistance" /> + <seealso cref="KinematicContactOffset" /> if <seealso cref="IsGrounded" />.
+    /// </summary>
+    /// <param name="trace">Trace result (if any).</param>
+    /// <param name="groundFlags"><seealso cref="GroundFlag" /></param>
+    /// <returns><c>true</c> if the <seealso cref="CastCollider" /> hit anything, <c>false</c> if not.</returns>
+    public bool TraceGround(out RayCastHit trace, out GroundFlag groundFlags)
+    {
+        Real distance;
+        if(!IsGrounded)
+        {
+            distance = GroundingDistance + (float)KinematicContactOffset;
+        }
+        else
+        {
+            distance = GroundingDistance + StairStepDistance + (float)KinematicContactOffset;
+        }
+
+        return TraceGround(out trace, out groundFlags);
+    }
+
+    /// <summary>
+    /// Do a ground trace cast, considering if the ground is stable.
+    /// </summary>
+    /// <param name="distance">Distance to check.</param>
+    /// <param name="trace">Trace result (if any).</param>
+    /// <param name="groundFlags"><seealso cref="GroundFlag" /></param>
+    /// <returns><c>true</c> if the <seealso cref="CastCollider" /> hit anything, <c>false</c> if not.</returns>
+    public bool TraceGround(float distance, out RayCastHit trace, out GroundFlag groundFlags)
+    {
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.TraceGround");
+        #if KCC_DEBUGGER
+        KCCDebugger.BeginEvent("TraceGround");
+        #endif
+        #endif
+
+        groundFlags = GroundFlag.None;
+        bool traceResult = CastCollider(TransientPosition, GravityEulerNormalized, out trace, distance, CollisionMask, false);
+        if(!traceResult)
+        {
+            #if FLAX_EDITOR
+            #if KCC_DEBUGGER
+            KCCDebugger.EndEvent();
+            #endif
+            Profiler.EndEvent();
+            #endif
+
+            return traceResult;
+        }
+
+        groundFlags |= GroundFlag.Solid;
+        if(IsNormalStableGround(trace.Normal))
+        {
+            groundFlags |= GroundFlag.Stable;
+        }
+
+        if(GroundTag.Index == 0 || (GroundTag.Index != 0 && trace.Collider.HasTag(GroundTag)))
+        {
+            groundFlags |= GroundFlag.GroundTag;
+        }
+
+        #if FLAX_EDITOR
+        #if KCC_DEBUGGER
+        KCCDebugger.EndEvent();
+        #endif
+        Profiler.EndEvent();
+        #endif
+
+        return traceResult;
+    }
+
+    /// <summary>
+    /// Forcibly move the character to ground level, ignoring if its standable or not.
+    /// Automatically makes a cast with the distance of <seealso cref="GroundSnappingDistance" /> + <seealso cref="KinematicContactOffset" />
+    /// </summary>
+    public void SnapToGround()
+    {
+        SnapToGround(GroundSnappingDistance + KinematicContactOffset);
     }
 
     /// <summary>
     /// Forcibly move the character to ground level, ignoring if its standable or not.
     /// </summary>
-    private void SnapToGround(RayCastHit trace)
+    /// <param name="distance">Distance to check.</param>
+    public void SnapToGround(Real distance)
+    {
+        CastCollider(TransientPosition, GravityEulerNormalized, out RayCastHit trace, distance, CollisionMask, false);
+        SnapToGround(trace);
+    }
+
+    /// <summary>
+    /// Forcibly move the character to ground level, ignoring if its standable or not.
+    /// </summary>
+    /// <param name="trace">Existing trace info to use.</param>
+    public void SnapToGround(RayCastHit trace)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SnapToGround");
@@ -1874,8 +1957,7 @@ public class KinematicCharacterController : KinematicBase
                 KCCDebugger.Options.PenetrationTraceColor, false);
             #endif
             
-            if(trace.Collider != null &&
-                trace.Collider.RayCast(TransientPosition, -top.Normalized, out trace, (float)ColliderTop))
+            if(trace.Collider != null && trace.Collider.RayCast(TransientPosition, -top.Normalized, out trace, (float)ColliderTop))
             {
                 #if KCC_DEBUGGER
                 KCCDebugger.DrawSphere(trace.Point, 1.0f, KCCDebugger.Options.PenetrationTraceColor, KCCDebugger.Options.PenetrationTraceColor, false);
@@ -1986,6 +2068,8 @@ public class KinematicCharacterController : KinematicBase
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
         SetColliderSizeWithInflation((float)KinematicContactOffset);
+        Position = TransientPosition;
+        Orientation = TransientOrientation;
         for(int i = 0; i < totalOverlaps; i++)
         {
             #if KCC_DEBUGGER
@@ -2029,7 +2113,7 @@ public class KinematicCharacterController : KinematicBase
 
                     solvedOverlaps++;
                     Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
-                    requiredPush += penetrationDirection * KinematicContactOffset;
+                    requiredPush += (penetrationDirection * KinematicContactOffset) - requiredPush;
                     continue;
                 }
 

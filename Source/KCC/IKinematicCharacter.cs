@@ -40,8 +40,8 @@ public interface IKinematicCharacter
 	/// This may be useful if you need to have something external react to the collision as the final position of the controller’s collider may not actually end up colliding with whatever it hit at the end of the sweep,
 	/// or you need to adjust the hit itself.
 	/// </summary>
-	/// <param name="hit"></param>
-	public void KinematicCollision(ref RayCastHit hit);
+	/// <param name="trace"></param>
+	public void KinematicCollision(ref RayCastHit trace);
 	/// <summary>
 	/// Called when the character unstucks itself during a sweep,
 	/// this may be useful if you want to implement crushers for example.
@@ -54,10 +54,10 @@ public interface IKinematicCharacter
 	/// Called when the character’s ground state changes during a sweep,
 	/// this may be useful if you wish to implement particle effects upon landing on ground for example.
 	/// </summary>
-	/// <param name="groundState">The new state.</param>
-	/// <param name="checkResult">The ground check result <seealso cref="GroundCheckResult" />.</param>
-	/// <param name="hit">Hit from grounding check (if any).</param>
-	public void KinematicGroundingEvent(GroundState groundState, GroundCheckResult checkResult, RayCastHit hit);
+	/// <param name="groundState">The new ground state.</param>
+	/// <param name="groundFlags">The ground check result flags <seealso cref="GroundFlag" />.</param>
+	/// <param name="trace">Hit from grounding check (if any).</param>
+	public void KinematicGroundingEvent(GroundState groundState, GroundFlag groundFlags, RayCastHit trace);
 	/// <summary>
 	/// Called during the sweep to check if the character can attach to a rigidbody to move with it.
 	/// </summary>
