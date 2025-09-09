@@ -9,8 +9,10 @@ using FlaxEditor;
 
 #if USE_LARGE_WORLDS
 using Real = System.Double;
+using MathR = System.Math;
 #else
 using Real = System.Single;
+using MathR = System.MathF;
 #endif
 
 //important: please read these following short articles:
@@ -27,6 +29,10 @@ namespace KCC;
 public class KinematicCharacterController : KinematicBase
 {
     /// <summary>
+    /// How many decimals digits for rounded float numbers
+    /// </summary>
+    private const int DECIMAL_POINTS = 4;
+    /// <summary>
     /// Collision shape of the character.
     /// </summary>
     [EditorDisplay("Character")]
@@ -38,14 +44,14 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(102)]
-    public Real KinematicContactOffset {get => _kinematicContactOffset; set { _kinematicContactOffset = Math.Max(value, Real.Epsilon); SetColliderSize(); }}
+    public Real KinematicContactOffset {get => _kinematicContactOffset; set { _kinematicContactOffset = MathR.Max(value, Real.Epsilon); SetColliderSize(); }}
     private Real _kinematicContactOffset = 2.0f;    
     /// <summary>
     /// Height of the character.
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(103)]
-    public float ColliderHeight {get => _colliderHeight; set {_colliderHeight = Math.Max(value, float.Epsilon); SetColliderSize();}}
+    public float ColliderHeight {get => _colliderHeight; set {_colliderHeight = MathR.Max(value, float.Epsilon); SetColliderSize();}}
     private float _colliderHeight = 150.0f;
     /// <summary>
     /// Half the height of the character.
@@ -56,7 +62,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(104)]
-    public float ColliderRadius {get => _colliderRadius; set {_colliderRadius = Math.Max(value, float.Epsilon); SetColliderSize();}}
+    public float ColliderRadius {get => _colliderRadius; set {_colliderRadius = MathR.Max(value, float.Epsilon); SetColliderSize();}}
     private float _colliderRadius = 50.0f;
     /// <summary>
     /// Half the radius of the character.
@@ -91,7 +97,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(203)]
-    public float UnstuckRescueDistance {get => _unstuckRescueDistance; set => _unstuckRescueDistance = Math.Max(value, (float)KinematicContactOffset);}
+    public float UnstuckRescueDistance {get => _unstuckRescueDistance; set => _unstuckRescueDistance = MathR.Max(value, (float)KinematicContactOffset);}
     private float _unstuckRescueDistance = 2.0f;
     /// <summary>
     /// Maximum allowed distance used for unstuck rescue pis-aller, player will noticeably pop out of stuck collisions the larger this is.
@@ -99,7 +105,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(204)]
-    public float MaxUnstuckRescueDistance {get => _maxUnstuckRescueDistance; set => _maxUnstuckRescueDistance = Math.Max(value, (float)KinematicContactOffset);}
+    public float MaxUnstuckRescueDistance {get => _maxUnstuckRescueDistance; set => _maxUnstuckRescueDistance = MathR.Max(value, (float)KinematicContactOffset);}
     private float _maxUnstuckRescueDistance = 4.0f;
     /// <summary>
     /// Should we filter collisions?
@@ -420,7 +426,7 @@ public class KinematicCharacterController : KinematicBase
 		}
 
         //solve any collisions from rigidbodies (including other kinematics), so we can actually try to move
-        Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
+        Vector3 push = SolveUnstuck(out int solvedOverlaps, out int totalOverlaps);
         TransientPosition += push;
 
         #if KCC_DEBUGGER
@@ -1624,7 +1630,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //are we about to go backwards? (unwanted direction, fixes issues with jiggling in corners with obtuse angles)
-            if(Math.Round(Vector3.Dot(originalDeltaNormalized, _internalDelta.Normalized), 4, MidpointRounding.ToZero) < 0.0f)
+            if(MathR.Round(Vector3.Dot(originalDeltaNormalized, _internalDelta.Normalized), DECIMAL_POINTS, MidpointRounding.ToZero) < 0.0f)
             {
                 #if FLAX_EDITOR
                 #if KCC_DEBUGGER
@@ -1665,7 +1671,7 @@ public class KinematicCharacterController : KinematicBase
                     //trace collided with zero distance?
                     //trace must have started inside something, so we're most likely stuck.
                     //try to solve the issue and re-try sweep.
-                    Vector3 push = UnstuckSolve(out int solvedOverlaps, out int totalOverlaps);
+                    Vector3 push = SolveUnstuck(out int solvedOverlaps, out int totalOverlaps);
                     TransientPosition += push;
                     unstuckSolves++;
                     i--;
@@ -1708,7 +1714,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //pull back a bit, otherwise we would be constantly intersecting with the plane
-            Real distance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+            Real distance = MathR.Max(trace.Distance - KinematicContactOffset, 0.0f);
 
             //move to collision point
             TransientPosition += _internalDelta.Normalized * distance;
@@ -1731,14 +1737,14 @@ public class KinematicCharacterController : KinematicBase
             {
                 firstPlane = trace.Normal;
                 //project for next iteration
-                _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * Math.Max(_internalDelta.Length - distance, 0.0f);
+                _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * MathR.Max(_internalDelta.Length - distance, 0.0f);
             }
             else if(i == 1)
             {
                 Real slidingPlaneDifference = Vector3.Dot(firstPlane, trace.Normal);
                 if(slidingPlaneDifference > 0.9999f || slidingPlaneDifference > 1.0f - MinimumCreaseAngle)
                 {
-                    _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * Math.Max(_internalDelta.Length - distance, 0.0f);
+                    _internalDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, trace.Normal) * MathR.Max(_internalDelta.Length - distance, 0.0f);
                     i--;
 
                     #if FLAX_EDITOR
@@ -1749,8 +1755,8 @@ public class KinematicCharacterController : KinematicBase
                 }
 
                 //project for next (final) iteration, but only along the crease
-                Vector3 wishDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, firstPlane) * Math.Max(_internalDelta.Length - distance, 0.0f);
-                wishDelta = Vector3.ProjectOnPlane(wishDelta.Normalized, trace.Normal) * Math.Max(wishDelta.Length - distance, 0.0f);
+                Vector3 wishDelta = Vector3.ProjectOnPlane(_internalDelta.Normalized, firstPlane) * MathR.Max(_internalDelta.Length - distance, 0.0f);
+                wishDelta = Vector3.ProjectOnPlane(wishDelta.Normalized, trace.Normal) * MathR.Max(wishDelta.Length - distance, 0.0f);
 
                 Vector3 crease = Vector3.Cross(firstPlane, trace.Normal).Normalized;
                 Real creaseDistance = Vector3.Dot(wishDelta, crease);
@@ -1760,7 +1766,7 @@ public class KinematicCharacterController : KinematicBase
                 #endif
 
                 //consider anything less than 90 deg to be acute, and anything above to be obtuse.
-                bool isAcute = Math.Round(slidingPlaneDifference, 4, MidpointRounding.ToZero) < 0.0f;
+                bool isAcute = MathR.Round(slidingPlaneDifference, DECIMAL_POINTS, MidpointRounding.ToZero) < 0.0f;
 
                 //obtuse corners need extra handling, least we want the controller to get snagged in them.
                 if(!isAcute)
@@ -1772,7 +1778,7 @@ public class KinematicCharacterController : KinematicBase
                     //so this is needed, sadly this does introduce slight jiggling in some obtuse corners :( but it's better than getting stuck.
                     _internalDelta += averagePlane; 
                     
-                    if(Math.Round(Vector3.Dot(_internalDelta.Normalized, GravityEulerNormalized), 4, MidpointRounding.ToZero) > 0.0f)
+                    if(MathR.Round(Vector3.Dot(_internalDelta.Normalized, GravityEulerNormalized), DECIMAL_POINTS, MidpointRounding.ToZero) > 0.0f)
                     {
                         TransientPosition += averagePlane * 0.1f;
                     }
@@ -1785,8 +1791,8 @@ public class KinematicCharacterController : KinematicBase
                 //stop if we are moving _into_ an acute corner rather than adjacent to it, thus avoiding forcibly pushing inside either collider.
                 if(isAcute && movingIntoCorner)
                 {
-                    bool isAcuteFirstPlane = Math.Round(Vector3.Dot(_internalDelta.Normalized, firstPlane), 4, MidpointRounding.ToZero) < 0.0f;
-                    bool isAcuteSecondPlane = Math.Round(Vector3.Dot(_internalDelta.Normalized, trace.Normal), 4, MidpointRounding.ToZero) < 0.0f;
+                    bool isAcuteFirstPlane = MathR.Round(Vector3.Dot(_internalDelta.Normalized, firstPlane), DECIMAL_POINTS, MidpointRounding.ToZero) < 0.0f;
+                    bool isAcuteSecondPlane = MathR.Round(Vector3.Dot(_internalDelta.Normalized, trace.Normal), DECIMAL_POINTS, MidpointRounding.ToZero) < 0.0f;
 
                     if(isAcuteFirstPlane && isAcuteSecondPlane && 
                         Vector3.Dot(crease.Normalized, _internalDelta.Normalized) > 0.0f)
@@ -1809,7 +1815,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
-            _internalDelta *= 1.0f - Math.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal));
+            _internalDelta *= 1.0f - MathR.Abs(Vector3.Dot(_internalDelta.Normalized, trace.Normal));
             if(!SlideSkipMultiplierWhileAirborne || (SlideSkipMultiplierWhileAirborne && HasSolidBelow))
             {
                 _internalDelta *= SlideMultiplier;
@@ -1857,7 +1863,7 @@ public class KinematicCharacterController : KinematicBase
         Vector3[] directions = [forward, -forward, up, -up, right, -right];
 
         bool haveSolve = false;
-        Real distance = Math.Min(UnstuckRescueDistance, MaxUnstuckRescueDistance);
+        Real distance = MathR.Min(UnstuckRescueDistance, MaxUnstuckRescueDistance);
         Vector3 temporaryPosition = Vector3.Zero;
         for(int i = 0; i < directions.Length; i++)
         {
@@ -1891,7 +1897,7 @@ public class KinematicCharacterController : KinematicBase
                 continue;
             }
 
-            TransientPosition = temporaryPosition + (directions[i] * Math.Max(trace.Distance - KinematicContactOffset, 0.0f));
+            TransientPosition = temporaryPosition + (directions[i] * MathR.Max(trace.Distance - KinematicContactOffset, 0.0f));
 
             #if KCC_DEBUGGER
             KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), $"Yes: {directionsText[i]} (partial)", false);
@@ -2124,7 +2130,7 @@ public class KinematicCharacterController : KinematicBase
         //can we clear upwards (by any amount)?
         CastCollider(position, -GravityEulerNormalized, out RayCastHit trace, StairStepDistance + KinematicContactOffset, CollisionMask, PhysicsFlag.RigidBodyInteractions);
 
-        Real temporaryDistance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+        Real temporaryDistance = MathR.Max(trace.Distance - KinematicContactOffset, 0.0f);
         if(temporaryDistance == 0.0f)
         {
             #if KCC_DEBUGGER
@@ -2136,7 +2142,7 @@ public class KinematicCharacterController : KinematicBase
 
         //move to possible ceiling position
         Vector3 temporaryPosition = position - (GravityEulerNormalized * temporaryDistance);
-        temporaryDistance = Math.Max(delta.Length - distance, 0.0f);
+        temporaryDistance = MathR.Max(delta.Length - distance, 0.0f);
         if(temporaryDistance == 0.0f)
         {
             #if KCC_DEBUGGER
@@ -2161,7 +2167,7 @@ public class KinematicCharacterController : KinematicBase
         //can we clear forwards with the remaining delta (by any amount)?
         bool hitForward = CastCollider(temporaryPosition, remainingDeltaNormalized, out trace, temporaryDistance + KinematicContactOffset, CollisionMask, PhysicsFlag.RigidBodyInteractions);
         Vector3 newNormal = trace.Normal;
-        temporaryDistance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+        temporaryDistance = MathR.Max(trace.Distance - KinematicContactOffset, 0.0f);
         if(temporaryDistance == 0.0f || temporaryDistance < StairStepMinimumForwardDistance)
         {
             #if KCC_DEBUGGER
@@ -2216,7 +2222,7 @@ public class KinematicCharacterController : KinematicBase
             return false;
         }
 
-        position = temporaryPosition + (GravityEulerNormalized * Math.Max(trace.Distance - KinematicContactOffset, 0.0f));
+        position = temporaryPosition + (GravityEulerNormalized * MathR.Max(trace.Distance - KinematicContactOffset, 0.0f));
         delta = remainingDelta;
         distance = temporaryDistance;
 
@@ -2457,7 +2463,7 @@ public class KinematicCharacterController : KinematicBase
         }
 
         //no point grounding if not going downwards (this prevents the controller from grounding during forced unground jumps)
-        if(!HasSolidBelow && _internalGravityDelta > 0)
+        if(!HasSolidBelow && _internalGravityDelta > 0.0f)
         {
             GroundNormal = -GravityEulerNormalized;
             trace = new();
@@ -2482,7 +2488,7 @@ public class KinematicCharacterController : KinematicBase
             distance = GroundingDistance + StairStepDistance + KinematicContactOffset;
         }
        
-        Real maxDistance = Math.Max(distance, GroundSnappingDistance + KinematicContactOffset);
+        Real maxDistance = MathR.Max(distance, GroundSnappingDistance + KinematicContactOffset);
         bool traceResult = TraceGround(maxDistance, out trace, out GroundFlag groundFlags);
         if(!traceResult || trace.Distance > distance)
         {
@@ -2533,8 +2539,8 @@ public class KinematicCharacterController : KinematicBase
 
     /// <summary>
     /// Do a ground trace cast, considering if the ground is stable.
-    /// Automatically makes a cast with the distance of <seealso cref="GroundingDistance" /> + <seealso cref="KinematicContactOffset" /> if not <seealso cref="IsGrounded" />,
-    /// or with the distance of <seealso cref="GroundingDistance" /> + <seealso cref="StairStepDistance" /> + <seealso cref="KinematicContactOffset" /> if <seealso cref="IsGrounded" />.
+    /// Automatically makes a cast with the distance of <seealso cref="GroundingDistance" /> + <seealso cref="KinematicContactOffset" /> if not <seealso cref="HasSolidBelow" />,
+    /// or with the distance of <seealso cref="GroundingDistance" /> + <seealso cref="StairStepDistance" /> + <seealso cref="KinematicContactOffset" /> if <seealso cref="HasSolidBelow" />.
     /// </summary>
     /// <param name="trace">Trace result (if any).</param>
     /// <param name="groundFlags"><seealso cref="GroundFlag" /></param>
@@ -2664,15 +2670,15 @@ public class KinematicCharacterController : KinematicBase
         }
         else
         {
-            Real distance = Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+            Real distance = MathR.Round(MathR.Max(trace.Distance - KinematicContactOffset, 0.0f), DECIMAL_POINTS, MidpointRounding.ToZero);
             if(trace.Distance < KinematicContactOffset)
             {
                 //not stuck, but also too close to the surface..
                 //nudge to avoid disasters, but only when we have space
-                distance = -(KinematicContactOffset - trace.Distance);
+                distance = -MathR.Round(MathR.Max(KinematicContactOffset - trace.Distance, 0.0f), DECIMAL_POINTS, MidpointRounding.ToZero);
                 if(CastCollider(TransientPosition, -GravityEulerNormalized, out trace, -distance, CollisionMask, PhysicsFlag.RigidBodyInteractions))
                 {
-                    distance = -Math.Max(trace.Distance - KinematicContactOffset, 0.0f);
+                    distance = -MathR.Round(MathR.Max(trace.Distance - KinematicContactOffset, 0.0f), DECIMAL_POINTS, MidpointRounding.ToZero);
                 }
             }
 
@@ -2704,12 +2710,12 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="solvedOverlaps">The number of total overlaps in the solve.</param>
     /// <param name="totalOverlaps">The number of solved overlaps in the solve.</param>
     /// <returns>Amount to push out by so that the character is no longer colliding with anything.</returns>
-    public Vector3 UnstuckSolve(out int solvedOverlaps, out int totalOverlaps)
+    public Vector3 SolveUnstuck(out int solvedOverlaps, out int totalOverlaps)
     {
         #if FLAX_EDITOR
-        Profiler.BeginEvent("KCC.UnstuckSolve");
+        Profiler.BeginEvent("KCC.SolveUnstuck");
         #if KCC_DEBUGGER
-        KCCDebugger.BeginEvent("UnstuckSolve");
+        KCCDebugger.BeginEvent("SolveUnstuck");
         #endif
         #endif
 
