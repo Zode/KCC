@@ -2567,7 +2567,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="trace">Trace result (if any).</param>
     /// <param name="groundFlags"><seealso cref="GroundFlag" /></param>
     /// <returns><c>true</c> if the <seealso cref="CastCollider(Vector3, Vector3, out RayCastHit, Real, uint, PhysicsFlag)" /> hit anything, <c>false</c> if not.</returns>
-    public bool TraceGround(float distance, out RayCastHit trace, out GroundFlag groundFlags)
+    public bool TraceGround(Real distance, out RayCastHit trace, out GroundFlag groundFlags)
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.TraceGround");
