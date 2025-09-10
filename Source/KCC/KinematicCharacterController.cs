@@ -2316,7 +2316,6 @@ public class KinematicCharacterController : KinematicBase
         if(!HasSolidBelow)
         {
             groundState = GroundState.Ungrounded;
-            groundFlags = GroundFlag.None;
         }
 
         if(_previousGroundState != groundState || _previousGroundFlags != groundFlags)
