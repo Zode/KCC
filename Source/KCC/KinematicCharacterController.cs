@@ -44,7 +44,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [EditorDisplay("Character")]
     [EditorOrder(102)]
-    public Real KinematicContactOffset {get => _kinematicContactOffset; set { _kinematicContactOffset = MathR.Max(value, Real.Epsilon); SetColliderSize(); }}
+    public Real KinematicContactOffset {get => _kinematicContactOffset; set { _kinematicContactOffset = MathR.Max(value, Real.Epsilon); SetContactOffset(); }}
     private Real _kinematicContactOffset = 2.0f;    
     /// <summary>
     /// Height of the character.
@@ -340,6 +340,7 @@ public class KinematicCharacterController : KinematicBase
             _ => throw new NotImplementedException(),
         };
 
+        _collider.StaticFlags = StaticFlags;
         _collider.Layer = Layer;
         _collider.Tags = Tags;
         _collider.HideFlags = HideFlags.DontSave;// | HideFlags.DontSelect | HideFlags.HideInHierarchy;
@@ -563,6 +564,19 @@ public class KinematicCharacterController : KinematicBase
 
             default:
                 throw new NotImplementedException();
+        }
+
+        SetContactOffset();
+    }
+
+    /// <summary>
+    /// Set the collider contact offset to match kinematic offset
+    /// </summary>
+    private void SetContactOffset()
+    {
+        if(_collider == null)
+        {
+            return;
         }
 
         _collider.ContactOffset = (float)_kinematicContactOffset;
@@ -1664,7 +1678,8 @@ public class KinematicCharacterController : KinematicBase
                 break;
             }
 
-            if(trace.Distance == 0.0f)
+            //https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/GeometryQueries.html#initial-overlaps
+            if(trace.Distance == 0.0f && trace.Point.IsZero)
             {
                 if(unstuckSolves < MaxUnstuckIterations)
                 {
@@ -1675,9 +1690,10 @@ public class KinematicCharacterController : KinematicBase
                     TransientPosition += push;
                     unstuckSolves++;
                     i--;
+
                     if(totalOverlaps > 0)
                     {
-                        if(push.IsZero)
+                        if(solvedOverlaps == 0)
                         {
                             UnstuckRescue();
                             
@@ -1690,7 +1706,8 @@ public class KinematicCharacterController : KinematicBase
                     }
                     else
                     {
-                        //rare situation where we are _perfectly_ flush with the surface, and the trace is perfectly aligned to the surface.
+                        //rare situation where we are _perfectly_ flush with the surface, and the trace is perfectly aligned to the surface, yet we are somehow stuck
+                        //just push out based on the trace normal and hope for the best
                         TransientPosition += trace.Normal * 0.1f;
                     }
 
@@ -1716,7 +1733,6 @@ public class KinematicCharacterController : KinematicBase
             //pull back a bit, otherwise we would be constantly intersecting with the plane
             Real distance = MathR.Max(trace.Distance - KinematicContactOffset, 0.0f);
 
-            //move to collision point
             TransientPosition += _internalDelta.Normalized * distance;
 
             #if KCC_DEBUGGER
@@ -1811,7 +1827,12 @@ public class KinematicCharacterController : KinematicBase
             else
             {
                 //third sliding plane, we have no degrees of freedom left for the movement.
-                _internalDelta = Vector3.Zero; 
+                _internalDelta = Vector3.Zero;
+                #if FLAX_EDITOR
+                Profiler.EndEvent();
+                #endif
+
+                break;
             }
 
             //also slow down depending on the angle of hit plane (and physics material if enabled)
@@ -1853,33 +1874,32 @@ public class KinematicCharacterController : KinematicBase
         #if KCC_DEBUGGER
         KCCDebugger.BeginEvent("UnstuckRescue");
         int offset = 1;
-        string[] directionsText = ["forward", "-forward", "up", "-up", "right", "-right"];
+        string[] directionsText = ["forward", "-forward", "right", "-right", "up", "-up"];
         #endif
         #endif
 
         Vector3 forward = (Vector3.Forward * TransientOrientation).Normalized;
         Vector3 up = (Vector3.Up * TransientOrientation).Normalized;
         Vector3 right = (Vector3.Right * TransientOrientation).Normalized;
-        Vector3[] directions = [forward, -forward, up, -up, right, -right];
+        Vector3[] directions = [forward, -forward, right, -right, up, -up];
 
         bool haveSolve = false;
-        Real distance = MathR.Min(UnstuckRescueDistance, MaxUnstuckRescueDistance);
         Vector3 temporaryPosition = Vector3.Zero;
         for(int i = 0; i < directions.Length; i++)
         {
-            temporaryPosition = TransientPosition + (directions[i] * distance); 
+            temporaryPosition = TransientPosition + (directions[i] * KinematicContactOffset); 
             #if KCC_DEBUGGER
             KCCDebugger.DrawArrow(temporaryPosition, Quaternion.FromDirection(directions[i]), 1.0f, 1.0f, KCCDebugger.Options.PenetrationTraceOtherColor, false);
             #endif
 
-            if(!CastCollider(temporaryPosition, directions[i], out RayCastHit trace, distance + KinematicContactOffset, CollisionMask, PhysicsFlag.RigidBodyInteractions))
+            if(!CastCollider(temporaryPosition, directions[i], out RayCastHit trace, UnstuckRescueDistance + KinematicContactOffset, CollisionMask, PhysicsFlag.RigidBodyInteractions))
             {
-                TransientPosition = temporaryPosition + directions[i] * distance;
+                TransientPosition = temporaryPosition + directions[i] * UnstuckRescueDistance;
                 
                 #if KCC_DEBUGGER
                 KCCDebugger.DrawText(TransientPosition + Vector3.Up * (offset * 20), $"Yes: {directionsText[i]} (full)", false);
                 offset++;
-                KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(directions[i]), (float)distance * 0.01f, 1.0f, KCCDebugger.Options.UnstuckSingularArrowColor, false);
+                KCCDebugger.DrawArrow(TransientPosition, Quaternion.FromDirection(directions[i]), (float)UnstuckRescueDistance * 0.01f, 1.0f, KCCDebugger.Options.UnstuckSingularArrowColor, false);
                 KCCDebugDrawCollider(TransientPosition, TransientOrientation, KCCDebugger.Options.UnstuckRescueFillColor, KCCDebugger.Options.UnstuckRescueOutlineColor, false);
                 #endif
 
@@ -2635,6 +2655,11 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="trace">Existing trace info to use.</param>
     public void SnapToGround(RayCastHit trace)
     {
+        if(trace.Distance == 0.0f && trace.Collider == null)
+        {
+            return;
+        }
+
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.SnapToGround");
         #if KCC_DEBUGGER
@@ -2642,7 +2667,7 @@ public class KinematicCharacterController : KinematicBase
         #endif
         #endif
 
-        if(trace.Distance == 0.0f)
+        if(trace.Distance == 0.0f && trace.Point.IsZero)
         {
             //we are inside the ground. FIX IT!!!
             //this is an absolute disaster case scenario and generally never triggers,

@@ -35,6 +35,7 @@ public class KCC : GamePlugin
     /// This event is fired after the simulation and post-simulation interpolation setup has happened, after all KCC actors.
     /// </summary>
     public event Action? PostSimulationUpdateEvent;
+    private bool _processingTick = false;
 
     /// <inheritdoc />
     public KCC()
@@ -192,6 +193,7 @@ public class KCC : GamePlugin
         #endif
         #endif
 
+        _processingTick = true;
         PreSimulationUpdateEvent?.Invoke();
 
         foreach(KinematicMover mover in _kinematicMovers)
@@ -273,6 +275,7 @@ public class KCC : GamePlugin
             }
 
             PostSimulationUpdateEvent?.Invoke();
+            _processingTick = false;
 
             #if FLAX_EDITOR
             #if KCC_DEBUGGER
@@ -297,6 +300,7 @@ public class KCC : GamePlugin
         }
 
         PostSimulationUpdateEvent?.Invoke();
+        _processingTick = false;
 
         #if FLAX_EDITOR
         #if KCC_DEBUGGER
@@ -304,6 +308,7 @@ public class KCC : GamePlugin
         #endif
         Profiler.EndEvent();
         #endif
+
     }
 
     /// <summary>
@@ -311,7 +316,7 @@ public class KCC : GamePlugin
     /// </summary>
     public void InterpolationUpdate()
     {
-        if(_interpolationDeltaTime <= 0.0f)
+        if(_processingTick || _interpolationDeltaTime <= 0.0f)
         {
             return;
         }
