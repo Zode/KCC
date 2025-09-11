@@ -25,11 +25,11 @@ public class EventNode : TreeNode
 	/// </summary>
 	public void ConstructChildren()
 	{
-		foreach(Event @event in Event.Events)
+		for(int i = 0; i < Event.Events.Count; i++)
 		{
-			EventNode node = new(@event)
+			EventNode node = new(Event.Events[i])
 			{
-				Text = @event.Name,
+				Text = Event.Events[i].Name,
 				Parent = this,
 			};
 			

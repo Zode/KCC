@@ -188,16 +188,22 @@ public class KCC : GamePlugin
     {
         #if FLAX_EDITOR
         Profiler.BeginEvent("KCC.PreSimulationUpdate");
+        #endif
+
         #if KCC_DEBUGGER
         KCCDebugger.BeginFrame();
-        #endif
         #endif
 
         _processingTick = true;
         PreSimulationUpdateEvent?.Invoke();
 
-        foreach(KinematicMover mover in _kinematicMovers)
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.KinematicMovers");
+        #endif
+
+        for(int i = 0; i < _kinematicMovers.Count; i++)
         {
+            KinematicMover mover = _kinematicMovers[i];
             mover.InitialPosition = mover.TransientPosition;
             mover.InitialOrientation = mover.TransientOrientation;
 
@@ -207,9 +213,15 @@ public class KCC : GamePlugin
             mover.SwitchKinematics(true);
             mover.SyncKinematics();
         }
+        
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        Profiler.BeginEvent("KCC.KinematicCharacters");
+        #endif
 
-        foreach(KinematicCharacterController character in _kinematicCharacters)
+        for(int i = 0; i < _kinematicCharacters.Count; i++)
         {
+            KinematicCharacterController character = _kinematicCharacters[i];
             character.InitialPosition = character.TransientPosition;
             character.InitialOrientation = character.TransientOrientation;
 
@@ -221,6 +233,7 @@ public class KCC : GamePlugin
         }
 
         #if FLAX_EDITOR
+        Profiler.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -236,19 +249,31 @@ public class KCC : GamePlugin
 
         SimulationUpdateEvent?.Invoke();
 
-        foreach(KinematicMover mover in _kinematicMovers)
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.KinematicMovers");
+        #endif
+
+        for(int i = 0; i < _kinematicMovers.Count; i++)
         {
+            KinematicMover mover = _kinematicMovers[i];
             mover.KinematicUpdate();
             mover.SyncKinematics();
         }
 
-        foreach(KinematicCharacterController character in _kinematicCharacters)
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        Profiler.BeginEvent("KCC.KinematicCharacters");
+        #endif
+
+        for(int i = 0; i < _kinematicCharacters.Count; i++)
         {
+            KinematicCharacterController character = _kinematicCharacters[i];
             character.KinematicUpdate();
             character.SyncKinematics();
         }
 
         #if FLAX_EDITOR
+        Profiler.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -270,15 +295,26 @@ public class KCC : GamePlugin
         if(_kccSettings is null ||
             !_kccSettings.Interpolate)
         {
-            foreach(KinematicMover mover in _kinematicMovers)
+            #if FLAX_EDITOR
+            Profiler.BeginEvent("KCC.KinematicMovers");
+            #endif
+
+            for(int i = 0; i < _kinematicMovers.Count; i++)
             {
+                KinematicMover mover = _kinematicMovers[i];
                 mover.SwitchKinematics(false);
                 mover.Position = mover.TransientPosition;
                 mover.Orientation = mover.TransientOrientation;
             }
 
-            foreach(KinematicCharacterController character in _kinematicCharacters)
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
+            Profiler.BeginEvent("KCC.KinematicCharacters");
+            #endif
+
+            for(int i = 0; i < _kinematicCharacters.Count; i++)
             {
+                KinematicCharacterController character = _kinematicCharacters[i];   
                 character.SwitchKinematics(false);
                 character.Position = character.TransientPosition;
                 character.Orientation = character.TransientOrientation;
@@ -287,25 +323,39 @@ public class KCC : GamePlugin
             PostSimulationUpdateEvent?.Invoke();
             _processingTick = false;
 
-            #if FLAX_EDITOR
             #if KCC_DEBUGGER
             KCCDebugger.EndFrame();
             #endif
+
+            #if FLAX_EDITOR
+            Profiler.EndEvent();
             Profiler.EndEvent();
             #endif
             
             return;
         }
 
-        foreach(KinematicMover mover in _kinematicMovers)
+        #if FLAX_EDITOR
+        Profiler.BeginEvent("KCC.KinematicMovers");
+        #endif
+
+        for(int i = 0; i < _kinematicMovers.Count; i++)
         {
+            KinematicMover mover = _kinematicMovers[i];
             mover.SwitchKinematics(false);
             mover.Position = mover.InitialPosition;
             mover.Orientation = mover.InitialOrientation;
         }
 
-        foreach(KinematicCharacterController character in _kinematicCharacters)
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
+        Profiler.BeginEvent("KCC.KinematicCharacters");
+        #endif
+
+
+        for(int i = 0; i < _kinematicCharacters.Count; i++)
         {
+            KinematicCharacterController character = _kinematicCharacters[i];
             character.SwitchKinematics(false);
             character.Position = character.InitialPosition;
             character.Orientation = character.InitialOrientation;
@@ -314,10 +364,12 @@ public class KCC : GamePlugin
         PostSimulationUpdateEvent?.Invoke();
         _processingTick = false;
 
-        #if FLAX_EDITOR
         #if KCC_DEBUGGER
         KCCDebugger.EndFrame();
         #endif
+
+        #if FLAX_EDITOR
+        Profiler.EndEvent();
         Profiler.EndEvent();
         #endif
     }
@@ -333,14 +385,16 @@ public class KCC : GamePlugin
         }
 
         float factor = Mathf.Clamp((Time.TimeSinceStartup - _interpolationStartTime) / _interpolationDeltaTime, 0.0f, 1.0f);
-        foreach(KinematicMover mover in _kinematicMovers)
+        for(int i = 0; i < _kinematicMovers.Count; i++)
         {
+            KinematicMover mover = _kinematicMovers[i];
             mover.Position = Vector3.Lerp(mover.InitialPosition, mover.TransientPosition, factor);
             mover.Orientation = Quaternion.Slerp(mover.InitialOrientation, mover.TransientOrientation, factor);
         }
 
-        foreach(KinematicCharacterController character in _kinematicCharacters)
+        for(int i = 0; i < _kinematicCharacters.Count; i++)
         {
+            KinematicCharacterController character = _kinematicCharacters[i];
             character.Position = Vector3.Lerp(character.InitialPosition, character.TransientPosition, factor);
             character.Orientation = Quaternion.Slerp(character.InitialOrientation, character.TransientOrientation, factor);
         }

@@ -25,9 +25,9 @@ public class Frame
 	/// </summary>
 	public void ResetRenderables()
 	{
-		foreach(Event @event in Events)
+		for(int i = 0; i < Events.Count; i++)
 		{
-			@event.ResetRenderables();
+			Events[i].ResetRenderables();
 		}
 	}
 
@@ -36,9 +36,9 @@ public class Frame
 	/// </summary>
 	public void CalculateTime()
 	{
-		foreach(Event @event in Events)
+		for(int i = 0; i < Events.Count; i++)
 		{
-			Time += @event.Timer.Elapsed;
+			Time += Events[i].Timer.Elapsed;
 		}
 	}
 }

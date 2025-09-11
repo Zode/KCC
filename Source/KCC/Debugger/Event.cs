@@ -49,9 +49,9 @@ public class Event(Guid? id, string name)
 		}
 
 		AlreadyRendered = true;
-		foreach(Renderable renderable in Renderables)
+		for(int i = 0; i < Renderables.Count; i++)
 		{
-			renderable.Render();
+			Renderables[i].Render();
 		}
 
 		if(skipChild)
@@ -59,9 +59,9 @@ public class Event(Guid? id, string name)
 			return;
 		}
 
-		foreach(Event @event in Events)
+		for(int i = 0; i < Events.Count; i++)
 		{
-			@event.Render();
+			Events[i].Render();
 		}
 	}
 
@@ -77,9 +77,9 @@ public class Event(Guid? id, string name)
 			return;
 		}
 		
-		foreach(Event @event in Events)
+		for(int i = 0; i < Events.Count; i++)
 		{
-			@event.ResetRenderables();
+			Events[i].ResetRenderables();
 		}
 	}
 
@@ -90,9 +90,9 @@ public class Event(Guid? id, string name)
 	public TimeSpan CalculateSubeventTime()
 	{
 		TimeSpan result = TimeSpan.Zero;
-		foreach(Event @event in Events)
+		for(int i = 0; i < Events.Count; i++)
 		{
-			result += @event.Timer.Elapsed;
+			result += Events[i].Timer.Elapsed;
 		}
 
 		return result;

@@ -104,10 +104,13 @@ public class KinematicMover : KinematicBase
 	/// <inheritdoc />
 	public override void SyncKinematics()
 	{
-		foreach(Collider collider in _kinematicColliders)
+		Position = TransientPosition;
+		Orientation = TransientOrientation;
+		
+		/*for(int i = 0; i < _kinematicColliders.Count; i++)
 		{
-			collider.Orientation = TransientOrientation;
-			collider.Position = TransientPosition;
-		}
+			_kinematicColliders[i].Orientation = TransientOrientation;
+			_kinematicColliders[i].Position = TransientPosition;
+		}*/
 	}
 }

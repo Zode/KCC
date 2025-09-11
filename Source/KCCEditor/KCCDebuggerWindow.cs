@@ -10,7 +10,10 @@ using FlaxEditor.Windows;
 using FlaxEngine;
 using FlaxEngine.GUI;
 using KCC.Debugger;
+
+#if KCC_DEBUGGER
 using KCC.Debugger.Renderables;
+#endif
 
 namespace KCC;
 #nullable enable
@@ -23,6 +26,7 @@ public class KCCDebuggerWindow : EditorWindow
 	private readonly ToolStrip _toolStrip;
 	private readonly Label _infoLabel;
 	private readonly ToolStripButton _recordButton;
+
 	#if KCC_DEBUGGER
 	private readonly ToolStripButton _clearButton;
 	private readonly ToolStripButton _toBeginningButton;
@@ -71,6 +75,7 @@ public class KCCDebuggerWindow : EditorWindow
 		};
 
 		_recordButton = _toolStrip.AddButton(Editor.Icons.Play64);
+
 		#if KCC_DEBUGGER
 		_recordButton.AutoCheck = true;
 		_recordButton.LinkTooltip("Start capturing KCC events");
@@ -123,6 +128,7 @@ public class KCCDebuggerWindow : EditorWindow
 		_infoLabel = new Label()
 		{
 			Parent = _toolStrip,
+
 			#if !KCC_DEBUGGER
 			Text = COMPILE_NAG,
 			AutoWidth = true,
@@ -360,7 +366,6 @@ public class KCCDebuggerWindow : EditorWindow
 		base.OnParentResized();
 
 		#if KCC_DEBUGGER
-
 		float totalWidth = 64.0f; //arbitrary amount, just to pervent the slider being cut off.
 		for(int i = 0; i < _toolStrip.ChildrenCount - 1; i++)
 		{
@@ -389,9 +394,9 @@ public class KCCDebuggerWindow : EditorWindow
 		}
 
 		KCCDebugger.Frames[KCCDebugger.Frame].ResetRenderables();
-		foreach(TreeNode node in _tree.Selection)
+		for(int i = 0; i < _tree.Selection.Count; i++)
 		{
-			if(node is not EventNode eventNode)
+			if(_tree.Selection[i] is not EventNode eventNode)
 			{
 				continue;
 			}
@@ -429,27 +434,27 @@ public class KCCDebuggerWindow : EditorWindow
 				continue;
 			}
 
-			foreach(Event @event in KCCDebugger.Frames[i].Events)
+			for(int j = 0; j < KCCDebugger.Frames[i].Events.Count; j++)
 			{
-				if(@event.ActorID is null)
+				if(KCCDebugger.Frames[i].Events[j].ActorID is null)
 				{
 					continue;
 				}
 
-				foreach(TreeNode node in _tree.Selection)
+				for(int k = 0; k < _tree.Selection.Count; k++)
 				{
-					if(node is not EventNode eventNode)
+					if(_tree.Selection[k] is not EventNode eventNode)
 					{
 						continue;
 					}
 
-					if(eventNode.Event.ActorID != @event.ActorID)
+					if(eventNode.Event.ActorID != KCCDebugger.Frames[i].Events[j].ActorID)
 					{
 						continue;
 					}
 
-					@event.ResetRenderables(true);
-					@event.Render(true);
+					KCCDebugger.Frames[i].Events[j].ResetRenderables(true);
+					KCCDebugger.Frames[i].Events[j].Render(true);
 				}	
 			}
 		}

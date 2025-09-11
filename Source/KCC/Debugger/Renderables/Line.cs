@@ -1,4 +1,4 @@
-#if FLAX_EDITOR
+#if KCC_DEBUGGER
 using FlaxEngine;
 
 namespace KCC.Debugger.Renderables;

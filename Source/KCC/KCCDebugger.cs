@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using FlaxEditor;
 using FlaxEngine;
 using KCC.Debugger;
+
+#if KCC_DEBUGGER
 using KCC.Debugger.Renderables;
+#endif
 
 namespace KCC;
 
