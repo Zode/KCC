@@ -12,7 +12,7 @@ public class KCCSettings
 	/// <summary>
 	/// Should the system interpolate characters and movers?
 	/// </summary>
-	public bool Interpolate = true;
+	public bool Interpolate = false;
 	/// <summary>
 	/// Initial list capacity of kinematic characters, this is not the limit but rather will avoid unnecessary memory allocations.
 	/// </summary>

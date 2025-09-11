@@ -1536,7 +1536,7 @@ public class KinematicCharacterController : KinematicBase
             return false;
         }
 
-        if(physicsCollider == _kinematicCollider || physicsCollider == _rigidBodyCollider)
+        if(physicsCollider == _kinematicCollider)
         {
             return false;
         }
