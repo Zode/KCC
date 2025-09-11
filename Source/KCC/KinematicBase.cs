@@ -1,13 +1,15 @@
+using System;
 using System.Runtime.CompilerServices;
 using FlaxEngine;
 
 namespace KCC;
+#nullable enable
 
 /// <summary>
 /// KCC Simulation driven object.
 /// Base class for KCC Actors.
 /// </summary>
-public class KinematicBase : RigidBody
+public class KinematicBase : Actor
 {
 	/// <summary>
 	/// The initial position before simulation.
@@ -33,14 +35,14 @@ public class KinematicBase : RigidBody
 	/// The current orientation in simulation.
 	/// </summary>
 	protected Quaternion _transientOrientation = Quaternion.Identity;
-
 	/// <summary>
-	/// Initializes a new instance of KinematicBase.
+	/// The KCC Actor's RigidBody
 	/// </summary>
-	public KinematicBase()
-		: base()
-	{
-	}
+	protected RigidBody? _rigidBody = null;
+	/// <summary>
+	/// The KCC Actor's RigidBody
+	/// </summary>
+	public RigidBody? RigidBody => _rigidBody;
 
 	/// <summary>
 	/// Set the mover's position directly.
@@ -51,7 +53,8 @@ public class KinematicBase : RigidBody
 	{
 		Position = position;
 		InitialPosition = position;
-		TransientPosition = position;		
+		TransientPosition = position;
+		SyncKinematics();	
 	}
 
 	/// <summary>
@@ -64,5 +67,38 @@ public class KinematicBase : RigidBody
 		Orientation = orientation;
 		InitialOrientation = orientation;
 		TransientOrientation = orientation;
+		SyncKinematics();
+	}
+
+	/// <summary>
+	/// Set up the KCC Actor's RigidBody
+	/// </summary>
+	public void SetupRigidBody()
+	{
+		_rigidBody = AddChild<RigidBody>();
+		_rigidBody.LinearDamping = 0.0f;
+		_rigidBody.AngularDamping = 0.0f;
+		_rigidBody.MaxAngularVelocity = float.MaxValue;
+		_rigidBody.MaxDepenetrationVelocity = float.MaxValue;
+		_rigidBody.IsKinematic = true;
+		_rigidBody.StaticFlags = StaticFlags;
+		_rigidBody.Layer = Layer;
+		_rigidBody.Tags = Tags;
+		_rigidBody.HideFlags = HideFlags.DontSave;
+	}
+
+	/// <summary>
+	/// Switch the Collider(s) to kinematic Collider(s) or vice versa.
+	/// </summary>
+	/// <param name="mode">if <c>true</c> Collider(s) are set to kinematic Collider(s), if <c>false</c> Collider(s) are set to RigidBody Collider(s)</param>
+	public virtual void SwitchKinematics(bool mode)
+	{
+	}
+
+	/// <summary>
+	/// Synchronize the kinematic colliders with the KCC Actor's transient position and orientation
+	/// </summary>
+	public virtual void SyncKinematics()
+	{
 	}
 }

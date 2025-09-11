@@ -38,7 +38,8 @@ public class KinematicCharacterController : KinematicBase
     [EditorDisplay("Character")]
     [EditorOrder(100)]
     public ColliderType ColliderType {get; set;} = ColliderType.Capsule;
-    private Collider? _collider = null;
+    private Collider? _kinematicCollider = null;
+    private Collider? _rigidBodyCollider = null;
     /// <summary>
     /// The contact offset value that determines the distance that the character hovers above any surface (must be positive).
     /// </summary>
@@ -323,16 +324,9 @@ public class KinematicCharacterController : KinematicBase
         }
         #endif
 
-		KCCGlobal.Plugin.Register(this);
+        SetupRigidBody();
 
-        MaxAngularVelocity = float.MaxValue;
-		MaxDepenetrationVelocity = float.MaxValue;
-		IsKinematic = true;
-
-        SetPosition(Position);
-        SetOrientation(Orientation);
-
-		_collider = ColliderType switch
+		_kinematicCollider = ColliderType switch
         {
             ColliderType.Box => AddChild<BoxCollider>(),
             ColliderType.Capsule => AddChild<CapsuleCollider>(),
@@ -340,11 +334,28 @@ public class KinematicCharacterController : KinematicBase
             _ => throw new NotImplementedException(),
         };
 
-        _collider.StaticFlags = StaticFlags;
-        _collider.Layer = Layer;
-        _collider.Tags = Tags;
-        _collider.HideFlags = HideFlags.DontSave;// | HideFlags.DontSelect | HideFlags.HideInHierarchy;
+        _rigidBodyCollider = ColliderType switch
+        {
+            ColliderType.Box => AddChild<BoxCollider>(),
+            ColliderType.Capsule => AddChild<CapsuleCollider>(),
+            ColliderType.Sphere => AddChild<SphereCollider>(),
+            _ => throw new NotImplementedException(),
+        };
+
+        _rigidBodyCollider.StaticFlags = _kinematicCollider.StaticFlags = StaticFlags;
+        _rigidBodyCollider.Layer = _kinematicCollider.Layer = Layer;
+        _rigidBodyCollider.Tags = _kinematicCollider.Tags = Tags;
+        _rigidBodyCollider.HideFlags = _kinematicCollider.HideFlags = HideFlags.DontSave;// | HideFlags.DontSelect | HideFlags.HideInHierarchy;
+        _rigidBodyCollider.Parent = _rigidBody;
+
         SetColliderSize();
+        SwitchKinematics(false);
+
+        KCCGlobal.Plugin.Register(this);
+
+        SetPosition(Position);
+        SetOrientation(Orientation);
+        SyncKinematics();
     }
 
 	/// <inheritdoc />
@@ -473,11 +484,6 @@ public class KinematicCharacterController : KinematicBase
             KinematicAttachedVelocity = Vector3.Zero;
         }
 
-        //Move to the calculated position so that the next iterating character will be aware of this character's result
-        // this hopefully improves stability between character <-> character interactions
-        Position = TransientPosition;
-        Orientation = TransientOrientation;
-
         #if FLAX_EDITOR
         #if KCC_DEBUGGER
         KCCDebugger.EndEvent();
@@ -537,7 +543,7 @@ public class KinematicCharacterController : KinematicBase
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SetColliderSizeWithInflation(float inflate)
     {
-        if(_collider == null)
+        if(_kinematicCollider == null || _rigidBodyCollider == null)
         {
             return;
         }
@@ -545,12 +551,19 @@ public class KinematicCharacterController : KinematicBase
         switch(ColliderType)
         {
             case ColliderType.Box:
-				BoxCollider box = _collider.As<BoxCollider>();
-                box.Size = new((ColliderRadius * 2.0f) + inflate, ColliderHeight + inflate, (ColliderRadius * 2.0f) + inflate);
+                Float3 size = new((ColliderRadius * 2.0f) + inflate, ColliderHeight + inflate, (ColliderRadius * 2.0f) + inflate);
+				_kinematicCollider.As<BoxCollider>().Size = size;
+				_rigidBodyCollider.As<BoxCollider>().Size = size;
                 break;
 
             case ColliderType.Capsule:
-				CapsuleCollider capsule = _collider.As<CapsuleCollider>();
+				CapsuleCollider capsule = _kinematicCollider.As<CapsuleCollider>();
+                capsule.Radius = ColliderRadius + inflate;
+                capsule.Height = ColliderHeight - (ColliderRadius * 2.0f) + inflate;
+                //and for some reason this is wrongly rotated in the Z axis by default..
+                capsule.LocalOrientation = Quaternion.RotationZ(1.57079633f);
+                
+                capsule = _rigidBodyCollider.As<CapsuleCollider>();
                 capsule.Radius = ColliderRadius + inflate;
                 capsule.Height = ColliderHeight - (ColliderRadius * 2.0f) + inflate;
                 //and for some reason this is wrongly rotated in the Z axis by default..
@@ -558,8 +571,8 @@ public class KinematicCharacterController : KinematicBase
                 break;
 
             case ColliderType.Sphere:
-				SphereCollider sphere = _collider.As<SphereCollider>();
-                sphere.Radius = ColliderRadius + inflate;
+				_kinematicCollider.As<SphereCollider>().Radius = ColliderRadius + inflate;
+				_rigidBodyCollider.As<SphereCollider>().Radius = ColliderRadius + inflate;
                 break;
 
             default:
@@ -574,12 +587,13 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     private void SetContactOffset()
     {
-        if(_collider == null)
+        if(_kinematicCollider == null || _rigidBodyCollider == null)
         {
             return;
         }
 
-        _collider.ContactOffset = (float)_kinematicContactOffset;
+        _kinematicCollider.ContactOffset = (float)_kinematicContactOffset;
+        _rigidBodyCollider.ContactOffset = (float)_kinematicContactOffset;
     }
 
     /// <summary>
@@ -1513,16 +1527,16 @@ public class KinematicCharacterController : KinematicBase
     /// <returns>False if should be ignored, True if should be considered</returns>
     private bool IsColliderValid(PhysicsColliderActor physicsCollider)
     {
-        if(_collider == null)
+        if(_kinematicCollider == null)
         {
             #if FLAX_EDITOR
-            Debug.LogError("KinematicCharacterController collider is missing", this);
+            Debug.LogError("KinematicCharacterController Collider is missing", this);
             #endif
 
             return false;
         }
 
-        if(physicsCollider == _collider)
+        if(physicsCollider == _kinematicCollider || physicsCollider == _rigidBodyCollider)
         {
             return false;
         }
@@ -1572,7 +1586,7 @@ public class KinematicCharacterController : KinematicBase
     private void TryAddRigidBodyInteraction(Vector3 point, Vector3 normal, RigidBody rigidBody)
     {
         //only allow non-KCC rigidbodies for now
-        if(rigidBody is KinematicCharacterController)
+        if(rigidBody.Parent != null && rigidBody.Parent is KinematicCharacterController)
         {
             return;
         }
@@ -2543,7 +2557,14 @@ public class KinematicCharacterController : KinematicBase
         //fix the character standing for 1 frame on movers that push it sideways
         if(trace.Distance > 0.0f)
         {
-            AttachToRigidBody(trace.Collider.AttachedRigidBody);
+            if(trace.Collider.Parent != null && trace.Collider.Parent is KinematicMover mover)
+            {
+                AttachToRigidBody(mover.RigidBody);
+            }
+            else
+            {
+                AttachToRigidBody(trace.Collider.AttachedRigidBody);
+            }
         }
 
         #if FLAX_EDITOR
@@ -2758,10 +2779,10 @@ public class KinematicCharacterController : KinematicBase
             return Vector3.Zero;
         }
 
-        if(_collider == null)
+        if(_kinematicCollider == null)
         {
             #if FLAX_EDITOR
-            Debug.LogError("KinematicCharacterController collider is missing", this);
+            Debug.LogError("KinematicCharacterController Collider is missing", this);
             #if KCC_DEBUGGER
             KCCDebugger.EndEvent();
             #endif
@@ -2788,16 +2809,15 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        SetColliderSizeWithInflation((float)KinematicContactOffset);
-        Position = TransientPosition;
-        Orientation = TransientOrientation;
+        SetColliderSizeWithInflation((float)0.0f);
+        _kinematicCollider.Position = TransientPosition;
         for(int i = 0; i < totalOverlaps; i++)
         {
             #if KCC_DEBUGGER
             KCCDebugger.DrawText(colliders[i].Position, $"Unstuck #{i}", false);
             #endif
 
-            if(!Collider.ComputePenetration(_collider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
+            if(!Collider.ComputePenetration(_kinematicCollider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
                 if(colliders[i] is MeshCollider meshCollider)
                 {
@@ -2903,7 +2923,7 @@ public class KinematicCharacterController : KinematicBase
                     Parent = meshCollider.Parent,
                 };
 
-                bool result = Collider.ComputePenetration(_collider, tempBox, out penetrationDirection, out penetrationDistance);
+                bool result = Collider.ComputePenetration(_kinematicCollider, tempBox, out penetrationDirection, out penetrationDistance);
                 Destroy(tempBox);
 
                 #if FLAX_EDITOR
@@ -2918,14 +2938,14 @@ public class KinematicCharacterController : KinematicBase
 
             case TriangleMeshUnstuckMode.ClosestPoint:
             {
-                if(_collider == null)
+                if(_kinematicCollider == null)
                 {
                     return false;
                 }
 
                 Vector3 direction = (TransientPosition - meshCollider.Position).Normalized;
                 bool result = meshCollider.RayCast(meshCollider.Position + direction * meshCollider.Sphere.Radius, -direction, out RayCastHit trace);
-                bool result2 = _collider.RayCast(TransientPosition - direction * _collider.Sphere.Radius, direction, out RayCastHit trace2);
+                bool result2 = _kinematicCollider.RayCast(TransientPosition - direction * _kinematicCollider.Sphere.Radius, direction, out RayCastHit trace2);
 
                 if(result && result2)
                 {
@@ -3089,7 +3109,7 @@ public class KinematicCharacterController : KinematicBase
 
         if(RigidBodyMoveMode == RigidBodyMoveMode.KinematicMoversOnly)
         {
-            if(rigidBody is not KinematicMover)
+            if(rigidBody.Parent == null || rigidBody.Parent is not KinematicMover)
             {
                 AttachToRigidBody(null);
                 return;
@@ -3105,6 +3125,30 @@ public class KinematicCharacterController : KinematicBase
         _attachedRigidBody = rigidBody;
         Controller.KinematicAttachedRigidBodyEvent(true, rigidBody);
     }
+
+    /// <inheritdoc />
+	public override void SwitchKinematics(bool mode)
+	{
+        if(_kinematicCollider == null || _rigidBodyCollider == null)
+        {
+            return;
+        }
+
+        _rigidBodyCollider.Layer = mode ? 0 : Layer;
+        _kinematicCollider.IsActive = mode;
+	}
+
+    /// <inheritdoc />
+	public override void SyncKinematics()
+	{
+        if(_kinematicCollider == null)
+        {
+            return;
+        }
+
+        _kinematicCollider.Orientation = TransientOrientation;
+        _kinematicCollider.Position = TransientPosition;
+	}
 
     #if FLAX_EDITOR
     /// <inheritdoc />

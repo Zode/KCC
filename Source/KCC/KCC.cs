@@ -203,6 +203,9 @@ public class KCC : GamePlugin
 
             mover.Position = mover.TransientPosition;
             mover.Orientation = mover.TransientOrientation;
+
+            mover.SwitchKinematics(true);
+            mover.SyncKinematics();
         }
 
         foreach(KinematicCharacterController character in _kinematicCharacters)
@@ -212,6 +215,9 @@ public class KCC : GamePlugin
 
             character.Position = character.TransientPosition;
             character.Orientation = character.TransientOrientation;
+
+            character.SwitchKinematics(true);
+            character.SyncKinematics();
         }
 
         #if FLAX_EDITOR
@@ -233,11 +239,13 @@ public class KCC : GamePlugin
         foreach(KinematicMover mover in _kinematicMovers)
         {
             mover.KinematicUpdate();
+            mover.SyncKinematics();
         }
 
         foreach(KinematicCharacterController character in _kinematicCharacters)
         {
             character.KinematicUpdate();
+            character.SyncKinematics();
         }
 
         #if FLAX_EDITOR
@@ -264,12 +272,14 @@ public class KCC : GamePlugin
         {
             foreach(KinematicMover mover in _kinematicMovers)
             {
+                mover.SwitchKinematics(false);
                 mover.Position = mover.TransientPosition;
                 mover.Orientation = mover.TransientOrientation;
             }
 
             foreach(KinematicCharacterController character in _kinematicCharacters)
             {
+                character.SwitchKinematics(false);
                 character.Position = character.TransientPosition;
                 character.Orientation = character.TransientOrientation;
             }
@@ -289,12 +299,14 @@ public class KCC : GamePlugin
 
         foreach(KinematicMover mover in _kinematicMovers)
         {
+            mover.SwitchKinematics(false);
             mover.Position = mover.InitialPosition;
             mover.Orientation = mover.InitialOrientation;
         }
 
         foreach(KinematicCharacterController character in _kinematicCharacters)
         {
+            character.SwitchKinematics(false);
             character.Position = character.InitialPosition;
             character.Orientation = character.InitialOrientation;
         }
@@ -308,7 +320,6 @@ public class KCC : GamePlugin
         #endif
         Profiler.EndEvent();
         #endif
-
     }
 
     /// <summary>
