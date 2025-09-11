@@ -568,13 +568,13 @@ public class KinematicCharacterController : KinematicBase
             case ColliderType.Capsule:
 				CapsuleCollider capsule = _kinematicCollider.As<CapsuleCollider>();
                 capsule.Radius = ColliderRadius + inflate;
-                capsule.Height = ColliderHeight - (ColliderRadius * 2.0f) + inflate;
+                capsule.Height = ColliderHeight - (ColliderRadius * 2.0f);
                 //and for some reason this is wrongly rotated in the Z axis by default..
                 capsule.LocalOrientation = Quaternion.RotationZ(1.57079633f);
                 
                 capsule = _rigidBodyCollider.As<CapsuleCollider>();
                 capsule.Radius = ColliderRadius + inflate;
-                capsule.Height = ColliderHeight - (ColliderRadius * 2.0f) + inflate;
+                capsule.Height = ColliderHeight - (ColliderRadius * 2.0f);
                 //and for some reason this is wrongly rotated in the Z axis by default..
                 capsule.LocalOrientation = Quaternion.RotationZ(1.57079633f);
                 break;
@@ -1766,7 +1766,7 @@ public class KinematicCharacterController : KinematicBase
             }
 
             //pull back a bit, otherwise we would be constantly intersecting with the plane
-            Real distance = MathR.Max(trace.Distance - KinematicContactOffset, 0.0f);
+            Real distance = MathR.Max(trace.Distance - KinematicContactOffset - 0.0001f, 0.0f);
 
             TransientPosition += _internalDelta.Normalized * distance;
 
@@ -2879,14 +2879,14 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        SetColliderSizeWithInflation((float)0.0f);
-        _kinematicCollider.Position = TransientPosition;
+        SetColliderSizeWithInflation((float)KinematicContactOffset);
         for(int i = 0; i < totalOverlaps; i++)
         {
             #if KCC_DEBUGGER
             KCCDebugger.DrawText(colliders[i].Position, $"Unstuck #{i}", false);
             #endif
 
+            _kinematicCollider.Position = TransientPosition + requiredPush;
             if(!Collider.ComputePenetration(_kinematicCollider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
                 if(colliders[i] is MeshCollider meshCollider)
@@ -2923,8 +2923,8 @@ public class KinematicCharacterController : KinematicBase
                     #endif
 
                     solvedOverlaps++;
-                    Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
-                    requiredPush += (penetrationDirection * KinematicContactOffset) - requiredPush;
+                    //Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
+                    //requiredPush += (penetrationDirection * KinematicContactOffset) - requiredPush;
                     continue;
                 }
 
@@ -3298,6 +3298,7 @@ public class KinematicCharacterController : KinematicBase
     {
         DebugDraw.DrawWireSphere(new(position, ColliderRadius), color, time, depthTest);
     }
+    #endif
 
     #if KCC_DEBUGGER
     /// <summary>
@@ -3357,6 +3358,5 @@ public class KinematicCharacterController : KinematicBase
     {
         KCCDebugger.DrawSphere(position, ColliderRadius, fillColor, outlineColor, depthTest);
     }
-    #endif
     #endif
 }
