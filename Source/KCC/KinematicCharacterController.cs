@@ -2879,14 +2879,14 @@ public class KinematicCharacterController : KinematicBase
         Vector3 requiredPush = Vector3.Zero;
 
         //need inflate the colliders a bit for the ComputePenetration, as the collider's contact offset is ignored
-        SetColliderSizeWithInflation((float)KinematicContactOffset);
+        SetColliderSizeWithInflation((float)KinematicContactOffset * 2.0f);
+        _kinematicCollider.Position = TransientPosition;
         for(int i = 0; i < totalOverlaps; i++)
         {
             #if KCC_DEBUGGER
             KCCDebugger.DrawText(colliders[i].Position, $"Unstuck #{i}", false);
             #endif
 
-            _kinematicCollider.Position = TransientPosition + requiredPush;
             if(!Collider.ComputePenetration(_kinematicCollider, colliders[i], out Vector3 penetrationDirection, out float penetrationDistance))
             {
                 if(colliders[i] is MeshCollider meshCollider)
@@ -2923,8 +2923,8 @@ public class KinematicCharacterController : KinematicBase
                     #endif
 
                     solvedOverlaps++;
-                    //Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
-                    //requiredPush += (penetrationDirection * KinematicContactOffset) - requiredPush;
+                    Controller.KinematicUnstuckEvent(colliders[i], penetrationDirection, (float)KinematicContactOffset);
+                    requiredPush += (penetrationDirection * KinematicContactOffset) - requiredPush;
                     continue;
                 }
 
