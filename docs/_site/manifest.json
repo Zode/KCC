@@ -26,6 +26,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/KCC.GroundFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.GroundFlag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.GroundFlag",
+      "Summary": "<p sourcefile=\"api/KCC.GroundFlag.yml\" sourcestartlinenumber=\"1\">Ground flags for KCC characters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/KCC.GroundState.yml",
       "output": {
         ".html": {
@@ -96,6 +110,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/KCC.KCCGlobal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.KCCGlobal.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.KCCGlobal",
+      "Summary": "<p sourcefile=\"api/KCC.KCCGlobal.yml\" sourcestartlinenumber=\"1\">Evil static class for caching stuff on global level</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/KCC.KCCSettings.yml",
       "output": {
         ".html": {
@@ -149,6 +177,34 @@
       "IsMRef": true,
       "Title": "KCC.KinematicMover",
       "Summary": "<p sourcefile=\"api/KCC.KinematicMover.yml\" sourcestartlinenumber=\"1\">KCC Simulation driven object.\nUtility class that makes kinematic elevators and such faster to program.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.PartialGroundSolveMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.PartialGroundSolveMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.PartialGroundSolveMode",
+      "Summary": "<p sourcefile=\"api/KCC.PartialGroundSolveMode.yml\" sourcestartlinenumber=\"1\">Partial ground solving mode for KCC characters.\nDetermines how to check for partial ground status.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.PhysicsFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.PhysicsFlag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.PhysicsFlag",
+      "Summary": "<p sourcefile=\"api/KCC.PhysicsFlag.yml\" sourcestartlinenumber=\"1\">Physics flags for KCC characters.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -208,6 +264,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/KCC.TriangleMeshUnstuckMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.TriangleMeshUnstuckMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.TriangleMeshUnstuckMode",
+      "Summary": "<p sourcefile=\"api/KCC.TriangleMeshUnstuckMode.yml\" sourcestartlinenumber=\"1\">Unstuck behavioral mode for KCC characters.\nDetermines how to solve situations where the physics solve can not solve penetration for non-convex mesh colliders.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KCC.UnstuckRescueMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KCC.UnstuckRescueMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KCC.UnstuckRescueMode",
+      "Summary": "<p sourcefile=\"api/KCC.UnstuckRescueMode.yml\" sourcestartlinenumber=\"1\">Unstuck rescue mode for KCC characters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/KCC.yml",
       "output": {
         ".html": {
@@ -229,6 +313,16 @@
         },
         ".json": {
           "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/debugger.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/debugger.html"
         }
       },
       "version": ""
@@ -272,6 +366,36 @@
         },
         ".json": {
           "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/debuggermenu.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/debuggermenu.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/debuggersettings.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/debuggersettings.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/debuggerwindow.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/debuggerwindow.png"
         }
       },
       "version": ""

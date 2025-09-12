@@ -10,7 +10,11 @@ public enum GroundState
 	/// </summary>
 	Ungrounded,
 	/// <summary>
-	/// Character is grounded (standing on valid ground).
+	/// The character is partially grounded (partialy standing on valid ground), checked by four line traces at each "corner' of the character.
+	/// </summary>
+	PartiallyGrounded,
+	/// <summary>
+	/// Character is fully grounded (standing on valid ground).
 	/// </summary>
 	Grounded,
 }

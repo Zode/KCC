@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_KinematicMover.md&amp;value=---%0Auid%3A%20KCC.KinematicMover%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="KCC_KinematicMover" data-uid="KCC.KinematicMover" class="text-break">
-Class KinematicMover  
+Class KinematicMover  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -118,7 +118,6 @@ public class KinematicMover : KinematicBase</code></pre>
       <div><span class="xref">Object</span></div>
       <div><span class="xref">SceneObject</span></div>
       <div><span class="xref">Actor</span></div>
-      <div><span class="xref">RigidBody</span></div>
       <div><a class="xref" href="KCC.KinematicBase.html">KinematicBase</a></div>
       <div><span class="xref">KinematicMover</span></div>
     </dd>
@@ -148,13 +147,19 @@ public class KinematicMover : KinematicBase</code></pre>
       <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__transientOrientation">KinematicBase._transientOrientation</a>
     </div>
     <div>
-      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__kccPlugin">KinematicBase._kccPlugin</a>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__rigidBody">KinematicBase._rigidBody</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_RigidBody">KinematicBase.RigidBody</a>
     </div>
     <div>
       <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetPosition_FlaxEngine_Vector3_">KinematicBase.SetPosition(Vector3)</a>
     </div>
     <div>
       <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetOrientation_FlaxEngine_Quaternion_">KinematicBase.SetOrientation(Quaternion)</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetupRigidBody">KinematicBase.SetupRigidBody()</a>
     </div>
   </dd></dl>
 
@@ -171,7 +176,7 @@ public class KinematicMover : KinematicBase</code></pre>
 
   <h3 id="KCC_KinematicMover_Controller" data-uid="KCC.KinematicMover.Controller">
   Controller
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Interface for controlling.</p>
@@ -205,7 +210,7 @@ public IKinematicMover? Controller { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicMover_KinematicAngularVelocity" data-uid="KCC.KinematicMover.KinematicAngularVelocity">
   KinematicAngularVelocity
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current angular velocity in simulation.</p>
@@ -239,7 +244,7 @@ public Vector3 KinematicAngularVelocity { get; }</code></pre>
 
   <h3 id="KCC_KinematicMover_KinematicVelocity" data-uid="KCC.KinematicMover.KinematicVelocity">
   KinematicVelocity
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current velocity in simulation.</p>
@@ -277,7 +282,7 @@ public Vector3 KinematicVelocity { get; }</code></pre>
 
   <h3 id="KCC_KinematicMover_KinematicUpdate" data-uid="KCC.KinematicMover.KinematicUpdate">
   KinematicUpdate()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Calculate movement. This should not ever be called directly.</p>
@@ -304,7 +309,7 @@ public Vector3 KinematicVelocity { get; }</code></pre>
 
   <h3 id="KCC_KinematicMover_OnDisable" data-uid="KCC.KinematicMover.OnDisable">
   OnDisable()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called when actor gets removed from game systems. Occurs on EndPlay event or when actor gets inactivated in hierarchy. Use this event to unregister object from other game system (eg. audio).</p>
@@ -331,7 +336,7 @@ public Vector3 KinematicVelocity { get; }</code></pre>
 
   <h3 id="KCC_KinematicMover_OnEnable" data-uid="KCC.KinematicMover.OnEnable">
   OnEnable()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called when actor gets added to game systems. Occurs on BeginPlay event or when actor gets activated in hierarchy. Use this event to register object to other game system (eg. audio).</p>
@@ -354,10 +359,71 @@ public Vector3 KinematicVelocity { get; }</code></pre>
 
 
 
+  <a id="KCC_KinematicMover_SwitchKinematics_" data-uid="KCC.KinematicMover.SwitchKinematics*"></a>
+
+  <h3 id="KCC_KinematicMover_SwitchKinematics_System_Boolean_" data-uid="KCC.KinematicMover.SwitchKinematics(System.Boolean)">
+  SwitchKinematics(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Switch the Collider(s) to kinematic Collider(s) or vice versa.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SwitchKinematics(bool mode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mode</code> <span class="xref">bool</span></dt>
+    <dd><p>if <code>true</code> Collider(s) are set to kinematic Collider(s), if <code>false</code> Collider(s) are set to RigidBody Collider(s)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicMover_SyncKinematics_" data-uid="KCC.KinematicMover.SyncKinematics*"></a>
+
+  <h3 id="KCC_KinematicMover_SyncKinematics" data-uid="KCC.KinematicMover.SyncKinematics">
+  SyncKinematics()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Synchronize the kinematic colliders with the KCC Actor's transient position and orientation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SyncKinematics()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
+          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicMover.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

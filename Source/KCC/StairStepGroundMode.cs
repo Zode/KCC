@@ -1,29 +1,31 @@
+using System;
+
 namespace KCC;
 
 /// <summary>
 /// Stair stepping mode for KCC characters.
 /// Determines what type of stairstepping is allowed.
 /// </summary>
-public enum StairStepGroundMode : byte
+public enum StairStepGroundMode
 {
 	/// <summary>
 	/// Always stairstep.
 	/// </summary>
-	None,
+	None = GroundFlag.None,
 	/// <summary>
 	/// Stairstep only when solid is hit.
 	/// </summary>
-	RequireSolid,
+	RequireSolid = GroundFlag.Solid,
 	/// <summary>
 	/// Stairstep only when stable solid is hit.
 	/// </summary>
-	RequireStableSolid,
+	RequireStableSolid = GroundFlag.Solid | GroundFlag.Stable,
 	/// <summary>
 	/// Stairstep only when solid with ground tag is hit.
 	/// </summary>
-	RequireGround,
+	RequireGround = GroundFlag.Solid | GroundFlag.GroundTag,
 	/// <summary>
 	/// Stairstep only when stable solid with ground tag is hit.
 	/// </summary>
-	RequireStableGround,
+	RequireStableGround = GroundFlag.Solid | GroundFlag.Stable | GroundFlag.GroundTag,
 }

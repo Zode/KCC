@@ -12,7 +12,7 @@ public class KCCSettings
 	/// <summary>
 	/// Should the system interpolate characters and movers?
 	/// </summary>
-	public bool Interpolate = true;
+	public bool Interpolate = false;
 	/// <summary>
 	/// Initial list capacity of kinematic characters, this is not the limit but rather will avoid unnecessary memory allocations.
 	/// </summary>
@@ -21,12 +21,4 @@ public class KCCSettings
 	/// Initial list capacity of kinematic movers, this is not the limit but rather will avoid unnecessary memory allocations.
 	/// </summary>
 	public int MoverInitialCapacity = 100;
-	/// <summary>
-	/// The update mode where interpolation should happen (if enabled).
-	/// </summary>
-	public InterpolationMode InterpolationMode = InterpolationMode.LateUpdate;
-	/// <summary>
-	/// Determines if KCC should display its debug visuals in editor when a KCC character is selected.
-	/// </summary>
-	public bool DebugDisplay = true;
 }
