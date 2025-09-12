@@ -66,7 +66,7 @@ The following are currently available:
 * `KCCDebugger.DrawText(Vector3 position, string text, int size, float scale, Color color, bool depthTest)`
 * `KCCDebugger.DrawText(Vector3 position, string text, bool depthTest)` (Uses KCC Debugger settings for size/scale/color)
 
-You may access the KCC Debugger settings for the colors from: `KCCDebugger.Options`, see [KCCDebuggerOptions](/api/KCC.KCCDebuggerOptions.html) for properties.
+You may access the KCC Debugger settings for the colors from: `KCCDebugger.Options`, see `KCCDebuggerOptions` for properties.
 
 ## Settings
 

@@ -93,7 +93,7 @@
 <p>After making your kinematic character, you need to make a script that implements the <a href="/api/KCC.IKinematicCharacter.html">IkinematicCharacterController</a> interface and assign the script to the controller’s <code>Controller</code> property (this can be simply done by just assigning it on the script’s OnEnable, check the <a href="https://github.com/Zode/KCCExample">KCCExample repository</a>.</p>
 <div class="TIP">
 <h5>Tip</h5>
-<p>This method of assigning interfaces means you can hotswap what script is controlling the controller, which may be useful in case you need to swap a character between AI control and Player control.</p>
+<p>This method of assigning interfaces means you can hotswap which script is controlling the controller, which may be useful in case you need to swap a character between AI control and Player control.</p>
 </div>
 <p>This interface will provide you with the necessary callbacks to alter the behavior during runtime.
 <strong>The controller MUST have an uniform scale of 1</strong>, if you wish to to resize the character please update the relevant properties in the <code>KinematicCharacterController</code>.</p>
@@ -113,7 +113,7 @@ You may use the <code>InitialPosition</code> and <code>InitialOrientation</code>
 <p>The <code>KinematicCharacterController</code> exposes some helper functions for smoother development, most notably: <code>OverlapCollider</code> which can be used to query all overlaps with optional inflation for collider size, <code>CastCollider</code> which can be used to do a standard collider cast.</p>
 <p>Both of these functions automatically select the correct collider shape that matches the controller’s shape.</p>
 <p><code>ForceUnground </code>for jumping and other purposes, <code>IsNormalStableGround</code> for querying if a normal is considered stable with the controller’s settings, and <code>GroundTangent</code> which works similarly to Vector3’s <code>ProjectOnPlane</code> without any of the lateral movement.</p>
-<p>Additionally for debugging purposes <code>DebugDrawCollider</code> is exposed for quickly drawing a wire shape that matches the controller’s shape. <strong>If you use this function you need to wrap it in <code>FLAX_EDITOR</code> define guards.</strong></p>
+<p>Additionally for debugging purposes <code>FlaxDebugDrawCollider</code> is exposed for quickly drawing a wire shape that matches the controller’s shape. <strong>If you use this function you need to wrap it in <code>FLAX_EDITOR</code> define guards.</strong> This will use Flax's debug draw calls, if you wish to use the KCC Debugger, please have a look <a href="debugger.html">in this article</a></p>
 </div>
 
 </article>

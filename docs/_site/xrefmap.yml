@@ -31,6 +31,36 @@ references:
   commentId: F:KCC.ColliderType.Sphere
   fullName: KCC.ColliderType.Sphere
   nameWithType: ColliderType.Sphere
+- uid: KCC.GroundFlag
+  name: GroundFlag
+  href: api/KCC.GroundFlag.html
+  commentId: T:KCC.GroundFlag
+  fullName: KCC.GroundFlag
+  nameWithType: GroundFlag
+- uid: KCC.GroundFlag.GroundTag
+  name: GroundTag
+  href: api/KCC.GroundFlag.html#KCC_GroundFlag_GroundTag
+  commentId: F:KCC.GroundFlag.GroundTag
+  fullName: KCC.GroundFlag.GroundTag
+  nameWithType: GroundFlag.GroundTag
+- uid: KCC.GroundFlag.None
+  name: None
+  href: api/KCC.GroundFlag.html#KCC_GroundFlag_None
+  commentId: F:KCC.GroundFlag.None
+  fullName: KCC.GroundFlag.None
+  nameWithType: GroundFlag.None
+- uid: KCC.GroundFlag.Solid
+  name: Solid
+  href: api/KCC.GroundFlag.html#KCC_GroundFlag_Solid
+  commentId: F:KCC.GroundFlag.Solid
+  fullName: KCC.GroundFlag.Solid
+  nameWithType: GroundFlag.Solid
+- uid: KCC.GroundFlag.Stable
+  name: Stable
+  href: api/KCC.GroundFlag.html#KCC_GroundFlag_Stable
+  commentId: F:KCC.GroundFlag.Stable
+  fullName: KCC.GroundFlag.Stable
+  nameWithType: GroundFlag.Stable
 - uid: KCC.GroundState
   name: GroundState
   href: api/KCC.GroundState.html
@@ -43,6 +73,12 @@ references:
   commentId: F:KCC.GroundState.Grounded
   fullName: KCC.GroundState.Grounded
   nameWithType: GroundState.Grounded
+- uid: KCC.GroundState.PartiallyGrounded
+  name: PartiallyGrounded
+  href: api/KCC.GroundState.html#KCC_GroundState_PartiallyGrounded
+  commentId: F:KCC.GroundState.PartiallyGrounded
+  fullName: KCC.GroundState.PartiallyGrounded
+  nameWithType: GroundState.PartiallyGrounded
 - uid: KCC.GroundState.Ungrounded
   name: Ungrounded
   href: api/KCC.GroundState.html#KCC_GroundState_Ungrounded
@@ -97,12 +133,15 @@ references:
   isSpec: "True"
   fullName: KCC.IKinematicCharacter.KinematicCanAttachToRigidBody
   nameWithType: IKinematicCharacter.KinematicCanAttachToRigidBody
-- uid: KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit)
-  name: KinematicCollision(RayCastHit)
-  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicCollision_FlaxEngine_RayCastHit_
-  commentId: M:KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit)
-  fullName: KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit)
-  nameWithType: IKinematicCharacter.KinematicCollision(RayCastHit)
+- uid: KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit@)
+  name: KinematicCollision(ref RayCastHit)
+  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicCollision_FlaxEngine_RayCastHit__
+  commentId: M:KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit@)
+  name.vb: KinematicCollision(RayCastHit)
+  fullName: KCC.IKinematicCharacter.KinematicCollision(ref FlaxEngine.RayCastHit)
+  fullName.vb: KCC.IKinematicCharacter.KinematicCollision(FlaxEngine.RayCastHit)
+  nameWithType: IKinematicCharacter.KinematicCollision(ref RayCastHit)
+  nameWithType.vb: IKinematicCharacter.KinematicCollision(RayCastHit)
 - uid: KCC.IKinematicCharacter.KinematicCollision*
   name: KinematicCollision
   href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicCollision_
@@ -110,12 +149,12 @@ references:
   isSpec: "True"
   fullName: KCC.IKinematicCharacter.KinematicCollision
   nameWithType: IKinematicCharacter.KinematicCollision
-- uid: KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.Collider)
-  name: KinematicCollisionValid(Collider)
-  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicCollisionValid_FlaxEngine_Collider_
-  commentId: M:KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.Collider)
-  fullName: KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.Collider)
-  nameWithType: IKinematicCharacter.KinematicCollisionValid(Collider)
+- uid: KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.PhysicsColliderActor)
+  name: KinematicCollisionValid(PhysicsColliderActor)
+  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicCollisionValid_FlaxEngine_PhysicsColliderActor_
+  commentId: M:KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.PhysicsColliderActor)
+  fullName: KCC.IKinematicCharacter.KinematicCollisionValid(FlaxEngine.PhysicsColliderActor)
+  nameWithType: IKinematicCharacter.KinematicCollisionValid(PhysicsColliderActor)
 - uid: KCC.IKinematicCharacter.KinematicCollisionValid*
   name: KinematicCollisionValid
   href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicCollisionValid_
@@ -136,12 +175,12 @@ references:
   isSpec: "True"
   fullName: KCC.IKinematicCharacter.KinematicGroundProjection
   nameWithType: IKinematicCharacter.KinematicGroundProjection
-- uid: KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState,System.Nullable{FlaxEngine.RayCastHit})
-  name: KinematicGroundingEvent(GroundState, RayCastHit?)
-  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicGroundingEvent_KCC_GroundState_System_Nullable_FlaxEngine_RayCastHit__
-  commentId: M:KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState,System.Nullable{FlaxEngine.RayCastHit})
-  fullName: KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState, FlaxEngine.RayCastHit?)
-  nameWithType: IKinematicCharacter.KinematicGroundingEvent(GroundState, RayCastHit?)
+- uid: KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState,KCC.GroundFlag,FlaxEngine.RayCastHit)
+  name: KinematicGroundingEvent(GroundState, GroundFlag, RayCastHit)
+  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicGroundingEvent_KCC_GroundState_KCC_GroundFlag_FlaxEngine_RayCastHit_
+  commentId: M:KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState,KCC.GroundFlag,FlaxEngine.RayCastHit)
+  fullName: KCC.IKinematicCharacter.KinematicGroundingEvent(KCC.GroundState, KCC.GroundFlag, FlaxEngine.RayCastHit)
+  nameWithType: IKinematicCharacter.KinematicGroundingEvent(GroundState, GroundFlag, RayCastHit)
 - uid: KCC.IKinematicCharacter.KinematicGroundingEvent*
   name: KinematicGroundingEvent
   href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicGroundingEvent_
@@ -149,15 +188,15 @@ references:
   isSpec: "True"
   fullName: KCC.IKinematicCharacter.KinematicGroundingEvent
   nameWithType: IKinematicCharacter.KinematicGroundingEvent
-- uid: KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3@,FlaxEngine.Quaternion@)
-  name: KinematicMoveUpdate(out Vector3, out Quaternion)
-  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicMoveUpdate_FlaxEngine_Vector3__FlaxEngine_Quaternion__
-  commentId: M:KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3@,FlaxEngine.Quaternion@)
-  name.vb: KinematicMoveUpdate(Vector3, Quaternion)
-  fullName: KCC.IKinematicCharacter.KinematicMoveUpdate(out FlaxEngine.Vector3, out FlaxEngine.Quaternion)
-  fullName.vb: KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3, FlaxEngine.Quaternion)
-  nameWithType: IKinematicCharacter.KinematicMoveUpdate(out Vector3, out Quaternion)
-  nameWithType.vb: IKinematicCharacter.KinematicMoveUpdate(Vector3, Quaternion)
+- uid: KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3@)
+  name: KinematicMoveUpdate(out Vector3)
+  href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicMoveUpdate_FlaxEngine_Vector3__
+  commentId: M:KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3@)
+  name.vb: KinematicMoveUpdate(Vector3)
+  fullName: KCC.IKinematicCharacter.KinematicMoveUpdate(out FlaxEngine.Vector3)
+  fullName.vb: KCC.IKinematicCharacter.KinematicMoveUpdate(FlaxEngine.Vector3)
+  nameWithType: IKinematicCharacter.KinematicMoveUpdate(out Vector3)
+  nameWithType.vb: IKinematicCharacter.KinematicMoveUpdate(Vector3)
 - uid: KCC.IKinematicCharacter.KinematicMoveUpdate*
   name: KinematicMoveUpdate
   href: api/KCC.IKinematicCharacter.html#KCC_IKinematicCharacter_KinematicMoveUpdate_
@@ -324,6 +363,19 @@ references:
   isSpec: "True"
   fullName: KCC.KCC.KCCSettingsInstance
   nameWithType: KCC.KCCSettingsInstance
+- uid: KCC.KCC.OnDraw
+  name: OnDraw()
+  href: api/KCC.KCC.html#KCC_KCC_OnDraw
+  commentId: M:KCC.KCC.OnDraw
+  fullName: KCC.KCC.OnDraw()
+  nameWithType: KCC.OnDraw()
+- uid: KCC.KCC.OnDraw*
+  name: OnDraw
+  href: api/KCC.KCC.html#KCC_KCC_OnDraw_
+  commentId: Overload:KCC.KCC.OnDraw
+  isSpec: "True"
+  fullName: KCC.KCC.OnDraw
+  nameWithType: KCC.OnDraw
 - uid: KCC.KCC.OnFixedUpdate
   name: OnFixedUpdate()
   href: api/KCC.KCC.html#KCC_KCC_OnFixedUpdate
@@ -337,32 +389,6 @@ references:
   isSpec: "True"
   fullName: KCC.KCC.OnFixedUpdate
   nameWithType: KCC.OnFixedUpdate
-- uid: KCC.KCC.OnLateUpdate
-  name: OnLateUpdate()
-  href: api/KCC.KCC.html#KCC_KCC_OnLateUpdate
-  commentId: M:KCC.KCC.OnLateUpdate
-  fullName: KCC.KCC.OnLateUpdate()
-  nameWithType: KCC.OnLateUpdate()
-- uid: KCC.KCC.OnLateUpdate*
-  name: OnLateUpdate
-  href: api/KCC.KCC.html#KCC_KCC_OnLateUpdate_
-  commentId: Overload:KCC.KCC.OnLateUpdate
-  isSpec: "True"
-  fullName: KCC.KCC.OnLateUpdate
-  nameWithType: KCC.OnLateUpdate
-- uid: KCC.KCC.OnUpdate
-  name: OnUpdate()
-  href: api/KCC.KCC.html#KCC_KCC_OnUpdate
-  commentId: M:KCC.KCC.OnUpdate
-  fullName: KCC.KCC.OnUpdate()
-  nameWithType: KCC.OnUpdate()
-- uid: KCC.KCC.OnUpdate*
-  name: OnUpdate
-  href: api/KCC.KCC.html#KCC_KCC_OnUpdate_
-  commentId: Overload:KCC.KCC.OnUpdate
-  isSpec: "True"
-  fullName: KCC.KCC.OnUpdate
-  nameWithType: KCC.OnUpdate
 - uid: KCC.KCC.PostSimulationUpdate
   name: PostSimulationUpdate()
   href: api/KCC.KCC.html#KCC_KCC_PostSimulationUpdate
@@ -458,6 +484,25 @@ references:
   isSpec: "True"
   fullName: KCC.KCC.Unregister
   nameWithType: KCC.Unregister
+- uid: KCC.KCCGlobal
+  name: KCCGlobal
+  href: api/KCC.KCCGlobal.html
+  commentId: T:KCC.KCCGlobal
+  fullName: KCC.KCCGlobal
+  nameWithType: KCCGlobal
+- uid: KCC.KCCGlobal.Plugin
+  name: Plugin
+  href: api/KCC.KCCGlobal.html#KCC_KCCGlobal_Plugin
+  commentId: P:KCC.KCCGlobal.Plugin
+  fullName: KCC.KCCGlobal.Plugin
+  nameWithType: KCCGlobal.Plugin
+- uid: KCC.KCCGlobal.Plugin*
+  name: Plugin
+  href: api/KCC.KCCGlobal.html#KCC_KCCGlobal_Plugin_
+  commentId: Overload:KCC.KCCGlobal.Plugin
+  isSpec: "True"
+  fullName: KCC.KCCGlobal.Plugin
+  nameWithType: KCCGlobal.Plugin
 - uid: KCC.KCCSettings
   name: KCCSettings
   href: api/KCC.KCCSettings.html
@@ -476,24 +521,12 @@ references:
   commentId: F:KCC.KCCSettings.CharacterInitialCapacity
   fullName: KCC.KCCSettings.CharacterInitialCapacity
   nameWithType: KCCSettings.CharacterInitialCapacity
-- uid: KCC.KCCSettings.DebugDisplay
-  name: DebugDisplay
-  href: api/KCC.KCCSettings.html#KCC_KCCSettings_DebugDisplay
-  commentId: F:KCC.KCCSettings.DebugDisplay
-  fullName: KCC.KCCSettings.DebugDisplay
-  nameWithType: KCCSettings.DebugDisplay
 - uid: KCC.KCCSettings.Interpolate
   name: Interpolate
   href: api/KCC.KCCSettings.html#KCC_KCCSettings_Interpolate
   commentId: F:KCC.KCCSettings.Interpolate
   fullName: KCC.KCCSettings.Interpolate
   nameWithType: KCCSettings.Interpolate
-- uid: KCC.KCCSettings.InterpolationMode
-  name: InterpolationMode
-  href: api/KCC.KCCSettings.html#KCC_KCCSettings_InterpolationMode
-  commentId: F:KCC.KCCSettings.InterpolationMode
-  fullName: KCC.KCCSettings.InterpolationMode
-  nameWithType: KCCSettings.InterpolationMode
 - uid: KCC.KCCSettings.MoverInitialCapacity
   name: MoverInitialCapacity
   href: api/KCC.KCCSettings.html#KCC_KCCSettings_MoverInitialCapacity
@@ -506,25 +539,6 @@ references:
   commentId: T:KCC.KinematicBase
   fullName: KCC.KinematicBase
   nameWithType: KinematicBase
-- uid: KCC.KinematicBase.#ctor
-  name: KinematicBase()
-  href: api/KCC.KinematicBase.html#KCC_KinematicBase__ctor
-  commentId: M:KCC.KinematicBase.#ctor
-  name.vb: New()
-  fullName: KCC.KinematicBase.KinematicBase()
-  fullName.vb: KCC.KinematicBase.New()
-  nameWithType: KinematicBase.KinematicBase()
-  nameWithType.vb: KinematicBase.New()
-- uid: KCC.KinematicBase.#ctor*
-  name: KinematicBase
-  href: api/KCC.KinematicBase.html#KCC_KinematicBase__ctor_
-  commentId: Overload:KCC.KinematicBase.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: KCC.KinematicBase.KinematicBase
-  fullName.vb: KCC.KinematicBase.New
-  nameWithType: KinematicBase.KinematicBase
-  nameWithType.vb: KinematicBase.New
 - uid: KCC.KinematicBase.InitialOrientation
   name: InitialOrientation
   href: api/KCC.KinematicBase.html#KCC_KinematicBase_InitialOrientation
@@ -551,6 +565,19 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicBase.InitialPosition
   nameWithType: KinematicBase.InitialPosition
+- uid: KCC.KinematicBase.RigidBody
+  name: RigidBody
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_RigidBody
+  commentId: P:KCC.KinematicBase.RigidBody
+  fullName: KCC.KinematicBase.RigidBody
+  nameWithType: KinematicBase.RigidBody
+- uid: KCC.KinematicBase.RigidBody*
+  name: RigidBody
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_RigidBody_
+  commentId: Overload:KCC.KinematicBase.RigidBody
+  isSpec: "True"
+  fullName: KCC.KinematicBase.RigidBody
+  nameWithType: KinematicBase.RigidBody
 - uid: KCC.KinematicBase.SetOrientation(FlaxEngine.Quaternion)
   name: SetOrientation(Quaternion)
   href: api/KCC.KinematicBase.html#KCC_KinematicBase_SetOrientation_FlaxEngine_Quaternion_
@@ -577,6 +604,48 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicBase.SetPosition
   nameWithType: KinematicBase.SetPosition
+- uid: KCC.KinematicBase.SetupRigidBody
+  name: SetupRigidBody()
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_SetupRigidBody
+  commentId: M:KCC.KinematicBase.SetupRigidBody
+  fullName: KCC.KinematicBase.SetupRigidBody()
+  nameWithType: KinematicBase.SetupRigidBody()
+- uid: KCC.KinematicBase.SetupRigidBody*
+  name: SetupRigidBody
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_SetupRigidBody_
+  commentId: Overload:KCC.KinematicBase.SetupRigidBody
+  isSpec: "True"
+  fullName: KCC.KinematicBase.SetupRigidBody
+  nameWithType: KinematicBase.SetupRigidBody
+- uid: KCC.KinematicBase.SwitchKinematics(System.Boolean)
+  name: SwitchKinematics(bool)
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_SwitchKinematics_System_Boolean_
+  commentId: M:KCC.KinematicBase.SwitchKinematics(System.Boolean)
+  name.vb: SwitchKinematics(Boolean)
+  fullName: KCC.KinematicBase.SwitchKinematics(bool)
+  fullName.vb: KCC.KinematicBase.SwitchKinematics(Boolean)
+  nameWithType: KinematicBase.SwitchKinematics(bool)
+  nameWithType.vb: KinematicBase.SwitchKinematics(Boolean)
+- uid: KCC.KinematicBase.SwitchKinematics*
+  name: SwitchKinematics
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_SwitchKinematics_
+  commentId: Overload:KCC.KinematicBase.SwitchKinematics
+  isSpec: "True"
+  fullName: KCC.KinematicBase.SwitchKinematics
+  nameWithType: KinematicBase.SwitchKinematics
+- uid: KCC.KinematicBase.SyncKinematics
+  name: SyncKinematics()
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_SyncKinematics
+  commentId: M:KCC.KinematicBase.SyncKinematics
+  fullName: KCC.KinematicBase.SyncKinematics()
+  nameWithType: KinematicBase.SyncKinematics()
+- uid: KCC.KinematicBase.SyncKinematics*
+  name: SyncKinematics
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase_SyncKinematics_
+  commentId: Overload:KCC.KinematicBase.SyncKinematics
+  isSpec: "True"
+  fullName: KCC.KinematicBase.SyncKinematics
+  nameWithType: KinematicBase.SyncKinematics
 - uid: KCC.KinematicBase.TransientOrientation
   name: TransientOrientation
   href: api/KCC.KinematicBase.html#KCC_KinematicBase_TransientOrientation
@@ -603,12 +672,12 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicBase.TransientPosition
   nameWithType: KinematicBase.TransientPosition
-- uid: KCC.KinematicBase._kccPlugin
-  name: _kccPlugin
-  href: api/KCC.KinematicBase.html#KCC_KinematicBase__kccPlugin
-  commentId: F:KCC.KinematicBase._kccPlugin
-  fullName: KCC.KinematicBase._kccPlugin
-  nameWithType: KinematicBase._kccPlugin
+- uid: KCC.KinematicBase._rigidBody
+  name: _rigidBody
+  href: api/KCC.KinematicBase.html#KCC_KinematicBase__rigidBody
+  commentId: F:KCC.KinematicBase._rigidBody
+  fullName: KCC.KinematicBase._rigidBody
+  nameWithType: KinematicBase._rigidBody
 - uid: KCC.KinematicBase._transientOrientation
   name: _transientOrientation
   href: api/KCC.KinematicBase.html#KCC_KinematicBase__transientOrientation
@@ -679,15 +748,24 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.CanGround
   nameWithType: KinematicCharacterController.CanGround
-- uid: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,System.Boolean)
-  name: CastCollider(Vector3, Vector3, out RayCastHit, float, uint, bool)
-  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_System_Boolean_
-  commentId: M:KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,System.Boolean)
-  name.vb: CastCollider(Vector3, Vector3, RayCastHit, Single, UInteger, Boolean)
-  fullName: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit, float, uint, bool)
-  fullName.vb: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit, Single, UInteger, Boolean)
-  nameWithType: KinematicCharacterController.CastCollider(Vector3, Vector3, out RayCastHit, float, uint, bool)
-  nameWithType.vb: KinematicCharacterController.CastCollider(Vector3, Vector3, RayCastHit, Single, UInteger, Boolean)
+- uid: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name: CastCollider(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name.vb: CastCollider(Vector3, Vector3, RayCastHit, Single, UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit, float, uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit, Single, UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.CastCollider(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.CastCollider(Vector3, Vector3, RayCastHit, Single, UInteger, PhysicsFlag)
+- uid: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name: CastCollider(Vector3, Vector3, out RayCastHit[], float, uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit____System_Single_System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name.vb: CastCollider(Vector3, Vector3, RayCastHit(), Single, UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit[], float, uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit(), Single, UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.CastCollider(Vector3, Vector3, out RayCastHit[], float, uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.CastCollider(Vector3, Vector3, RayCastHit(), Single, UInteger, PhysicsFlag)
 - uid: KCC.KinematicCharacterController.CastCollider*
   name: CastCollider
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastCollider_
@@ -695,19 +773,49 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.CastCollider
   nameWithType: KinematicCharacterController.CastCollider
-- uid: KCC.KinematicCharacterController.ColliderContactOffset
-  name: ColliderContactOffset
-  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderContactOffset
-  commentId: P:KCC.KinematicCharacterController.ColliderContactOffset
-  fullName: KCC.KinematicCharacterController.ColliderContactOffset
-  nameWithType: KinematicCharacterController.ColliderContactOffset
-- uid: KCC.KinematicCharacterController.ColliderContactOffset*
-  name: ColliderContactOffset
-  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderContactOffset_
-  commentId: Overload:KCC.KinematicCharacterController.ColliderContactOffset
+- uid: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name: CastLine(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name.vb: CastLine(Vector3, Vector3, RayCastHit, Single, UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit, float, uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit, Single, UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.CastLine(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.CastLine(Vector3, Vector3, RayCastHit, Single, UInteger, PhysicsFlag)
+- uid: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.UInt32,KCC.PhysicsFlag)
+  name: CastLine(Vector3, Vector3, out RayCastHit, uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.UInt32,KCC.PhysicsFlag)
+  name.vb: CastLine(Vector3, Vector3, RayCastHit, UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit, uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit, UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.CastLine(Vector3, Vector3, out RayCastHit, uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.CastLine(Vector3, Vector3, RayCastHit, UInteger, PhysicsFlag)
+- uid: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name: CastLine(Vector3, Vector3, out RayCastHit[], float, uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit____System_Single_System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.Single,System.UInt32,KCC.PhysicsFlag)
+  name.vb: CastLine(Vector3, Vector3, RayCastHit(), Single, UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit[], float, uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit(), Single, UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.CastLine(Vector3, Vector3, out RayCastHit[], float, uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.CastLine(Vector3, Vector3, RayCastHit(), Single, UInteger, PhysicsFlag)
+- uid: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.UInt32,KCC.PhysicsFlag)
+  name: CastLine(Vector3, Vector3, out RayCastHit[], uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit____System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.UInt32,KCC.PhysicsFlag)
+  name.vb: CastLine(Vector3, Vector3, RayCastHit(), UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, out FlaxEngine.RayCastHit[], uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3, FlaxEngine.Vector3, FlaxEngine.RayCastHit(), UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.CastLine(Vector3, Vector3, out RayCastHit[], uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.CastLine(Vector3, Vector3, RayCastHit(), UInteger, PhysicsFlag)
+- uid: KCC.KinematicCharacterController.CastLine*
+  name: CastLine
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastLine_
+  commentId: Overload:KCC.KinematicCharacterController.CastLine
   isSpec: "True"
-  fullName: KCC.KinematicCharacterController.ColliderContactOffset
-  nameWithType: KinematicCharacterController.ColliderContactOffset
+  fullName: KCC.KinematicCharacterController.CastLine
+  nameWithType: KinematicCharacterController.CastLine
 - uid: KCC.KinematicCharacterController.ColliderHalfHeight
   name: ColliderHalfHeight
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderHalfHeight
@@ -760,6 +868,32 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.ColliderRadius
   nameWithType: KinematicCharacterController.ColliderRadius
+- uid: KCC.KinematicCharacterController.ColliderTop
+  name: ColliderTop
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderTop
+  commentId: P:KCC.KinematicCharacterController.ColliderTop
+  fullName: KCC.KinematicCharacterController.ColliderTop
+  nameWithType: KinematicCharacterController.ColliderTop
+- uid: KCC.KinematicCharacterController.ColliderTop*
+  name: ColliderTop
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderTop_
+  commentId: Overload:KCC.KinematicCharacterController.ColliderTop
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.ColliderTop
+  nameWithType: KinematicCharacterController.ColliderTop
+- uid: KCC.KinematicCharacterController.ColliderTopVector
+  name: ColliderTopVector
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderTopVector
+  commentId: P:KCC.KinematicCharacterController.ColliderTopVector
+  fullName: KCC.KinematicCharacterController.ColliderTopVector
+  nameWithType: KinematicCharacterController.ColliderTopVector
+- uid: KCC.KinematicCharacterController.ColliderTopVector*
+  name: ColliderTopVector
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderTopVector_
+  commentId: Overload:KCC.KinematicCharacterController.ColliderTopVector
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.ColliderTopVector
+  nameWithType: KinematicCharacterController.ColliderTopVector
 - uid: KCC.KinematicCharacterController.ColliderType
   name: ColliderType
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_ColliderType
@@ -838,6 +972,22 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.GravityEulerNormalized
   nameWithType: KinematicCharacterController.GravityEulerNormalized
+- uid: KCC.KinematicCharacterController.GroundCheck(FlaxEngine.RayCastHit@)
+  name: GroundCheck(out RayCastHit)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundCheck_FlaxEngine_RayCastHit__
+  commentId: M:KCC.KinematicCharacterController.GroundCheck(FlaxEngine.RayCastHit@)
+  name.vb: GroundCheck(RayCastHit)
+  fullName: KCC.KinematicCharacterController.GroundCheck(out FlaxEngine.RayCastHit)
+  fullName.vb: KCC.KinematicCharacterController.GroundCheck(FlaxEngine.RayCastHit)
+  nameWithType: KinematicCharacterController.GroundCheck(out RayCastHit)
+  nameWithType.vb: KinematicCharacterController.GroundCheck(RayCastHit)
+- uid: KCC.KinematicCharacterController.GroundCheck*
+  name: GroundCheck
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundCheck_
+  commentId: Overload:KCC.KinematicCharacterController.GroundCheck
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.GroundCheck
+  nameWithType: KinematicCharacterController.GroundCheck
 - uid: KCC.KinematicCharacterController.GroundNormal
   name: GroundNormal
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundNormal
@@ -903,6 +1053,19 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.GroundingDistance
   nameWithType: KinematicCharacterController.GroundingDistance
+- uid: KCC.KinematicCharacterController.HasSolidBelow
+  name: HasSolidBelow
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_HasSolidBelow
+  commentId: P:KCC.KinematicCharacterController.HasSolidBelow
+  fullName: KCC.KinematicCharacterController.HasSolidBelow
+  nameWithType: KinematicCharacterController.HasSolidBelow
+- uid: KCC.KinematicCharacterController.HasSolidBelow*
+  name: HasSolidBelow
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_HasSolidBelow_
+  commentId: Overload:KCC.KinematicCharacterController.HasSolidBelow
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.HasSolidBelow
+  nameWithType: KinematicCharacterController.HasSolidBelow
 - uid: KCC.KinematicCharacterController.IsGrounded
   name: IsGrounded
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_IsGrounded
@@ -1020,6 +1183,32 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.MaxUnstuckIterations
   nameWithType: KinematicCharacterController.MaxUnstuckIterations
+- uid: KCC.KinematicCharacterController.MaxUnstuckRescueDistance
+  name: MaxUnstuckRescueDistance
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_MaxUnstuckRescueDistance
+  commentId: P:KCC.KinematicCharacterController.MaxUnstuckRescueDistance
+  fullName: KCC.KinematicCharacterController.MaxUnstuckRescueDistance
+  nameWithType: KinematicCharacterController.MaxUnstuckRescueDistance
+- uid: KCC.KinematicCharacterController.MaxUnstuckRescueDistance*
+  name: MaxUnstuckRescueDistance
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_MaxUnstuckRescueDistance_
+  commentId: Overload:KCC.KinematicCharacterController.MaxUnstuckRescueDistance
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.MaxUnstuckRescueDistance
+  nameWithType: KinematicCharacterController.MaxUnstuckRescueDistance
+- uid: KCC.KinematicCharacterController.MinimumCreaseAngle
+  name: MinimumCreaseAngle
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_MinimumCreaseAngle
+  commentId: P:KCC.KinematicCharacterController.MinimumCreaseAngle
+  fullName: KCC.KinematicCharacterController.MinimumCreaseAngle
+  nameWithType: KinematicCharacterController.MinimumCreaseAngle
+- uid: KCC.KinematicCharacterController.MinimumCreaseAngle*
+  name: MinimumCreaseAngle
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_MinimumCreaseAngle_
+  commentId: Overload:KCC.KinematicCharacterController.MinimumCreaseAngle
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.MinimumCreaseAngle
+  nameWithType: KinematicCharacterController.MinimumCreaseAngle
 - uid: KCC.KinematicCharacterController.OnDisable
   name: OnDisable()
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_OnDisable
@@ -1046,15 +1235,15 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.OnEnable
   nameWithType: KinematicCharacterController.OnEnable
-- uid: KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,System.Boolean,System.Single)
-  name: OverlapCollider(Vector3, out Collider[], uint, bool, float)
-  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_OverlapCollider_FlaxEngine_Vector3_FlaxEngine_Collider____System_UInt32_System_Boolean_System_Single_
-  commentId: M:KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,System.Boolean,System.Single)
-  name.vb: OverlapCollider(Vector3, Collider(), UInteger, Boolean, Single)
-  fullName: KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3, out FlaxEngine.Collider[], uint, bool, float)
-  fullName.vb: KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3, FlaxEngine.Collider(), UInteger, Boolean, Single)
-  nameWithType: KinematicCharacterController.OverlapCollider(Vector3, out Collider[], uint, bool, float)
-  nameWithType.vb: KinematicCharacterController.OverlapCollider(Vector3, Collider(), UInteger, Boolean, Single)
+- uid: KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,KCC.PhysicsFlag)
+  name: OverlapCollider(Vector3, out Collider[], uint, PhysicsFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_OverlapCollider_FlaxEngine_Vector3_FlaxEngine_Collider____System_UInt32_KCC_PhysicsFlag_
+  commentId: M:KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,KCC.PhysicsFlag)
+  name.vb: OverlapCollider(Vector3, Collider(), UInteger, PhysicsFlag)
+  fullName: KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3, out FlaxEngine.Collider[], uint, KCC.PhysicsFlag)
+  fullName.vb: KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3, FlaxEngine.Collider(), UInteger, KCC.PhysicsFlag)
+  nameWithType: KinematicCharacterController.OverlapCollider(Vector3, out Collider[], uint, PhysicsFlag)
+  nameWithType.vb: KinematicCharacterController.OverlapCollider(Vector3, Collider(), UInteger, PhysicsFlag)
 - uid: KCC.KinematicCharacterController.OverlapCollider*
   name: OverlapCollider
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_OverlapCollider_
@@ -1062,6 +1251,38 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.OverlapCollider
   nameWithType: KinematicCharacterController.OverlapCollider
+- uid: KCC.KinematicCharacterController.PartialGroundNormal
+  name: PartialGroundNormal
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_PartialGroundNormal
+  commentId: P:KCC.KinematicCharacterController.PartialGroundNormal
+  fullName: KCC.KinematicCharacterController.PartialGroundNormal
+  nameWithType: KinematicCharacterController.PartialGroundNormal
+- uid: KCC.KinematicCharacterController.PartialGroundNormal*
+  name: PartialGroundNormal
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_PartialGroundNormal_
+  commentId: Overload:KCC.KinematicCharacterController.PartialGroundNormal
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.PartialGroundNormal
+  nameWithType: KinematicCharacterController.PartialGroundNormal
+- uid: KCC.KinematicCharacterController.PartialGroundSolveMode
+  name: PartialGroundSolveMode
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_PartialGroundSolveMode
+  commentId: F:KCC.KinematicCharacterController.PartialGroundSolveMode
+  fullName: KCC.KinematicCharacterController.PartialGroundSolveMode
+  nameWithType: KinematicCharacterController.PartialGroundSolveMode
+- uid: KCC.KinematicCharacterController.PartialGroundTangent(FlaxEngine.Vector3)
+  name: PartialGroundTangent(Vector3)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_PartialGroundTangent_FlaxEngine_Vector3_
+  commentId: M:KCC.KinematicCharacterController.PartialGroundTangent(FlaxEngine.Vector3)
+  fullName: KCC.KinematicCharacterController.PartialGroundTangent(FlaxEngine.Vector3)
+  nameWithType: KinematicCharacterController.PartialGroundTangent(Vector3)
+- uid: KCC.KinematicCharacterController.PartialGroundTangent*
+  name: PartialGroundTangent
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_PartialGroundTangent_
+  commentId: Overload:KCC.KinematicCharacterController.PartialGroundTangent
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.PartialGroundTangent
+  nameWithType: KinematicCharacterController.PartialGroundTangent
 - uid: KCC.KinematicCharacterController.RigidBodyInteractionMode
   name: RigidBodyInteractionMode
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_RigidBodyInteractionMode
@@ -1127,6 +1348,60 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.SlideMultiplier
   nameWithType: KinematicCharacterController.SlideMultiplier
+- uid: KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+  name: SlideSkipMultiplierWhileAirborne
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SlideSkipMultiplierWhileAirborne
+  commentId: P:KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+  fullName: KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+  nameWithType: KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+- uid: KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne*
+  name: SlideSkipMultiplierWhileAirborne
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SlideSkipMultiplierWhileAirborne_
+  commentId: Overload:KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+  nameWithType: KinematicCharacterController.SlideSkipMultiplierWhileAirborne
+- uid: KCC.KinematicCharacterController.SnapToGround
+  name: SnapToGround()
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SnapToGround
+  commentId: M:KCC.KinematicCharacterController.SnapToGround
+  fullName: KCC.KinematicCharacterController.SnapToGround()
+  nameWithType: KinematicCharacterController.SnapToGround()
+- uid: KCC.KinematicCharacterController.SnapToGround(FlaxEngine.RayCastHit)
+  name: SnapToGround(RayCastHit)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SnapToGround_FlaxEngine_RayCastHit_
+  commentId: M:KCC.KinematicCharacterController.SnapToGround(FlaxEngine.RayCastHit)
+  fullName: KCC.KinematicCharacterController.SnapToGround(FlaxEngine.RayCastHit)
+  nameWithType: KinematicCharacterController.SnapToGround(RayCastHit)
+- uid: KCC.KinematicCharacterController.SnapToGround(System.Single)
+  name: SnapToGround(float)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SnapToGround_System_Single_
+  commentId: M:KCC.KinematicCharacterController.SnapToGround(System.Single)
+  name.vb: SnapToGround(Single)
+  fullName: KCC.KinematicCharacterController.SnapToGround(float)
+  fullName.vb: KCC.KinematicCharacterController.SnapToGround(Single)
+  nameWithType: KinematicCharacterController.SnapToGround(float)
+  nameWithType.vb: KinematicCharacterController.SnapToGround(Single)
+- uid: KCC.KinematicCharacterController.SnapToGround*
+  name: SnapToGround
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SnapToGround_
+  commentId: Overload:KCC.KinematicCharacterController.SnapToGround
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.SnapToGround
+  nameWithType: KinematicCharacterController.SnapToGround
+- uid: KCC.KinematicCharacterController.SolveGround
+  name: SolveGround()
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SolveGround
+  commentId: M:KCC.KinematicCharacterController.SolveGround
+  fullName: KCC.KinematicCharacterController.SolveGround()
+  nameWithType: KinematicCharacterController.SolveGround()
+- uid: KCC.KinematicCharacterController.SolveGround*
+  name: SolveGround
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SolveGround_
+  commentId: Overload:KCC.KinematicCharacterController.SolveGround
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.SolveGround
+  nameWithType: KinematicCharacterController.SolveGround
 - uid: KCC.KinematicCharacterController.SolveRigidBodyMovements
   name: SolveRigidBodyMovements
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SolveRigidBodyMovements
@@ -1140,6 +1415,22 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.SolveRigidBodyMovements
   nameWithType: KinematicCharacterController.SolveRigidBodyMovements
+- uid: KCC.KinematicCharacterController.SolveUnstuck(System.Int32@,System.Int32@)
+  name: SolveUnstuck(out int, out int)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SolveUnstuck_System_Int32__System_Int32__
+  commentId: M:KCC.KinematicCharacterController.SolveUnstuck(System.Int32@,System.Int32@)
+  name.vb: SolveUnstuck(Integer, Integer)
+  fullName: KCC.KinematicCharacterController.SolveUnstuck(out int, out int)
+  fullName.vb: KCC.KinematicCharacterController.SolveUnstuck(Integer, Integer)
+  nameWithType: KinematicCharacterController.SolveUnstuck(out int, out int)
+  nameWithType.vb: KinematicCharacterController.SolveUnstuck(Integer, Integer)
+- uid: KCC.KinematicCharacterController.SolveUnstuck*
+  name: SolveUnstuck
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SolveUnstuck_
+  commentId: Overload:KCC.KinematicCharacterController.SolveUnstuck
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.SolveUnstuck
+  nameWithType: KinematicCharacterController.SolveUnstuck
 - uid: KCC.KinematicCharacterController.StairStepDistance
   name: StairStepDistance
   href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_StairStepDistance
@@ -1179,22 +1470,92 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicCharacterController.StairStepMinimumForwardDistance
   nameWithType: KinematicCharacterController.StairStepMinimumForwardDistance
-- uid: KCC.KinematicCharacterController.UnstuckSolve(System.Single)
-  name: UnstuckSolve(float)
-  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_UnstuckSolve_System_Single_
-  commentId: M:KCC.KinematicCharacterController.UnstuckSolve(System.Single)
-  name.vb: UnstuckSolve(Single)
-  fullName: KCC.KinematicCharacterController.UnstuckSolve(float)
-  fullName.vb: KCC.KinematicCharacterController.UnstuckSolve(Single)
-  nameWithType: KinematicCharacterController.UnstuckSolve(float)
-  nameWithType.vb: KinematicCharacterController.UnstuckSolve(Single)
-- uid: KCC.KinematicCharacterController.UnstuckSolve*
-  name: UnstuckSolve
-  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_UnstuckSolve_
-  commentId: Overload:KCC.KinematicCharacterController.UnstuckSolve
+- uid: KCC.KinematicCharacterController.SwitchKinematics(System.Boolean)
+  name: SwitchKinematics(bool)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SwitchKinematics_System_Boolean_
+  commentId: M:KCC.KinematicCharacterController.SwitchKinematics(System.Boolean)
+  name.vb: SwitchKinematics(Boolean)
+  fullName: KCC.KinematicCharacterController.SwitchKinematics(bool)
+  fullName.vb: KCC.KinematicCharacterController.SwitchKinematics(Boolean)
+  nameWithType: KinematicCharacterController.SwitchKinematics(bool)
+  nameWithType.vb: KinematicCharacterController.SwitchKinematics(Boolean)
+- uid: KCC.KinematicCharacterController.SwitchKinematics*
+  name: SwitchKinematics
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SwitchKinematics_
+  commentId: Overload:KCC.KinematicCharacterController.SwitchKinematics
   isSpec: "True"
-  fullName: KCC.KinematicCharacterController.UnstuckSolve
-  nameWithType: KinematicCharacterController.UnstuckSolve
+  fullName: KCC.KinematicCharacterController.SwitchKinematics
+  nameWithType: KinematicCharacterController.SwitchKinematics
+- uid: KCC.KinematicCharacterController.SyncKinematics
+  name: SyncKinematics()
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SyncKinematics
+  commentId: M:KCC.KinematicCharacterController.SyncKinematics
+  fullName: KCC.KinematicCharacterController.SyncKinematics()
+  nameWithType: KinematicCharacterController.SyncKinematics()
+- uid: KCC.KinematicCharacterController.SyncKinematics*
+  name: SyncKinematics
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_SyncKinematics_
+  commentId: Overload:KCC.KinematicCharacterController.SyncKinematics
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.SyncKinematics
+  nameWithType: KinematicCharacterController.SyncKinematics
+- uid: KCC.KinematicCharacterController.TraceGround(FlaxEngine.RayCastHit@,KCC.GroundFlag@)
+  name: TraceGround(out RayCastHit, out GroundFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_TraceGround_FlaxEngine_RayCastHit__KCC_GroundFlag__
+  commentId: M:KCC.KinematicCharacterController.TraceGround(FlaxEngine.RayCastHit@,KCC.GroundFlag@)
+  name.vb: TraceGround(RayCastHit, GroundFlag)
+  fullName: KCC.KinematicCharacterController.TraceGround(out FlaxEngine.RayCastHit, out KCC.GroundFlag)
+  fullName.vb: KCC.KinematicCharacterController.TraceGround(FlaxEngine.RayCastHit, KCC.GroundFlag)
+  nameWithType: KinematicCharacterController.TraceGround(out RayCastHit, out GroundFlag)
+  nameWithType.vb: KinematicCharacterController.TraceGround(RayCastHit, GroundFlag)
+- uid: KCC.KinematicCharacterController.TraceGround(System.Single,FlaxEngine.RayCastHit@,KCC.GroundFlag@)
+  name: TraceGround(float, out RayCastHit, out GroundFlag)
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_TraceGround_System_Single_FlaxEngine_RayCastHit__KCC_GroundFlag__
+  commentId: M:KCC.KinematicCharacterController.TraceGround(System.Single,FlaxEngine.RayCastHit@,KCC.GroundFlag@)
+  name.vb: TraceGround(Single, RayCastHit, GroundFlag)
+  fullName: KCC.KinematicCharacterController.TraceGround(float, out FlaxEngine.RayCastHit, out KCC.GroundFlag)
+  fullName.vb: KCC.KinematicCharacterController.TraceGround(Single, FlaxEngine.RayCastHit, KCC.GroundFlag)
+  nameWithType: KinematicCharacterController.TraceGround(float, out RayCastHit, out GroundFlag)
+  nameWithType.vb: KinematicCharacterController.TraceGround(Single, RayCastHit, GroundFlag)
+- uid: KCC.KinematicCharacterController.TraceGround*
+  name: TraceGround
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_TraceGround_
+  commentId: Overload:KCC.KinematicCharacterController.TraceGround
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.TraceGround
+  nameWithType: KinematicCharacterController.TraceGround
+- uid: KCC.KinematicCharacterController.TriangleMeshUnstuckMode
+  name: TriangleMeshUnstuckMode
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_TriangleMeshUnstuckMode
+  commentId: F:KCC.KinematicCharacterController.TriangleMeshUnstuckMode
+  fullName: KCC.KinematicCharacterController.TriangleMeshUnstuckMode
+  nameWithType: KinematicCharacterController.TriangleMeshUnstuckMode
+- uid: KCC.KinematicCharacterController.UnstuckRescueDistance
+  name: UnstuckRescueDistance
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_UnstuckRescueDistance
+  commentId: P:KCC.KinematicCharacterController.UnstuckRescueDistance
+  fullName: KCC.KinematicCharacterController.UnstuckRescueDistance
+  nameWithType: KinematicCharacterController.UnstuckRescueDistance
+- uid: KCC.KinematicCharacterController.UnstuckRescueDistance*
+  name: UnstuckRescueDistance
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_UnstuckRescueDistance_
+  commentId: Overload:KCC.KinematicCharacterController.UnstuckRescueDistance
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.UnstuckRescueDistance
+  nameWithType: KinematicCharacterController.UnstuckRescueDistance
+- uid: KCC.KinematicCharacterController.UnstuckRescueMode
+  name: UnstuckRescueMode
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_UnstuckRescueMode
+  commentId: P:KCC.KinematicCharacterController.UnstuckRescueMode
+  fullName: KCC.KinematicCharacterController.UnstuckRescueMode
+  nameWithType: KinematicCharacterController.UnstuckRescueMode
+- uid: KCC.KinematicCharacterController.UnstuckRescueMode*
+  name: UnstuckRescueMode
+  href: api/KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_UnstuckRescueMode_
+  commentId: Overload:KCC.KinematicCharacterController.UnstuckRescueMode
+  isSpec: "True"
+  fullName: KCC.KinematicCharacterController.UnstuckRescueMode
+  nameWithType: KinematicCharacterController.UnstuckRescueMode
 - uid: KCC.KinematicMover
   name: KinematicMover
   href: api/KCC.KinematicMover.html
@@ -1279,6 +1640,83 @@ references:
   isSpec: "True"
   fullName: KCC.KinematicMover.OnEnable
   nameWithType: KinematicMover.OnEnable
+- uid: KCC.KinematicMover.SwitchKinematics(System.Boolean)
+  name: SwitchKinematics(bool)
+  href: api/KCC.KinematicMover.html#KCC_KinematicMover_SwitchKinematics_System_Boolean_
+  commentId: M:KCC.KinematicMover.SwitchKinematics(System.Boolean)
+  name.vb: SwitchKinematics(Boolean)
+  fullName: KCC.KinematicMover.SwitchKinematics(bool)
+  fullName.vb: KCC.KinematicMover.SwitchKinematics(Boolean)
+  nameWithType: KinematicMover.SwitchKinematics(bool)
+  nameWithType.vb: KinematicMover.SwitchKinematics(Boolean)
+- uid: KCC.KinematicMover.SwitchKinematics*
+  name: SwitchKinematics
+  href: api/KCC.KinematicMover.html#KCC_KinematicMover_SwitchKinematics_
+  commentId: Overload:KCC.KinematicMover.SwitchKinematics
+  isSpec: "True"
+  fullName: KCC.KinematicMover.SwitchKinematics
+  nameWithType: KinematicMover.SwitchKinematics
+- uid: KCC.KinematicMover.SyncKinematics
+  name: SyncKinematics()
+  href: api/KCC.KinematicMover.html#KCC_KinematicMover_SyncKinematics
+  commentId: M:KCC.KinematicMover.SyncKinematics
+  fullName: KCC.KinematicMover.SyncKinematics()
+  nameWithType: KinematicMover.SyncKinematics()
+- uid: KCC.KinematicMover.SyncKinematics*
+  name: SyncKinematics
+  href: api/KCC.KinematicMover.html#KCC_KinematicMover_SyncKinematics_
+  commentId: Overload:KCC.KinematicMover.SyncKinematics
+  isSpec: "True"
+  fullName: KCC.KinematicMover.SyncKinematics
+  nameWithType: KinematicMover.SyncKinematics
+- uid: KCC.PartialGroundSolveMode
+  name: PartialGroundSolveMode
+  href: api/KCC.PartialGroundSolveMode.html
+  commentId: T:KCC.PartialGroundSolveMode
+  fullName: KCC.PartialGroundSolveMode
+  nameWithType: PartialGroundSolveMode
+- uid: KCC.PartialGroundSolveMode.FourPoint
+  name: FourPoint
+  href: api/KCC.PartialGroundSolveMode.html#KCC_PartialGroundSolveMode_FourPoint
+  commentId: F:KCC.PartialGroundSolveMode.FourPoint
+  fullName: KCC.PartialGroundSolveMode.FourPoint
+  nameWithType: PartialGroundSolveMode.FourPoint
+- uid: KCC.PartialGroundSolveMode.None
+  name: None
+  href: api/KCC.PartialGroundSolveMode.html#KCC_PartialGroundSolveMode_None
+  commentId: F:KCC.PartialGroundSolveMode.None
+  fullName: KCC.PartialGroundSolveMode.None
+  nameWithType: PartialGroundSolveMode.None
+- uid: KCC.PhysicsFlag
+  name: PhysicsFlag
+  href: api/KCC.PhysicsFlag.html
+  commentId: T:KCC.PhysicsFlag
+  fullName: KCC.PhysicsFlag
+  nameWithType: PhysicsFlag
+- uid: KCC.PhysicsFlag.DispatchEvent
+  name: DispatchEvent
+  href: api/KCC.PhysicsFlag.html#KCC_PhysicsFlag_DispatchEvent
+  commentId: F:KCC.PhysicsFlag.DispatchEvent
+  fullName: KCC.PhysicsFlag.DispatchEvent
+  nameWithType: PhysicsFlag.DispatchEvent
+- uid: KCC.PhysicsFlag.HitTriggers
+  name: HitTriggers
+  href: api/KCC.PhysicsFlag.html#KCC_PhysicsFlag_HitTriggers
+  commentId: F:KCC.PhysicsFlag.HitTriggers
+  fullName: KCC.PhysicsFlag.HitTriggers
+  nameWithType: PhysicsFlag.HitTriggers
+- uid: KCC.PhysicsFlag.None
+  name: None
+  href: api/KCC.PhysicsFlag.html#KCC_PhysicsFlag_None
+  commentId: F:KCC.PhysicsFlag.None
+  fullName: KCC.PhysicsFlag.None
+  nameWithType: PhysicsFlag.None
+- uid: KCC.PhysicsFlag.RigidBodyInteractions
+  name: RigidBodyInteractions
+  href: api/KCC.PhysicsFlag.html#KCC_PhysicsFlag_RigidBodyInteractions
+  commentId: F:KCC.PhysicsFlag.RigidBodyInteractions
+  fullName: KCC.PhysicsFlag.RigidBodyInteractions
+  nameWithType: PhysicsFlag.RigidBodyInteractions
 - uid: KCC.RigidBodyInteraction
   name: RigidBodyInteraction
   href: api/KCC.RigidBodyInteraction.html
@@ -1405,3 +1843,117 @@ references:
   commentId: F:KCC.StairStepGroundMode.RequireStableSolid
   fullName: KCC.StairStepGroundMode.RequireStableSolid
   nameWithType: StairStepGroundMode.RequireStableSolid
+- uid: KCC.TriangleMeshUnstuckMode
+  name: TriangleMeshUnstuckMode
+  href: api/KCC.TriangleMeshUnstuckMode.html
+  commentId: T:KCC.TriangleMeshUnstuckMode
+  fullName: KCC.TriangleMeshUnstuckMode
+  nameWithType: TriangleMeshUnstuckMode
+- uid: KCC.TriangleMeshUnstuckMode.BoundingBox
+  name: BoundingBox
+  href: api/KCC.TriangleMeshUnstuckMode.html#KCC_TriangleMeshUnstuckMode_BoundingBox
+  commentId: F:KCC.TriangleMeshUnstuckMode.BoundingBox
+  fullName: KCC.TriangleMeshUnstuckMode.BoundingBox
+  nameWithType: TriangleMeshUnstuckMode.BoundingBox
+- uid: KCC.TriangleMeshUnstuckMode.ClosestPoint
+  name: ClosestPoint
+  href: api/KCC.TriangleMeshUnstuckMode.html#KCC_TriangleMeshUnstuckMode_ClosestPoint
+  commentId: F:KCC.TriangleMeshUnstuckMode.ClosestPoint
+  fullName: KCC.TriangleMeshUnstuckMode.ClosestPoint
+  nameWithType: TriangleMeshUnstuckMode.ClosestPoint
+- uid: KCC.TriangleMeshUnstuckMode.None
+  name: None
+  href: api/KCC.TriangleMeshUnstuckMode.html#KCC_TriangleMeshUnstuckMode_None
+  commentId: F:KCC.TriangleMeshUnstuckMode.None
+  fullName: KCC.TriangleMeshUnstuckMode.None
+  nameWithType: TriangleMeshUnstuckMode.None
+- uid: KCC.UnstuckRescueMode
+  name: UnstuckRescueMode
+  href: api/KCC.UnstuckRescueMode.html
+  commentId: T:KCC.UnstuckRescueMode
+  fullName: KCC.UnstuckRescueMode
+  nameWithType: UnstuckRescueMode
+- uid: KCC.UnstuckRescueMode.Disabled
+  name: Disabled
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_Disabled
+  commentId: F:KCC.UnstuckRescueMode.Disabled
+  fullName: KCC.UnstuckRescueMode.Disabled
+  nameWithType: UnstuckRescueMode.Disabled
+- uid: KCC.UnstuckRescueMode.NoPisAller
+  name: NoPisAller
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_NoPisAller
+  commentId: F:KCC.UnstuckRescueMode.NoPisAller
+  fullName: KCC.UnstuckRescueMode.NoPisAller
+  nameWithType: UnstuckRescueMode.NoPisAller
+- uid: KCC.UnstuckRescueMode.RelativeBackward
+  name: RelativeBackward
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_RelativeBackward
+  commentId: F:KCC.UnstuckRescueMode.RelativeBackward
+  fullName: KCC.UnstuckRescueMode.RelativeBackward
+  nameWithType: UnstuckRescueMode.RelativeBackward
+- uid: KCC.UnstuckRescueMode.RelativeDown
+  name: RelativeDown
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_RelativeDown
+  commentId: F:KCC.UnstuckRescueMode.RelativeDown
+  fullName: KCC.UnstuckRescueMode.RelativeDown
+  nameWithType: UnstuckRescueMode.RelativeDown
+- uid: KCC.UnstuckRescueMode.RelativeForward
+  name: RelativeForward
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_RelativeForward
+  commentId: F:KCC.UnstuckRescueMode.RelativeForward
+  fullName: KCC.UnstuckRescueMode.RelativeForward
+  nameWithType: UnstuckRescueMode.RelativeForward
+- uid: KCC.UnstuckRescueMode.RelativeLeft
+  name: RelativeLeft
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_RelativeLeft
+  commentId: F:KCC.UnstuckRescueMode.RelativeLeft
+  fullName: KCC.UnstuckRescueMode.RelativeLeft
+  nameWithType: UnstuckRescueMode.RelativeLeft
+- uid: KCC.UnstuckRescueMode.RelativeRight
+  name: RelativeRight
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_RelativeRight
+  commentId: F:KCC.UnstuckRescueMode.RelativeRight
+  fullName: KCC.UnstuckRescueMode.RelativeRight
+  nameWithType: UnstuckRescueMode.RelativeRight
+- uid: KCC.UnstuckRescueMode.RelativeUp
+  name: RelativeUp
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_RelativeUp
+  commentId: F:KCC.UnstuckRescueMode.RelativeUp
+  fullName: KCC.UnstuckRescueMode.RelativeUp
+  nameWithType: UnstuckRescueMode.RelativeUp
+- uid: KCC.UnstuckRescueMode.WorldBackward
+  name: WorldBackward
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_WorldBackward
+  commentId: F:KCC.UnstuckRescueMode.WorldBackward
+  fullName: KCC.UnstuckRescueMode.WorldBackward
+  nameWithType: UnstuckRescueMode.WorldBackward
+- uid: KCC.UnstuckRescueMode.WorldDown
+  name: WorldDown
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_WorldDown
+  commentId: F:KCC.UnstuckRescueMode.WorldDown
+  fullName: KCC.UnstuckRescueMode.WorldDown
+  nameWithType: UnstuckRescueMode.WorldDown
+- uid: KCC.UnstuckRescueMode.WorldForward
+  name: WorldForward
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_WorldForward
+  commentId: F:KCC.UnstuckRescueMode.WorldForward
+  fullName: KCC.UnstuckRescueMode.WorldForward
+  nameWithType: UnstuckRescueMode.WorldForward
+- uid: KCC.UnstuckRescueMode.WorldLeft
+  name: WorldLeft
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_WorldLeft
+  commentId: F:KCC.UnstuckRescueMode.WorldLeft
+  fullName: KCC.UnstuckRescueMode.WorldLeft
+  nameWithType: UnstuckRescueMode.WorldLeft
+- uid: KCC.UnstuckRescueMode.WorldRight
+  name: WorldRight
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_WorldRight
+  commentId: F:KCC.UnstuckRescueMode.WorldRight
+  fullName: KCC.UnstuckRescueMode.WorldRight
+  nameWithType: UnstuckRescueMode.WorldRight
+- uid: KCC.UnstuckRescueMode.WorldUp
+  name: WorldUp
+  href: api/KCC.UnstuckRescueMode.html#KCC_UnstuckRescueMode_WorldUp
+  commentId: F:KCC.UnstuckRescueMode.WorldUp
+  fullName: KCC.UnstuckRescueMode.WorldUp
+  nameWithType: UnstuckRescueMode.WorldUp

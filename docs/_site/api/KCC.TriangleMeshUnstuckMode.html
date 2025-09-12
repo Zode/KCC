@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Enum StairStepGroundMode | KCC </title>
+      <title>Enum TriangleMeshUnstuckMode | KCC </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Enum StairStepGroundMode | KCC ">
+      <meta name="title" content="Enum TriangleMeshUnstuckMode | KCC ">
       
-      <meta name="description" content="Stair stepping mode for KCC characters. Determines what type of stairstepping is allowed.">
+      <meta name="description" content="Unstuck behavioral mode for KCC characters. Determines how to solve situations where the physics solve can not solve penetration for non-convex mesh colliders.">
       <link rel="icon" href="../favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_StairStepGroundMode.md&amp;value=---%0Auid%3A%20KCC.StairStepGroundMode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_TriangleMeshUnstuckMode.md&amp;value=---%0Auid%3A%20KCC.TriangleMeshUnstuckMode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -84,13 +84,13 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article data-uid="KCC.StairStepGroundMode">
+        <article data-uid="KCC.TriangleMeshUnstuckMode">
 
 
 
 
-  <h1 id="KCC_StairStepGroundMode" data-uid="KCC.StairStepGroundMode" class="text-break">
-Enum StairStepGroundMode  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/StairStepGroundMode.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  <h1 id="KCC_TriangleMeshUnstuckMode" data-uid="KCC.TriangleMeshUnstuckMode" class="text-break">
+Enum TriangleMeshUnstuckMode  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/TriangleMeshUnstuckMode.cs/#L7"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -98,13 +98,13 @@ Enum StairStepGroundMode  <a class="header-action link-secondary" title="View so
   <dl><dt>Assembly</dt><dd>KCC.CSharp.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Stair stepping mode for KCC characters.
-Determines what type of stairstepping is allowed.</p>
+  <div class="markdown summary"><p>Unstuck behavioral mode for KCC characters.
+Determines how to solve situations where the physics solve can not solve penetration for non-convex mesh colliders.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum StairStepGroundMode</code></pre>
+    <pre><code class="lang-csharp hljs">public enum TriangleMeshUnstuckMode</code></pre>
   </div>
 
 
@@ -118,25 +118,19 @@ Determines what type of stairstepping is allowed.</p>
   <h2 id="fields">Fields
 </h2>
   <dl class="parameters">
-    <dt id="KCC_StairStepGroundMode_None"><code>None = 0</code></dt>
+    <dt id="KCC_TriangleMeshUnstuckMode_BoundingBox"><code>BoundingBox = 1</code></dt>
   
-  <dd><p>Always stairstep.</p>
+  <dd><p>Push out of triangle mesh object based on its bounding box.
+Results in a guaranteed solve, at the cost of allocating a BoxCollider.</p>
 </dd>
-    <dt id="KCC_StairStepGroundMode_RequireGround"><code>RequireGround = 5</code></dt>
+    <dt id="KCC_TriangleMeshUnstuckMode_ClosestPoint"><code>ClosestPoint = 2</code></dt>
   
-  <dd><p>Stairstep only when solid with ground tag is hit.</p>
+  <dd><p>Push out of triangle mesh object by figuring out the closest point on the surface in the direction of the two origin differences.
+Does not guarantee a working solve, but gives a nicer result than the bounding box mode.</p>
 </dd>
-    <dt id="KCC_StairStepGroundMode_RequireSolid"><code>RequireSolid = 1</code></dt>
+    <dt id="KCC_TriangleMeshUnstuckMode_None"><code>None = 0</code></dt>
   
-  <dd><p>Stairstep only when solid is hit.</p>
-</dd>
-    <dt id="KCC_StairStepGroundMode_RequireStableGround"><code>RequireStableGround = 7</code></dt>
-  
-  <dd><p>Stairstep only when stable solid with ground tag is hit.</p>
-</dd>
-    <dt id="KCC_StairStepGroundMode_RequireStableSolid"><code>RequireStableSolid = 3</code></dt>
-  
-  <dd><p>Stairstep only when stable solid is hit.</p>
+  <dd><p>Do nothing.</p>
 </dd>
   </dl>
 
@@ -145,7 +139,7 @@ Determines what type of stairstepping is allowed.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/StairStepGroundMode.cs/#L9" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/TriangleMeshUnstuckMode.cs/#L7" class="edit-link">Edit this page</a>
         </div>
 
 

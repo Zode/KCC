@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>KCC Debugger | KCC </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="KCC Debugger | KCC ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCC/blob/main/docs/docs/debugger.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KCC">
+            KCC
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="kcc-debugger">KCC Debugger</h1>
+
+<p>The debugger can be opened from Flax's toolbar at the top: <code>Window</code> -&gt; <code>KCC Debugger</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>You must compile the plugin (and optionally your game if you wish to use user events) with <code>KCC_DEBUGGER</code> in C# scripting defines.
+It is not ideal to keep it always defined, as KCC Debugger is performance hungry. It should only be used to help you figure out why something is not behaving as expected, or help you understand the KCC physics processing.</p>
+</div>
+<p><img src="/KCC/images/debuggermenu.png" alt=" Image showing out where the menu entry is "></p>
+<h2 id="window-contents">Window contents</h2>
+<p><img src="/KCC/images/debuggerwindow.png" alt=" Image showing an example view of the KCC Debugger "></p>
+<p>Toolbar contents are from left to right:</p>
+<ul>
+<li>Start/Stop capturing events toggle button</li>
+<li>Clear event data button</li>
+<li>Skip to first frame button</li>
+<li>Go back one frame button</li>
+<li>Go forward one frame button</li>
+<li>Skip to last frame button</li>
+<li>A label showing the current frame and amount of frames</li>
+<li>A slider to easily scrub through the frames</li>
+</ul>
+<p>To the left is the hierarchy of events, selecting an event there will show the contents of that event (and its subevents if allowed to.).
+KCC Debugger will sync selection with the scene hierarchy whenever possible, it will also try to do the vice versa. During frame scrubbing all selections will &quot;bubble up&quot; to the main event for the given actor(s).</p>
+<p>To the right is the control panel, from where one may quickly adjust the behavior.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The timings shown in the debugger are the time spent inside the event, this is not a real reflection of performance profiling and is only an estimate. Use Tracy or such to see your real performance timings.
+Running your game with <code>KCC_DEBUGGER</code> present in defines will significantly slow it down!</p>
+</div>
+<h2 id="using-the-debugger">Using the debugger</h2>
+<p>First start capturing events in KCC Debugger, it will only capture events when the game is running. It will automatically clear previous events if you start the play mode.</p>
+<p>After you have captured your necessary frames, pause or stop the game and switch to the editor view. KCC Debugger will not preview any data while the game is running and not paused to preserve performance as much as possible.</p>
+<p>Select a KCC actor or one of the KCC Debugger events to start visualizing the data.</p>
+<h2 id="user-events-in-the-debugger">User events in the debugger</h2>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>To add events or contents to events you MUST wrap the calls with <code>FLAX_EDITOR</code> define guards.</p>
+</div>
+<p>Adding custom events to the KCC Debugger is as easy as using Flax's own profiler.
+You may start a custom event with <code>KCCDebugger.BeginEvent(string name)</code>, and end it with <code>KCCDebugger.EndEvent()</code>.</p>
+<p>Normally you don't need to start &quot;root events&quot;, but if you do you may do so with <code>KCCDebugger.BeginEvent(Actor actor, string name)</code>, and end it with <code>KCCDebugger.EndEvent()</code>.
+Root events differ by carrying a reference to the actor, and you may NOT being a root event inside another. They are utilized for selection bubbling and other important things.</p>
+<p><strong>All events mut be ended</strong>, KCCDebugger will attempt to watch out for these and cry into the debug output if it notices you aren't ending your events properly.</p>
+<p>Between any <code>BeginEvent</code> and <code>EndEvent</code> (including inside KCC's own events) you can call any of the draw commands to add visualization data inside the event.
+The following are currently available:</p>
+<ul>
+<li><code>KCCDebugger.DrawLine(Vector3 start, Vector3 end, Color color, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawBox(OrientedBoundingBox obb, Color fillColor, Color outlineColor, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawCapsule(Vector3 position, Quaternion orientation, float radius, float height, Color fillColor, Color outlineColor, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawSphere(Vector3 position, float radius, Color fillColor, Color outlineColor, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawArrow(Vector3 position, Quaternion orientation, float scale, float capScale, Color color, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawQuad(Vector3 position, Quaternion orientation, float scale, Color fillColor, Color outlineColor, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawMesh(Float3[] vertices, int[] indices, Vector3 position, Quaternion orientation, Color fillColor, Color outlineColor, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawCollider(PhysicsColliderActor collider, Color fillColor, Color outlineColor, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawText(Vector3 position, string text, int size, float scale, Color color, bool depthTest)</code></li>
+<li><code>KCCDebugger.DrawText(Vector3 position, string text, bool depthTest)</code> (Uses KCC Debugger settings for size/scale/color)</li>
+</ul>
+<p>You may access the KCC Debugger settings for the colors from: <code>KCCDebugger.Options</code>, see <code>KCCDebuggerOptions</code> for properties.</p>
+<h2 id="settings">Settings</h2>
+<p>You may find customization settings in Flax's editor settings under the tab &quot;KCC Debugger&quot;.</p>
+<p><img src="/KCC/images/debuggersettings.png" alt=" Image showing a view of Flax settings showcasing the KCC Debugger settings "></p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Zode/KCC/blob/main/docs/docs/debugger.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

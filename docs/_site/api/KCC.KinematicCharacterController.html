@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_KinematicCharacterController.md&amp;value=---%0Auid%3A%20KCC.KinematicCharacterController%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="KCC_KinematicCharacterController" data-uid="KCC.KinematicCharacterController" class="text-break">
-Class KinematicCharacterController  
+Class KinematicCharacterController  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -117,7 +117,6 @@ public class KinematicCharacterController : KinematicBase</code></pre>
       <div><span class="xref">Object</span></div>
       <div><span class="xref">SceneObject</span></div>
       <div><span class="xref">Actor</span></div>
-      <div><span class="xref">RigidBody</span></div>
       <div><a class="xref" href="KCC.KinematicBase.html">KinematicBase</a></div>
       <div><span class="xref">KinematicCharacterController</span></div>
     </dd>
@@ -147,7 +146,10 @@ public class KinematicCharacterController : KinematicBase</code></pre>
       <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__transientOrientation">KinematicBase._transientOrientation</a>
     </div>
     <div>
-      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__kccPlugin">KinematicBase._kccPlugin</a>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase__rigidBody">KinematicBase._rigidBody</a>
+    </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_RigidBody">KinematicBase.RigidBody</a>
     </div>
     <div>
       <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetPosition_FlaxEngine_Vector3_">KinematicBase.SetPosition(Vector3)</a>
@@ -155,7 +157,80 @@ public class KinematicCharacterController : KinematicBase</code></pre>
     <div>
       <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetOrientation_FlaxEngine_Quaternion_">KinematicBase.SetOrientation(Quaternion)</a>
     </div>
+    <div>
+      <a class="xref" href="KCC.KinematicBase.html#KCC_KinematicBase_SetupRigidBody">KinematicBase.SetupRigidBody()</a>
+    </div>
   </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="KCC_KinematicCharacterController_PartialGroundSolveMode" data-uid="KCC.KinematicCharacterController.PartialGroundSolveMode">
+  PartialGroundSolveMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Behavior mode for partial ground solving.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
+[EditorOrder(304)]
+public PartialGroundSolveMode PartialGroundSolveMode</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.PartialGroundSolveMode.html">PartialGroundSolveMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KCC_KinematicCharacterController_TriangleMeshUnstuckMode" data-uid="KCC.KinematicCharacterController.TriangleMeshUnstuckMode">
+  TriangleMeshUnstuckMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determine behavioral mode which to use solve situations where the physics solve can not solve penetration for non-convex mesh colliders.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(201)]
+public TriangleMeshUnstuckMode TriangleMeshUnstuckMode</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.TriangleMeshUnstuckMode.html">TriangleMeshUnstuckMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
 
 
 
@@ -170,16 +245,16 @@ public class KinematicCharacterController : KinematicBase</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_AllowStairStepping" data-uid="KCC.KinematicCharacterController.AllowStairStepping">
   AllowStairStepping
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines if stair stepping is allowed at all.</p>
+  <div class="markdown level1 summary"><p>Determines if stair stepping is allowed at all. Disabling this improves performance.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
-[EditorOrder(114)]
+[EditorOrder(400)]
 public bool AllowStairStepping { get; set; }</code></pre>
   </div>
 
@@ -204,7 +279,7 @@ public bool AllowStairStepping { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_AttachedRigidBody" data-uid="KCC.KinematicCharacterController.AttachedRigidBody">
   AttachedRigidBody
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L299"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The RigidBody we are attached to.</p>
@@ -238,7 +313,7 @@ public RigidBody? AttachedRigidBody { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_BoxExtents" data-uid="KCC.KinematicCharacterController.BoxExtents">
   BoxExtents
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Box extents of the character (only applicable when ColliderType is Box).</p>
@@ -272,7 +347,7 @@ public Vector3 BoxExtents { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_CanGround" data-uid="KCC.KinematicCharacterController.CanGround">
   CanGround
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L172"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines if grounding is allowed at all.</p>
@@ -302,45 +377,11 @@ public bool CanGround { get; set; }</code></pre>
 
 
 
-  <a id="KCC_KinematicCharacterController_ColliderContactOffset_" data-uid="KCC.KinematicCharacterController.ColliderContactOffset*"></a>
-
-  <h3 id="KCC_KinematicCharacterController_ColliderContactOffset" data-uid="KCC.KinematicCharacterController.ColliderContactOffset">
-  ColliderContactOffset
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>The contact offset value for the automatically generated collider (must be positive).</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Character&quot;, null)]
-[EditorOrder(101)]
-public float ColliderContactOffset { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><span class="xref">float</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
   <a id="KCC_KinematicCharacterController_ColliderHalfHeight_" data-uid="KCC.KinematicCharacterController.ColliderHalfHeight*"></a>
 
   <h3 id="KCC_KinematicCharacterController_ColliderHalfHeight" data-uid="KCC.KinematicCharacterController.ColliderHalfHeight">
   ColliderHalfHeight
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Half the height of the character.</p>
@@ -374,7 +415,7 @@ public float ColliderHalfHeight { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_ColliderHalfRadius" data-uid="KCC.KinematicCharacterController.ColliderHalfRadius">
   ColliderHalfRadius
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L71"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Half the radius of the character.</p>
@@ -408,7 +449,7 @@ public float ColliderHalfRadius { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_ColliderHeight" data-uid="KCC.KinematicCharacterController.ColliderHeight">
   ColliderHeight
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Height of the character.</p>
@@ -442,7 +483,7 @@ public float ColliderHeight { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_ColliderRadius" data-uid="KCC.KinematicCharacterController.ColliderRadius">
   ColliderRadius
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Radius of the character (only applicable when ColliderType is Capsule or Sphere).</p>
@@ -472,11 +513,79 @@ public float ColliderRadius { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicCharacterController_ColliderTop_" data-uid="KCC.KinematicCharacterController.ColliderTop*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderTop" data-uid="KCC.KinematicCharacterController.ColliderTop">
+  ColliderTop
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L308"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The offset to the character collider's top point from its center, bottom point is just the inverse of this.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public float ColliderTop { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_ColliderTopVector_" data-uid="KCC.KinematicCharacterController.ColliderTopVector*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_ColliderTopVector" data-uid="KCC.KinematicCharacterController.ColliderTopVector">
+  ColliderTopVector
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L312"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The offset vector to the character collider's top point (in relation to gravity) from its center, bottom point is just the inverse of this.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 ColliderTopVector { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicCharacterController_ColliderType_" data-uid="KCC.KinematicCharacterController.ColliderType*"></a>
 
   <h3 id="KCC_KinematicCharacterController_ColliderType" data-uid="KCC.KinematicCharacterController.ColliderType">
   ColliderType
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Collision shape of the character.</p>
@@ -510,7 +619,7 @@ public ColliderType ColliderType { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_CollisionMask" data-uid="KCC.KinematicCharacterController.CollisionMask">
   CollisionMask
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The layer mask upon which the character collides with.</p>
@@ -519,7 +628,7 @@ public ColliderType ColliderType { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
-[EditorOrder(107)]
+[EditorOrder(210)]
 public LayersMask CollisionMask { get; set; }</code></pre>
   </div>
 
@@ -544,7 +653,7 @@ public LayersMask CollisionMask { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_Controller" data-uid="KCC.KinematicCharacterController.Controller">
   Controller
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L295"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The character's controller.</p>
@@ -578,18 +687,18 @@ public IKinematicCharacter? Controller { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_FilterCollisions" data-uid="KCC.KinematicCharacterController.FilterCollisions">
   FilterCollisions
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Should we filter collisions?
-If enabled, the controller will be queried for collision filtering, this is expensive.
-If disabled, the character will assume everything to be solid, this is less expensive.</p>
+If enabled, the controller will be queried for collision filtering, this is more performant.
+If disabled, the character will assume everything to be solid, this is less performant.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
-[EditorOrder(106)]
+[EditorOrder(209)]
 public bool FilterCollisions { get; set; }</code></pre>
   </div>
 
@@ -614,7 +723,7 @@ public bool FilterCollisions { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_GravityEulerNormalized" data-uid="KCC.KinematicCharacterController.GravityEulerNormalized">
   GravityEulerNormalized
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L283"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current gravity as normalized euler angles.</p>
@@ -648,7 +757,7 @@ public Vector3 GravityEulerNormalized { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_GroundNormal" data-uid="KCC.KinematicCharacterController.GroundNormal">
   GroundNormal
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L178"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Ground normal upon which the character is currently standing on.
@@ -683,16 +792,16 @@ public Vector3 GroundNormal { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_GroundSnappingDistance" data-uid="KCC.KinematicCharacterController.GroundSnappingDistance">
   GroundSnappingDistance
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L189"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Maximum allowed ground snap distance to keep the character grounded while IsGrounded is true.</p>
+  <div class="markdown level1 summary"><p>Maximum allowed ground snap distance to keep the character grounded while HasSolidBelow is true.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
-[EditorOrder(112)]
+[EditorOrder(302)]
 public float GroundSnappingDistance { get; set; }</code></pre>
   </div>
 
@@ -717,7 +826,7 @@ public float GroundSnappingDistance { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_GroundTag" data-uid="KCC.KinematicCharacterController.GroundTag">
   GroundTag
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L156"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tag used to determine if a collision should be considered valid ground or not.
@@ -727,7 +836,7 @@ If left empty, all surfaces determined by MaxSlopeAngle are considered valid gro
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
-[EditorOrder(110)]
+[EditorOrder(300)]
 public Tag GroundTag { get; set; }</code></pre>
   </div>
 
@@ -752,7 +861,7 @@ public Tag GroundTag { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_GroundingDistance" data-uid="KCC.KinematicCharacterController.GroundingDistance">
   GroundingDistance
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L182"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Distance to surface until the character is considered grounded, KinematicContactOffset is automatically added on this.</p>
@@ -761,7 +870,7 @@ public Tag GroundTag { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
-[EditorOrder(111)]
+[EditorOrder(301)]
 public float GroundingDistance { get; set; }</code></pre>
   </div>
 
@@ -782,14 +891,48 @@ public float GroundingDistance { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicCharacterController_HasSolidBelow_" data-uid="KCC.KinematicCharacterController.HasSolidBelow*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_HasSolidBelow" data-uid="KCC.KinematicCharacterController.HasSolidBelow">
+  HasSolidBelow
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Does the character have <em>anything</em> solid below?</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public bool HasSolidBelow { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicCharacterController_IsGrounded_" data-uid="KCC.KinematicCharacterController.IsGrounded*"></a>
 
   <h3 id="KCC_KinematicCharacterController_IsGrounded" data-uid="KCC.KinematicCharacterController.IsGrounded">
   IsGrounded
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L166"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Is the character currently grounded.</p>
+  <div class="markdown level1 summary"><p>Does the character have walkable solid below?</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -820,7 +963,7 @@ public bool IsGrounded { get; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_KinematicAttachedVelocity" data-uid="KCC.KinematicCharacterController.KinematicAttachedVelocity">
   KinematicAttachedVelocity
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L291"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Velocity only from rigidbody we stood upon.</p>
@@ -830,7 +973,7 @@ public bool IsGrounded { get; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[NoSerialize]
 [HideInEditor]
-public Vector3 KinematicAttachedVelocity { get; set; }</code></pre>
+public Vector3 KinematicAttachedVelocity { get; }</code></pre>
   </div>
 
 
@@ -854,7 +997,7 @@ public Vector3 KinematicAttachedVelocity { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_KinematicContactOffset" data-uid="KCC.KinematicCharacterController.KinematicContactOffset">
   KinematicContactOffset
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The contact offset value that determines the distance that the character hovers above any surface (must be positive).</p>
@@ -888,7 +1031,7 @@ public float KinematicContactOffset { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_KinematicVelocity" data-uid="KCC.KinematicCharacterController.KinematicVelocity">
   KinematicVelocity
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L287"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Velocity, ignoring movements from RigidBody we stood upon.</p>
@@ -898,7 +1041,7 @@ public float KinematicContactOffset { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[NoSerialize]
 [HideInEditor]
-public Vector3 KinematicVelocity { get; set; }</code></pre>
+public Vector3 KinematicVelocity { get; }</code></pre>
   </div>
 
 
@@ -922,7 +1065,7 @@ public Vector3 KinematicVelocity { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_MaxSlopeAngle" data-uid="KCC.KinematicCharacterController.MaxSlopeAngle">
   MaxSlopeAngle
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L196"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Maximum allowed ground slope angle, all surfaces below or equal to this limit are considered to be ground.</p>
@@ -931,7 +1074,7 @@ public Vector3 KinematicVelocity { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Grounding&quot;, null)]
-[EditorOrder(113)]
+[EditorOrder(303)]
 public float MaxSlopeAngle { get; set; }</code></pre>
   </div>
 
@@ -956,7 +1099,7 @@ public float MaxSlopeAngle { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_MaxStairStepIterations" data-uid="KCC.KinematicCharacterController.MaxStairStepIterations">
   MaxStairStepIterations
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L241"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Maximum amount of stair step iterations per frame.</p>
@@ -965,7 +1108,7 @@ public float MaxSlopeAngle { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
-[EditorOrder(118)]
+[EditorOrder(404)]
 public int MaxStairStepIterations { get; set; }</code></pre>
   </div>
 
@@ -990,7 +1133,7 @@ public int MaxStairStepIterations { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_MaxUnstuckIterations" data-uid="KCC.KinematicCharacterController.MaxUnstuckIterations">
   MaxUnstuckIterations
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Maximum allowed amount of unstuck iterations.</p>
@@ -999,7 +1142,7 @@ public int MaxStairStepIterations { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
-[EditorOrder(105)]
+[EditorOrder(200)]
 public int MaxUnstuckIterations { get; set; }</code></pre>
   </div>
 
@@ -1020,11 +1163,118 @@ public int MaxUnstuckIterations { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicCharacterController_MaxUnstuckRescueDistance_" data-uid="KCC.KinematicCharacterController.MaxUnstuckRescueDistance*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_MaxUnstuckRescueDistance" data-uid="KCC.KinematicCharacterController.MaxUnstuckRescueDistance">
+  MaxUnstuckRescueDistance
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum allowed distance used for unstuck rescue pis-aller, player will noticeably pop out of stuck collisions the larger this is.
+Keep this at minimum the same value as kinematic contact offset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(204)]
+public float MaxUnstuckRescueDistance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_MinimumCreaseAngle_" data-uid="KCC.KinematicCharacterController.MinimumCreaseAngle*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_MinimumCreaseAngle" data-uid="KCC.KinematicCharacterController.MinimumCreaseAngle">
+  MinimumCreaseAngle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Minimum (dot) angle required for crease handling, increasing this may help with various miniscule issues (eg. moving in ungrounded state upwards a terrain.)
+at the cost of potentially introducing crease related issues.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(208)]
+[Range(0, 1)]
+public float MinimumCreaseAngle { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_PartialGroundNormal_" data-uid="KCC.KinematicCharacterController.PartialGroundNormal*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_PartialGroundNormal" data-uid="KCC.KinematicCharacterController.PartialGroundNormal">
+  PartialGroundNormal
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Partial ground normal upon which the character is currently standing on.
+If not using partial ground reporting, this will be the same as <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundNormal">GroundNormal</a>
+If not touching ground this will be the opposite of the gravity orientation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NoSerialize]
+[HideInEditor]
+public Vector3 PartialGroundNormal { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicCharacterController_RigidBodyInteractionMode_" data-uid="KCC.KinematicCharacterController.RigidBodyInteractionMode*"></a>
 
   <h3 id="KCC_KinematicCharacterController_RigidBodyInteractionMode" data-uid="KCC.KinematicCharacterController.RigidBodyInteractionMode">
   RigidBodyInteractionMode
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L262"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determine how to handle dynamic rigidbodies that we have collided with.</p>
@@ -1033,7 +1283,7 @@ public int MaxUnstuckIterations { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
-[EditorOrder(121)]
+[EditorOrder(502)]
 public RigidBodyInteractionMode RigidBodyInteractionMode { get; set; }</code></pre>
   </div>
 
@@ -1058,7 +1308,7 @@ public RigidBodyInteractionMode RigidBodyInteractionMode { get; set; }</code></p
 
   <h3 id="KCC_KinematicCharacterController_RigidBodyMoveMode" data-uid="KCC.KinematicCharacterController.RigidBodyMoveMode">
   RigidBodyMoveMode
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L248"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines if the character should move with RigidBodies it is standing on.</p>
@@ -1067,7 +1317,7 @@ public RigidBodyInteractionMode RigidBodyInteractionMode { get; set; }</code></p
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
-[EditorOrder(119)]
+[EditorOrder(500)]
 public RigidBodyMoveMode RigidBodyMoveMode { get; set; }</code></pre>
   </div>
 
@@ -1092,7 +1342,7 @@ public RigidBodyMoveMode RigidBodyMoveMode { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_SimulatedMass" data-uid="KCC.KinematicCharacterController.SimulatedMass">
   SimulatedMass
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L273"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The simulated mass amount for dynamic rigidbody handling.</p>
@@ -1101,7 +1351,7 @@ public RigidBodyMoveMode RigidBodyMoveMode { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
-[EditorOrder(122)]
+[EditorOrder(503)]
 public float SimulatedMass { get; set; }</code></pre>
   </div>
 
@@ -1126,7 +1376,7 @@ public float SimulatedMass { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_SlideAccountForPhysicsMaterial" data-uid="KCC.KinematicCharacterController.SlideAccountForPhysicsMaterial">
   SlideAccountForPhysicsMaterial
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L129"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set to true, the character slide will also be affected by the surface's physics material settings.</p>
@@ -1135,7 +1385,7 @@ public float SimulatedMass { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
-[EditorOrder(109)]
+[EditorOrder(206)]
 public bool SlideAccountForPhysicsMaterial { get; set; }</code></pre>
   </div>
 
@@ -1160,7 +1410,7 @@ public bool SlideAccountForPhysicsMaterial { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_SlideMultiplier" data-uid="KCC.KinematicCharacterController.SlideMultiplier">
   SlideMultiplier
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines how much the character should slide upon coming to contact with a surface.</p>
@@ -1169,7 +1419,7 @@ public bool SlideAccountForPhysicsMaterial { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
-[EditorOrder(108)]
+[EditorOrder(205)]
 public float SlideMultiplier { get; set; }</code></pre>
   </div>
 
@@ -1190,22 +1440,56 @@ public float SlideMultiplier { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicCharacterController_SlideSkipMultiplierWhileAirborne_" data-uid="KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SlideSkipMultiplierWhileAirborne" data-uid="KCC.KinematicCharacterController.SlideSkipMultiplierWhileAirborne">
+  SlideSkipMultiplierWhileAirborne
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>If set to true, the character slide multiplier will be ignored during airborne movement</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(207)]
+public bool SlideSkipMultiplierWhileAirborne { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicCharacterController_SolveRigidBodyMovements_" data-uid="KCC.KinematicCharacterController.SolveRigidBodyMovements*"></a>
 
   <h3 id="KCC_KinematicCharacterController_SolveRigidBodyMovements" data-uid="KCC.KinematicCharacterController.SolveRigidBodyMovements">
   SolveRigidBodyMovements
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L256"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines if the character should solve the movements caused by rigidbodies stood upon.
-If enabled, the character will sweep the movements, this is more expensive and more unstable but will cause less potential collision issues.
-If disabled, the character will not sweep the movements, this is less expensive and more stable but will cause potential collision issues.</p>
+If enabled, the character will sweep the movements, this is less performant and less stable but will cause less potential collision issues.
+If disabled, the character will not sweep the movements, this is more performant and more stable but will cause more potential collision issues.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;RigidBody interactions&quot;, null)]
-[EditorOrder(120)]
+[EditorOrder(501)]
 public bool SolveRigidBodyMovements { get; set; }</code></pre>
   </div>
 
@@ -1230,7 +1514,7 @@ public bool SolveRigidBodyMovements { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_StairStepDistance" data-uid="KCC.KinematicCharacterController.StairStepDistance">
   StairStepDistance
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L221"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Maximum allowed stair step height distance.</p>
@@ -1239,7 +1523,7 @@ public bool SolveRigidBodyMovements { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
-[EditorOrder(115)]
+[EditorOrder(401)]
 public float StairStepDistance { get; set; }</code></pre>
   </div>
 
@@ -1264,7 +1548,7 @@ public float StairStepDistance { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_StairStepGroundMode" data-uid="KCC.KinematicCharacterController.StairStepGroundMode">
   StairStepGroundMode
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L228"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Behavior mode for stair stepping.</p>
@@ -1273,7 +1557,7 @@ public float StairStepDistance { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
-[EditorOrder(116)]
+[EditorOrder(402)]
 public StairStepGroundMode StairStepGroundMode { get; set; }</code></pre>
   </div>
 
@@ -1298,7 +1582,7 @@ public StairStepGroundMode StairStepGroundMode { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicCharacterController_StairStepMinimumForwardDistance" data-uid="KCC.KinematicCharacterController.StairStepMinimumForwardDistance">
   StairStepMinimumForwardDistance
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L234"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Minimum distance the character must be able to move forward on a detected step for it to be considered valid.</p>
@@ -1307,7 +1591,7 @@ public StairStepGroundMode StairStepGroundMode { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Stairstepping&quot;, null)]
-[EditorOrder(117)]
+[EditorOrder(403)]
 public float StairStepMinimumForwardDistance { get; set; }</code></pre>
   </div>
 
@@ -1328,47 +1612,120 @@ public float StairStepMinimumForwardDistance { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicCharacterController_UnstuckRescueDistance_" data-uid="KCC.KinematicCharacterController.UnstuckRescueDistance*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_UnstuckRescueDistance" data-uid="KCC.KinematicCharacterController.UnstuckRescueDistance">
+  UnstuckRescueDistance
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The distance to attempt for unstuck rescue, keep this at minimum the same value as kinematic contact offset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(203)]
+public float UnstuckRescueDistance { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">float</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_UnstuckRescueMode_" data-uid="KCC.KinematicCharacterController.UnstuckRescueMode*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_UnstuckRescueMode" data-uid="KCC.KinematicCharacterController.UnstuckRescueMode">
+  UnstuckRescueMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determine if unstuck rescue mode is enabled, and which pis-aller strategy is used.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[EditorDisplay(&quot;Physics&quot;, null)]
+[EditorOrder(202)]
+public UnstuckRescueMode UnstuckRescueMode { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.UnstuckRescueMode.html">UnstuckRescueMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
 
   <a id="KCC_KinematicCharacterController_CastCollider_" data-uid="KCC.KinematicCharacterController.CastCollider*"></a>
 
-  <h3 id="KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_System_Boolean_" data-uid="KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,System.Boolean)">
-  CastCollider(Vector3, Vector3, out RayCastHit, float, uint, bool)
-  
+  <h3 id="KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,KCC.PhysicsFlag)">
+  CastCollider(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L791"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Return all colliders collided with by the cast.
+  <div class="markdown level1 summary"><p>Returns collider collided with by the cast, if any.
 Will filter if collision filtering is enabled for this character.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, float distance = 3.4028235E+38, uint layerMask = 4294967295, bool hitTriggers = true)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, float distance = 3.4028235E+38, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>origin</code> <span class="xref">Vector3</span></dt>
-    <dd><p>Point in world space to trace from</p>
+    <dd><p>Point in world space to trace from.</p>
 </dd>
     <dt><code>direction</code> <span class="xref">Vector3</span></dt>
-    <dd></dd>
+    <dd><p>Normalized direction in which to cast the collider's shape.</p>
+</dd>
     <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
-    <dd></dd>
+    <dd><p>The result hit information.</p>
+</dd>
     <dt><code>distance</code> <span class="xref">float</span></dt>
-    <dd></dd>
+    <dd><p>Maximum distance the cast should check.</p>
+</dd>
     <dt><code>layerMask</code> <span class="xref">uint</span></dt>
-    <dd></dd>
-    <dt><code>hitTriggers</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd><p>True if collided with anything</p>
+    <dd><p><code>true</code> if we collided with anything, <code>false</code> if not.</p>
 </dd>
   </dl>
 
@@ -1388,11 +1745,286 @@ Will filter if collision filtering is enabled for this character.</p>
 
 
 
+  <a id="KCC_KinematicCharacterController_CastCollider_" data-uid="KCC.KinematicCharacterController.CastCollider*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit____System_Single_System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.CastCollider(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.Single,System.UInt32,KCC.PhysicsFlag)">
+  CastCollider(Vector3, Vector3, out RayCastHit[], float, uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L980"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns colliders collided with by the cast, if any.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CastCollider(Vector3 origin, Vector3 direction, out RayCastHit[] traces, float distance = 3.4028235E+38, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to trace from.</p>
+</dd>
+    <dt><code>direction</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Normalized direction in which to cast the collider's shape.</p>
+</dd>
+    <dt><code>traces</code> <span class="xref">RayCastHit</span>[]</dt>
+    <dd><p>The results.</p>
+</dd>
+    <dt><code>distance</code> <span class="xref">float</span></dt>
+    <dd><p>Maximum distance the cast should check.</p>
+</dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>Last &quot;valid collision&quot; index in the collider array, will be 0 if no collisions happened</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>Thrown if unsupported collider type (should never happen)</p>
+</dd>
+  </dl>
+
+
+
+  <a id="KCC_KinematicCharacterController_CastLine_" data-uid="KCC.KinematicCharacterController.CastLine*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.Single,System.UInt32,KCC.PhysicsFlag)">
+  CastLine(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L1163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns collider collided with by the cast, if any.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CastLine(Vector3 origin, Vector3 direction, out RayCastHit trace, float distance = 3.4028235E+38, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to trace from.</p>
+</dd>
+    <dt><code>direction</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Normalized direction in which to cast the collider's shape.</p>
+</dd>
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd><p>The result hit information.</p>
+</dd>
+    <dt><code>distance</code> <span class="xref">float</span></dt>
+    <dd><p>Maximum distance the cast should check.</p>
+</dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> if we collided with anything, <code>false</code> if not.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_CastLine_" data-uid="KCC.KinematicCharacterController.CastLine*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit@,System.UInt32,KCC.PhysicsFlag)">
+  CastLine(Vector3, Vector3, out RayCastHit, uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L1185"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns collider collided with by the cast, if any.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CastLine(Vector3 start, Vector3 end, out RayCastHit trace, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to start the trace from.</p>
+</dd>
+    <dt><code>end</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to end the trace to.</p>
+</dd>
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd><p>The result hit information.</p>
+</dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> if we collided with anything, <code>false</code> if not.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_CastLine_" data-uid="KCC.KinematicCharacterController.CastLine*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit____System_Single_System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.Single,System.UInt32,KCC.PhysicsFlag)">
+  CastLine(Vector3, Vector3, out RayCastHit[], float, uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L1346"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns colliders collided with by the cast, if any.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CastLine(Vector3 origin, Vector3 direction, out RayCastHit[] traces, float distance = 3.4028235E+38, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to trace from.</p>
+</dd>
+    <dt><code>direction</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Normalized direction in which to cast the collider's shape.</p>
+</dd>
+    <dt><code>traces</code> <span class="xref">RayCastHit</span>[]</dt>
+    <dd><p>The results.</p>
+</dd>
+    <dt><code>distance</code> <span class="xref">float</span></dt>
+    <dd><p>Maximum distance the cast should check.</p>
+</dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>Last &quot;valid collision&quot; index in the collider array, will be 0 if no collisions happened</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_CastLine_" data-uid="KCC.KinematicCharacterController.CastLine*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_CastLine_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit____System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.CastLine(FlaxEngine.Vector3,FlaxEngine.Vector3,FlaxEngine.RayCastHit[]@,System.UInt32,KCC.PhysicsFlag)">
+  CastLine(Vector3, Vector3, out RayCastHit[], uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L1368"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns colliders collided with by the cast, if any.
+Will filter if collision filtering is enabled for this character.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CastLine(Vector3 start, Vector3 end, out RayCastHit[] traces, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to start the trace from.</p>
+</dd>
+    <dt><code>end</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in world space to end the trace to.</p>
+</dd>
+    <dt><code>traces</code> <span class="xref">RayCastHit</span>[]</dt>
+    <dd><p>The results.</p>
+</dd>
+    <dt><code>layerMask</code> <span class="xref">uint</span></dt>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>Last &quot;valid collision&quot; index in the collider array, will be 0 if no collisions happened</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicCharacterController_ForceUnground_" data-uid="KCC.KinematicCharacterController.ForceUnground*"></a>
 
   <h3 id="KCC_KinematicCharacterController_ForceUnground" data-uid="KCC.KinematicCharacterController.ForceUnground">
   ForceUnground()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2323"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Force the character to unground.</p>
@@ -1415,11 +2047,51 @@ Will filter if collision filtering is enabled for this character.</p>
 
 
 
+  <a id="KCC_KinematicCharacterController_GroundCheck_" data-uid="KCC.KinematicCharacterController.GroundCheck*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_GroundCheck_FlaxEngine_RayCastHit__" data-uid="KCC.KinematicCharacterController.GroundCheck(FlaxEngine.RayCastHit@)">
+  GroundCheck(out RayCastHit)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2494"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Trace to the ground and do checks.
+Updates the HasSolidBelow and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GroundFlag GroundCheck(out RayCastHit trace)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd><p>Trace result (if any).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KCC.GroundFlag.html">GroundFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.GroundFlag.html">GroundFlag</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicCharacterController_GroundTangent_" data-uid="KCC.KinematicCharacterController.GroundTangent*"></a>
 
   <h3 id="KCC_KinematicCharacterController_GroundTangent_FlaxEngine_Vector3_" data-uid="KCC.KinematicCharacterController.GroundTangent(FlaxEngine.Vector3)">
   GroundTangent(Vector3)
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L3061"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Utility function to project a direction along the ground normal without any lateral movement (accounts for gravity direction)</p>
@@ -1458,7 +2130,7 @@ Will filter if collision filtering is enabled for this character.</p>
 
   <h3 id="KCC_KinematicCharacterController_IsNormalStableGround_FlaxEngine_Vector3_" data-uid="KCC.KinematicCharacterController.IsNormalStableGround(FlaxEngine.Vector3)">
   IsNormalStableGround(Vector3)
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2797"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Is the normal vector considered stable ground?</p>
@@ -1472,13 +2144,14 @@ Will filter if collision filtering is enabled for this character.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>normal</code> <span class="xref">Vector3</span></dt>
-    <dd></dd>
+    <dd><p>Normal of the ground.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd><p>True if stable</p>
+    <dd><p><code>true</code> if stable, <code>false</code> if not.</p>
 </dd>
   </dl>
 
@@ -1496,7 +2169,7 @@ Will filter if collision filtering is enabled for this character.</p>
 
   <h3 id="KCC_KinematicCharacterController_KinematicUpdate" data-uid="KCC.KinematicCharacterController.KinematicUpdate">
   KinematicUpdate()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L371"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Calculate movement. This should not ever be called directly.</p>
@@ -1523,7 +2196,7 @@ Will filter if collision filtering is enabled for this character.</p>
 
   <h3 id="KCC_KinematicCharacterController_OnDisable" data-uid="KCC.KinematicCharacterController.OnDisable">
   OnDisable()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L361"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called when actor gets removed from game systems. Occurs on EndPlay event or when actor gets inactivated in hierarchy. Use this event to unregister object from other game system (eg. audio).</p>
@@ -1550,7 +2223,7 @@ Will filter if collision filtering is enabled for this character.</p>
 
   <h3 id="KCC_KinematicCharacterController_OnEnable" data-uid="KCC.KinematicCharacterController.OnEnable">
   OnEnable()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L315"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called when actor gets added to game systems. Occurs on BeginPlay event or when actor gets activated in hierarchy. Use this event to register object to other game system (eg. audio).</p>
@@ -1575,9 +2248,9 @@ Will filter if collision filtering is enabled for this character.</p>
 
   <a id="KCC_KinematicCharacterController_OverlapCollider_" data-uid="KCC.KinematicCharacterController.OverlapCollider*"></a>
 
-  <h3 id="KCC_KinematicCharacterController_OverlapCollider_FlaxEngine_Vector3_FlaxEngine_Collider____System_UInt32_System_Boolean_System_Single_" data-uid="KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,System.Boolean,System.Single)">
-  OverlapCollider(Vector3, out Collider[], uint, bool, float)
-  
+  <h3 id="KCC_KinematicCharacterController_OverlapCollider_FlaxEngine_Vector3_FlaxEngine_Collider____System_UInt32_KCC_PhysicsFlag_" data-uid="KCC.KinematicCharacterController.OverlapCollider(FlaxEngine.Vector3,FlaxEngine.Collider[]@,System.UInt32,KCC.PhysicsFlag)">
+  OverlapCollider(Vector3, out Collider[], uint, PhysicsFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L618"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Return all colliders we are overlapping with in an array.
@@ -1587,22 +2260,22 @@ Array is also sorted in an unordered sequence where all valid colliders are at t
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = 4294967295, bool hitTriggers = true, float inflate = 0)</code></pre>
+    <pre><code class="lang-csharp hljs">public int OverlapCollider(Vector3 origin, out Collider[] colliders, uint layerMask = 4294967295, PhysicsFlag flags = PhysicsFlag.None)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>origin</code> <span class="xref">Vector3</span></dt>
-    <dd><p>Point in world space to trace at</p>
+    <dd><p>Point in world space to trace at.</p>
 </dd>
     <dt><code>colliders</code> <span class="xref">Collider</span>[]</dt>
-    <dd></dd>
+    <dd><p>The result array of colliders hit.</p>
+</dd>
     <dt><code>layerMask</code> <span class="xref">uint</span></dt>
-    <dd></dd>
-    <dt><code>hitTriggers</code> <span class="xref">bool</span></dt>
-    <dd></dd>
-    <dt><code>inflate</code> <span class="xref">float</span></dt>
-    <dd><p>Extra size added to the collider size</p>
+    <dd><p>The layer mask used to filter the results.</p>
+</dd>
+    <dt><code>flags</code> <a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.PhysicsFlag.html">PhysicsFlag</a>s to use.</p>
 </dd>
   </dl>
 
@@ -1629,11 +2302,172 @@ Array is also sorted in an unordered sequence where all valid colliders are at t
 
 
 
-  <a id="KCC_KinematicCharacterController_UnstuckSolve_" data-uid="KCC.KinematicCharacterController.UnstuckSolve*"></a>
+  <a id="KCC_KinematicCharacterController_PartialGroundTangent_" data-uid="KCC.KinematicCharacterController.PartialGroundTangent*"></a>
 
-  <h3 id="KCC_KinematicCharacterController_UnstuckSolve_System_Single_" data-uid="KCC.KinematicCharacterController.UnstuckSolve(System.Single)">
-  UnstuckSolve(float)
-  
+  <h3 id="KCC_KinematicCharacterController_PartialGroundTangent_FlaxEngine_Vector3_" data-uid="KCC.KinematicCharacterController.PartialGroundTangent(FlaxEngine.Vector3)">
+  PartialGroundTangent(Vector3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L3073"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Utility function to project a direction along the partial ground normal without any lateral movement (accounts for gravity direction)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 PartialGroundTangent(Vector3 direction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>direction</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Normalized direction</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd><p>Projected normalized direction</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SnapToGround_" data-uid="KCC.KinematicCharacterController.SnapToGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SnapToGround" data-uid="KCC.KinematicCharacterController.SnapToGround">
+  SnapToGround()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2707"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Forcibly move the character to ground level, ignoring if its standable or not.
+Automatically makes a cast with the distance of <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundSnappingDistance">GroundSnappingDistance</a> + <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_KinematicContactOffset">KinematicContactOffset</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SnapToGround()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SnapToGround_" data-uid="KCC.KinematicCharacterController.SnapToGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SnapToGround_FlaxEngine_RayCastHit_" data-uid="KCC.KinematicCharacterController.SnapToGround(FlaxEngine.RayCastHit)">
+  SnapToGround(RayCastHit)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2726"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Forcibly move the character to ground level, ignoring if its standable or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SnapToGround(RayCastHit trace)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd><p>Existing trace info to use.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SnapToGround_" data-uid="KCC.KinematicCharacterController.SnapToGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SnapToGround_System_Single_" data-uid="KCC.KinematicCharacterController.SnapToGround(System.Single)">
+  SnapToGround(float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2716"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Forcibly move the character to ground level, ignoring if its standable or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SnapToGround(float distance)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>distance</code> <span class="xref">float</span></dt>
+    <dd><p>Distance to check.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SolveGround_" data-uid="KCC.KinematicCharacterController.SolveGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SolveGround" data-uid="KCC.KinematicCharacterController.SolveGround">
+  SolveGround()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2333"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The full ground solver, trace to ground and snap to it if necessary.
+Updates the HasSolidBelow and GroundNormal properties, and attempts to attach itself to the rigidbody stood upon (if any).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SolveGround()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SolveUnstuck_" data-uid="KCC.KinematicCharacterController.SolveUnstuck*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SolveUnstuck_System_Int32__System_Int32__" data-uid="KCC.KinematicCharacterController.SolveUnstuck(System.Int32@,System.Int32@)">
+  SolveUnstuck(out int, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2809"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Calculates the necessary vector3 to move out of collisions</p>
@@ -1641,20 +2475,172 @@ Array is also sorted in an unordered sequence where all valid colliders are at t
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Vector3 UnstuckSolve(float inflate)</code></pre>
+    <pre><code class="lang-csharp hljs">public Vector3 SolveUnstuck(out int solvedOverlaps, out int totalOverlaps)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>inflate</code> <span class="xref">float</span></dt>
-    <dd><p>Extra size added to the collider size</p>
+    <dt><code>solvedOverlaps</code> <span class="xref">int</span></dt>
+    <dd><p>The number of total overlaps in the solve.</p>
+</dd>
+    <dt><code>totalOverlaps</code> <span class="xref">int</span></dt>
+    <dd><p>The number of solved overlaps in the solve.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Vector3</span></dt>
-    <dd><p>Amount to push out by so that the character is no longer colliding with anything</p>
+    <dd><p>Amount to push out by so that the character is no longer colliding with anything.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SwitchKinematics_" data-uid="KCC.KinematicCharacterController.SwitchKinematics*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SwitchKinematics_System_Boolean_" data-uid="KCC.KinematicCharacterController.SwitchKinematics(System.Boolean)">
+  SwitchKinematics(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L3190"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Switch the Collider(s) to kinematic Collider(s) or vice versa.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SwitchKinematics(bool mode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mode</code> <span class="xref">bool</span></dt>
+    <dd><p>if <code>true</code> Collider(s) are set to kinematic Collider(s), if <code>false</code> Collider(s) are set to RigidBody Collider(s)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_SyncKinematics_" data-uid="KCC.KinematicCharacterController.SyncKinematics*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_SyncKinematics" data-uid="KCC.KinematicCharacterController.SyncKinematics">
+  SyncKinematics()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L3202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Synchronize the kinematic colliders with the KCC Actor's transient position and orientation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SyncKinematics()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_TraceGround_" data-uid="KCC.KinematicCharacterController.TraceGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_TraceGround_FlaxEngine_RayCastHit__KCC_GroundFlag__" data-uid="KCC.KinematicCharacterController.TraceGround(FlaxEngine.RayCastHit@,KCC.GroundFlag@)">
+  TraceGround(out RayCastHit, out GroundFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2634"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Do a ground trace cast, considering if the ground is stable.
+Automatically makes a cast with the distance of <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundingDistance">GroundingDistance</a> + <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_KinematicContactOffset">KinematicContactOffset</a> if not <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_HasSolidBelow">HasSolidBelow</a>,
+or with the distance of <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_GroundingDistance">GroundingDistance</a> + <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_StairStepDistance">StairStepDistance</a> + <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_KinematicContactOffset">KinematicContactOffset</a> if <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_HasSolidBelow">HasSolidBelow</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TraceGround(out RayCastHit trace, out GroundFlag groundFlags)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd><p>Trace result (if any).</p>
+</dd>
+    <dt><code>groundFlags</code> <a class="xref" href="KCC.GroundFlag.html">GroundFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.GroundFlag.html">GroundFlag</a></p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> if the <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_KCC_PhysicsFlag_">CastCollider(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)</a> hit anything, <code>false</code> if not.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicCharacterController_TraceGround_" data-uid="KCC.KinematicCharacterController.TraceGround*"></a>
+
+  <h3 id="KCC_KinematicCharacterController_TraceGround_System_Single_FlaxEngine_RayCastHit__KCC_GroundFlag__" data-uid="KCC.KinematicCharacterController.TraceGround(System.Single,FlaxEngine.RayCastHit@,KCC.GroundFlag@)">
+  TraceGround(float, out RayCastHit, out GroundFlag)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L2656"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Do a ground trace cast, considering if the ground is stable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TraceGround(float distance, out RayCastHit trace, out GroundFlag groundFlags)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>distance</code> <span class="xref">float</span></dt>
+    <dd><p>Distance to check.</p>
+</dd>
+    <dt><code>trace</code> <span class="xref">RayCastHit</span></dt>
+    <dd><p>Trace result (if any).</p>
+</dd>
+    <dt><code>groundFlags</code> <a class="xref" href="KCC.GroundFlag.html">GroundFlag</a></dt>
+    <dd><p><a class="xref" href="KCC.GroundFlag.html">GroundFlag</a></p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> if the <a class="xref" href="KCC.KinematicCharacterController.html#KCC_KinematicCharacterController_CastCollider_FlaxEngine_Vector3_FlaxEngine_Vector3_FlaxEngine_RayCastHit__System_Single_System_UInt32_KCC_PhysicsFlag_">CastCollider(Vector3, Vector3, out RayCastHit, float, uint, PhysicsFlag)</a> hit anything, <code>false</code> if not.</p>
 </dd>
   </dl>
 
@@ -1672,6 +2658,7 @@ Array is also sorted in an unordered sequence where all valid colliders are at t
 </article>
 
         <div class="contribution d-print-none">
+          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicCharacterController.cs/#L28" class="edit-link">Edit this page</a>
         </div>
 
 

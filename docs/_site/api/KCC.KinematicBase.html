@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_KinematicBase.md&amp;value=---%0Auid%3A%20KCC.KinematicBase%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="KCC_KinematicBase" data-uid="KCC.KinematicBase" class="text-break">
-Class KinematicBase  
+Class KinematicBase  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L12"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -103,7 +103,7 @@ Base class for KCC Actors.</p>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class KinematicBase : RigidBody</code></pre>
+    <pre><code class="lang-csharp hljs">public class KinematicBase : Actor</code></pre>
   </div>
 
 
@@ -116,7 +116,6 @@ Base class for KCC Actors.</p>
       <div><span class="xref">Object</span></div>
       <div><span class="xref">SceneObject</span></div>
       <div><span class="xref">Actor</span></div>
-      <div><span class="xref">RigidBody</span></div>
       <div><span class="xref">KinematicBase</span></div>
     </dd>
   </dl>
@@ -136,53 +135,22 @@ Base class for KCC Actors.</p>
 
 
 
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="KCC_KinematicBase__ctor_" data-uid="KCC.KinematicBase.#ctor*"></a>
-
-  <h3 id="KCC_KinematicBase__ctor" data-uid="KCC.KinematicBase.#ctor">
-  KinematicBase()
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Initializes a new instance of KinematicBase.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public KinematicBase()</code></pre>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
   <h2 class="section" id="fields">Fields
 </h2>
 
 
 
-  <h3 id="KCC_KinematicBase__kccPlugin" data-uid="KCC.KinematicBase._kccPlugin">
-  _kccPlugin
-  
+  <h3 id="KCC_KinematicBase__rigidBody" data-uid="KCC.KinematicBase._rigidBody">
+  _rigidBody
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Reference to KCC plugin.</p>
+  <div class="markdown level1 summary"><p>The KCC Actor's RigidBody</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected KCC _kccPlugin</code></pre>
+    <pre><code class="lang-csharp hljs">protected RigidBody? _rigidBody</code></pre>
   </div>
 
 
@@ -190,7 +158,7 @@ Base class for KCC Actors.</p>
 
   <h4 class="section">Field Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="KCC.KCC.html">KCC</a></dt>
+    <dt><span class="xref">RigidBody</span></dt>
     <dd></dd>
   </dl>
 
@@ -205,7 +173,7 @@ Base class for KCC Actors.</p>
 
   <h3 id="KCC_KinematicBase__transientOrientation" data-uid="KCC.KinematicBase._transientOrientation">
   _transientOrientation
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current orientation in simulation.</p>
@@ -236,7 +204,7 @@ Base class for KCC Actors.</p>
 
   <h3 id="KCC_KinematicBase__transientPosition" data-uid="KCC.KinematicBase._transientPosition">
   _transientPosition
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current position in simulation.</p>
@@ -272,7 +240,7 @@ Base class for KCC Actors.</p>
 
   <h3 id="KCC_KinematicBase_InitialOrientation" data-uid="KCC.KinematicBase.InitialOrientation">
   InitialOrientation
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The initial orientation before simulation.</p>
@@ -306,7 +274,7 @@ public Quaternion InitialOrientation { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicBase_InitialPosition" data-uid="KCC.KinematicBase.InitialPosition">
   InitialPosition
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The initial position before simulation.</p>
@@ -336,11 +304,43 @@ public Vector3 InitialPosition { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicBase_RigidBody_" data-uid="KCC.KinematicBase.RigidBody*"></a>
+
+  <h3 id="KCC_KinematicBase_RigidBody" data-uid="KCC.KinematicBase.RigidBody">
+  RigidBody
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The KCC Actor's RigidBody</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RigidBody? RigidBody { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">RigidBody</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="KCC_KinematicBase_TransientOrientation_" data-uid="KCC.KinematicBase.TransientOrientation*"></a>
 
   <h3 id="KCC_KinematicBase_TransientOrientation" data-uid="KCC.KinematicBase.TransientOrientation">
   TransientOrientation
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current orientation in simulation.</p>
@@ -374,7 +374,7 @@ public Quaternion TransientOrientation { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicBase_TransientPosition" data-uid="KCC.KinematicBase.TransientPosition">
   TransientPosition
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The current position in simulation.</p>
@@ -412,7 +412,7 @@ public Vector3 TransientPosition { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicBase_SetOrientation_FlaxEngine_Quaternion_" data-uid="KCC.KinematicBase.SetOrientation(FlaxEngine.Quaternion)">
   SetOrientation(Quaternion)
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Set the mover's orientation directly.</p>
@@ -445,7 +445,7 @@ public Vector3 TransientPosition { get; set; }</code></pre>
 
   <h3 id="KCC_KinematicBase_SetPosition_FlaxEngine_Vector3_" data-uid="KCC.KinematicBase.SetPosition(FlaxEngine.Vector3)">
   SetPosition(Vector3)
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L51"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Set the mover's position directly.</p>
@@ -474,10 +474,98 @@ public Vector3 TransientPosition { get; set; }</code></pre>
 
 
 
+  <a id="KCC_KinematicBase_SetupRigidBody_" data-uid="KCC.KinematicBase.SetupRigidBody*"></a>
+
+  <h3 id="KCC_KinematicBase_SetupRigidBody" data-uid="KCC.KinematicBase.SetupRigidBody">
+  SetupRigidBody()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set up the KCC Actor's RigidBody</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetupRigidBody()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicBase_SwitchKinematics_" data-uid="KCC.KinematicBase.SwitchKinematics*"></a>
+
+  <h3 id="KCC_KinematicBase_SwitchKinematics_System_Boolean_" data-uid="KCC.KinematicBase.SwitchKinematics(System.Boolean)">
+  SwitchKinematics(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Switch the Collider(s) to kinematic Collider(s) or vice versa.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void SwitchKinematics(bool mode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mode</code> <span class="xref">bool</span></dt>
+    <dd><p>if <code>true</code> Collider(s) are set to kinematic Collider(s), if <code>false</code> Collider(s) are set to RigidBody Collider(s)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KCC_KinematicBase_SyncKinematics_" data-uid="KCC.KinematicBase.SyncKinematics*"></a>
+
+  <h3 id="KCC_KinematicBase_SyncKinematics" data-uid="KCC.KinematicBase.SyncKinematics">
+  SyncKinematics()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Synchronize the kinematic colliders with the KCC Actor's transient position and orientation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void SyncKinematics()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
+          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/KinematicBase.cs/#L12" class="edit-link">Edit this page</a>
         </div>
 
 

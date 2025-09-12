@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Enum StairStepGroundMode | KCC </title>
+      <title>Enum UnstuckRescueMode | KCC </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Enum StairStepGroundMode | KCC ">
+      <meta name="title" content="Enum UnstuckRescueMode | KCC ">
       
-      <meta name="description" content="Stair stepping mode for KCC characters. Determines what type of stairstepping is allowed.">
+      <meta name="description" content="Unstuck rescue mode for KCC characters.">
       <link rel="icon" href="../favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_StairStepGroundMode.md&amp;value=---%0Auid%3A%20KCC.StairStepGroundMode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Zode/KCCExample/new/kcc2.0.0/apiSpec/new?filename=KCC_UnstuckRescueMode.md&amp;value=---%0Auid%3A%20KCC.UnstuckRescueMode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -84,13 +84,13 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article data-uid="KCC.StairStepGroundMode">
+        <article data-uid="KCC.UnstuckRescueMode">
 
 
 
 
-  <h1 id="KCC_StairStepGroundMode" data-uid="KCC.StairStepGroundMode" class="text-break">
-Enum StairStepGroundMode  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/StairStepGroundMode.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  <h1 id="KCC_UnstuckRescueMode" data-uid="KCC.UnstuckRescueMode" class="text-break">
+Enum UnstuckRescueMode  <a class="header-action link-secondary" title="View source" href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/UnstuckRescueMode.cs/#L6"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -98,13 +98,12 @@ Enum StairStepGroundMode  <a class="header-action link-secondary" title="View so
   <dl><dt>Assembly</dt><dd>KCC.CSharp.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Stair stepping mode for KCC characters.
-Determines what type of stairstepping is allowed.</p>
+  <div class="markdown summary"><p>Unstuck rescue mode for KCC characters.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum StairStepGroundMode</code></pre>
+    <pre><code class="lang-csharp hljs">public enum UnstuckRescueMode</code></pre>
   </div>
 
 
@@ -118,25 +117,61 @@ Determines what type of stairstepping is allowed.</p>
   <h2 id="fields">Fields
 </h2>
   <dl class="parameters">
-    <dt id="KCC_StairStepGroundMode_None"><code>None = 0</code></dt>
+    <dt id="KCC_UnstuckRescueMode_Disabled"><code>Disabled = 0</code></dt>
   
-  <dd><p>Always stairstep.</p>
+  <dd><p>Don't do any sort of unstuck rescue, in exchange for some performance.</p>
 </dd>
-    <dt id="KCC_StairStepGroundMode_RequireGround"><code>RequireGround = 5</code></dt>
+    <dt id="KCC_UnstuckRescueMode_NoPisAller"><code>NoPisAller = 1</code></dt>
   
-  <dd><p>Stairstep only when solid with ground tag is hit.</p>
+  <dd><p>Do unstuck rescue, but with no pis-aller.</p>
 </dd>
-    <dt id="KCC_StairStepGroundMode_RequireSolid"><code>RequireSolid = 1</code></dt>
+    <dt id="KCC_UnstuckRescueMode_RelativeBackward"><code>RelativeBackward = 3</code></dt>
   
-  <dd><p>Stairstep only when solid is hit.</p>
+  <dd><p>Do unstuck rescue, and move character forcibly to the relative backward direction as defined by orientation as pis-aller.</p>
 </dd>
-    <dt id="KCC_StairStepGroundMode_RequireStableGround"><code>RequireStableGround = 7</code></dt>
+    <dt id="KCC_UnstuckRescueMode_RelativeDown"><code>RelativeDown = 5</code></dt>
   
-  <dd><p>Stairstep only when stable solid with ground tag is hit.</p>
+  <dd><p>Do unstuck rescue, and move character forcibly to the relative downward direction as defined by orientation as pis-aller.</p>
 </dd>
-    <dt id="KCC_StairStepGroundMode_RequireStableSolid"><code>RequireStableSolid = 3</code></dt>
+    <dt id="KCC_UnstuckRescueMode_RelativeForward"><code>RelativeForward = 2</code></dt>
   
-  <dd><p>Stairstep only when stable solid is hit.</p>
+  <dd><p>Do unstuck rescue, and move character forcibly to the relative forward direction as defined by orientation as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_RelativeLeft"><code>RelativeLeft = 7</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the relative leftward direction as defined by orientation as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_RelativeRight"><code>RelativeRight = 6</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the relative rightward direction as defined by orientation as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_RelativeUp"><code>RelativeUp = 4</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the relative upward direction as defined by orientation as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_WorldBackward"><code>WorldBackward = 9</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the world backward direction as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_WorldDown"><code>WorldDown = 11</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the world downward direction as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_WorldForward"><code>WorldForward = 8</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the world forward direction as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_WorldLeft"><code>WorldLeft = 13</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the world leftward direction as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_WorldRight"><code>WorldRight = 12</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the world rightward direction as pis-aller.</p>
+</dd>
+    <dt id="KCC_UnstuckRescueMode_WorldUp"><code>WorldUp = 10</code></dt>
+  
+  <dd><p>Do unstuck rescue, and move character forcibly to the world upoward direction as pis-aller.</p>
 </dd>
   </dl>
 
@@ -145,7 +180,7 @@ Determines what type of stairstepping is allowed.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/StairStepGroundMode.cs/#L9" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Zode/KCCExample/blob/kcc2.0.0/Plugins/KCC/Source/KCC/UnstuckRescueMode.cs/#L6" class="edit-link">Edit this page</a>
         </div>
 
 
