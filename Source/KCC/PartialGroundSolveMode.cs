@@ -7,7 +7,7 @@ namespace KCC;
 public enum PartialGroundSolveMode
 {
 	/// <summary>
-	/// Don't report partial grounds. Using this option gives more performance.
+	/// Don't report partial grounds. Using this option gives more performance, but all partial grounds are reported as full grounding.
 	/// </summary>
 	None,
 	/// <summary>
@@ -15,3 +15,4 @@ public enum PartialGroundSolveMode
 	/// </summary>
 	FourPoint,
 }
+//TODO: research more detection tactics

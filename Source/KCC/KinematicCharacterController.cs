@@ -110,8 +110,8 @@ public class KinematicCharacterController : KinematicBase
     private float _maxUnstuckRescueDistance = 4.0f;
     /// <summary>
     /// Should we filter collisions?
-    /// If enabled, the controller will be queried for collision filtering, this is more performance expensive.
-    /// If disabled, the character will assume everything to be solid, this is less performance expensive.
+    /// If enabled, the controller will be queried for collision filtering, this is more performant.
+    /// If disabled, the character will assume everything to be solid, this is less performant.
     /// </summary>
     [EditorDisplay("Physics")]
     [EditorOrder(209)]
@@ -198,8 +198,7 @@ public class KinematicCharacterController : KinematicBase
     public float MaxSlopeAngle {get => _maxSlopeAngle; set => _maxSlopeAngle = Mathf.Clamp(value, 0.0f, 180.0f);}
     private float _maxSlopeAngle = 66.0f;
     /// <summary>
-    /// Should the grounding check test for partial grounding (eg. edges)?
-    /// Disabling this improves performance, but makes it always report partial grounding as full grounding.
+    /// Behavior mode for partial ground solving.
     /// </summary>
     [EditorDisplay("Grounding")]
     [EditorOrder(304)]
@@ -211,7 +210,7 @@ public class KinematicCharacterController : KinematicBase
     /// </summary>
     [NoSerialize, HideInEditor] public Vector3 PartialGroundNormal {get; private set;} = Vector3.Up;
     /// <summary>
-    /// Determines if stair stepping is allowed at all. Disabling this increase performance.
+    /// Determines if stair stepping is allowed at all. Disabling this improves performance.
     /// </summary>
     [EditorDisplay("Stairstepping")]
     [EditorOrder(400)]
@@ -251,8 +250,8 @@ public class KinematicCharacterController : KinematicBase
     public RigidBodyMoveMode RigidBodyMoveMode {get; set;} = RigidBodyMoveMode.KinematicMoversOnly;
     /// <summary>
     /// Determines if the character should solve the movements caused by rigidbodies stood upon.
-    /// If enabled, the character will sweep the movements, this is more performance expensive and more unstable but will cause less potential collision issues.
-    /// If disabled, the character will not sweep the movements, this is less performance expensive and more stable but will cause potential collision issues.
+    /// If enabled, the character will sweep the movements, this is less performant and less stable but will cause less potential collision issues.
+    /// If disabled, the character will not sweep the movements, this is more performant and more stable but will cause more potential collision issues.
     /// </summary>
     [EditorDisplay("RigidBody interactions")]
     [EditorOrder(501)]
@@ -646,7 +645,6 @@ public class KinematicCharacterController : KinematicBase
         }
 
         bool hitTriggers = ((int)flags & (int)PhysicsFlag.HitTriggers) == (int)PhysicsFlag.HitTriggers;
-        bool dispatchEvents = ((int)flags & (int)PhysicsFlag.DispatchEvent) == (int)PhysicsFlag.DispatchEvent;
         bool rigidbodyInteractions = ((int)flags & (int)PhysicsFlag.RigidBodyInteractions) == (int)PhysicsFlag.RigidBodyInteractions;
 
         #if FLAX_EDITOR
@@ -671,22 +669,14 @@ public class KinematicCharacterController : KinematicBase
 
         if(!FilterCollisions)
         {
-            if(dispatchEvents || rigidbodyInteractions)
+            if(rigidbodyInteractions)
             {
                 for(int i = 0; i < colliders.Length; i++)
                 {
-                    if(dispatchEvents)
+                    RigidBody? otherRb = colliders[i].AttachedRigidBody;
+                    if(otherRb != null)
                     {
-                        Controller.KinematicCollision(colliders[i]);
-                    }
-
-                    if(rigidbodyInteractions)
-                    {
-                        RigidBody? otherRb = colliders[i].AttachedRigidBody;
-                        if(otherRb != null)
-                        {
-                            TryAddRigidBodyInteraction(colliders[i], otherRb);
-                        }
+                        TryAddRigidBodyInteraction(colliders[i], otherRb);
                     }
                 }
             }
@@ -730,11 +720,6 @@ public class KinematicCharacterController : KinematicBase
                 #if KCC_DEBUGGER
                 KCCDebugger.DrawCollider(colliders[i], KCCDebugger.Options.OverlapOtherFillColor, KCCDebugger.Options.OverlapOtherOutlineColor, false);
                 #endif
-
-                if(dispatchEvents)
-                {
-                    Controller.KinematicCollision(colliders[i]);
-                }
 
                 if(rigidbodyInteractions)
                 {
@@ -802,7 +787,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="layerMask">The layer mask used to filter the results.</param>
     /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
     /// <exception cref="NotImplementedException">Thrown if unsupported collider type (should never happen)</exception>
-    /// <returns><c>true</c> if we collided with anything</returns>
+    /// <returns><c>true</c> if we collided with anything, <c>false</c> if not.</returns>
     public bool CastCollider(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
     {
         #if FLAX_EDITOR
@@ -1174,7 +1159,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="distance">Maximum distance the cast should check.</param>
     /// <param name="layerMask">The layer mask used to filter the results.</param>
     /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
-    /// <returns><c>true</c> if we collided with anything</returns>
+    /// <returns><c>true</c> if we collided with anything, <c>false</c> if not.</returns>
     public bool CastLine(Vector3 origin, Vector3 direction, out RayCastHit trace, Real distance = Real.MaxValue, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
     {
         #if FLAX_EDITOR
@@ -1196,7 +1181,7 @@ public class KinematicCharacterController : KinematicBase
     /// <param name="trace">The result hit information.</param>
     /// <param name="layerMask">The layer mask used to filter the results.</param>
     /// <param name="flags"><seealso cref="PhysicsFlag" />s to use.</param>
-    /// <returns><c>true</c> if we collided with anything</returns>
+    /// <returns><c>true</c> if we collided with anything, <c>false</c> if not.</returns>
     public bool CastLine(Vector3 start, Vector3 end, out RayCastHit trace, uint layerMask = uint.MaxValue, PhysicsFlag flags = PhysicsFlag.None)
     {
         #if FLAX_EDITOR

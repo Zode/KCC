@@ -2,6 +2,10 @@
 
 The debugger can be opened from Flax's toolbar at the top: `Window` -> `KCC Debugger`.
 
+> [!NOTE]
+> You must compile the plugin (and optionally your game if you wish to use user events) with `KCC_DEBUGGER` in C# scripting defines.
+> It is not ideal to keep it always defined, as KCC Debugger is performance hungry. It should only be used to help you figure out why something is not behaving as expected, or help you understand the KCC physics processing.
+
 ![ Image showing out where the menu entry is ](/KCC/images/debuggermenu.png)
 
 ## Window contents
@@ -23,6 +27,10 @@ To the left is the hierarchy of events, selecting an event there will show the c
 KCC Debugger will sync selection with the scene hierarchy whenever possible, it will also try to do the vice versa. During frame scrubbing all selections will "bubble up" to the main event for the given actor(s).
 
 To the right is the control panel, from where one may quickly adjust the behavior.
+
+> [!NOTE]
+> The timings shown in the debugger are the time spent inside the event, this is not a real reflection of performance profiling and is only an estimate. Use Tracy or such to see your real performance timings.
+> Running your game with `KCC_DEBUGGER` present in defines will significantly slow it down!
 
 ## Using the debugger
 

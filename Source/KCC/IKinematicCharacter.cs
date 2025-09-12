@@ -43,11 +43,6 @@ public interface IKinematicCharacter
 	/// <param name="trace"></param>
 	public void KinematicCollision(ref RayCastHit trace);
 	/// <summary>
-	/// Called when the character overlaps with something during OverlapCollider with the <seealso cref="PhysicsFlag" />.DispatchEvent set.
-	/// </summary>
-	/// <param name="collider"></param>
-	public void KinematicCollision(Collider collider);
-	/// <summary>
 	/// Called when the character unstucks itself during a sweep,
 	/// this may be useful if you want to implement crushers for example.
 	/// </summary>
